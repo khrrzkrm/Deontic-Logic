@@ -1,0 +1,38 @@
+\documentclass[preview]{standalone}
+\usepackage{../sosy-beamer}
+
+\begin{document}
+  \begin{tikzpicture}[
+    every node/.style={
+      align=left},
+    arrowNode/.style={
+      single arrow,
+      draw,
+      minimum height=0.7cm,
+      single arrow head extend=0.1cm,
+      inner sep=3pt,
+      top color=sosyblue!30,
+      bottom color=sosyblue}]
+
+    \node (nodeDesc) {C Program};
+    \node (nodeAlg) [draw, font=\ttfamily, font=\small, below = 0cm of nodeDesc] {
+      int main() \{\\
+      \quad int a = foo();\\
+      \quad int b = bar(a);\\
+      \\
+      \quad assert(a == b);\\
+      \}
+    };
+
+    \node (nodeArrLeft) [arrowNode, right = 0.35cm of nodeAlg] {};
+
+    \node (nodeVerif) [align=center, draw, right = 0.35cm of nodeArrLeft] {Verification\\Tool};
+
+    \node (nodeArrURight) [arrowNode, rotate=30, above right = -0.25cm and 0.5cm of nodeVerif] {};
+    \node (nodeSafe) [align=left, right = 0.25cm of nodeArrURight] {\textcolor{green}{\large{TRUE}}\\\vspace{-0.4em}i.e., specification\\is satisfied};
+
+    \node (nodeArrLRight) [arrowNode, rotate=-30, below right = -0.25cm and 0.5cm of nodeVerif] {};
+    \node (nodeSafe) [align=left, below right = -0.15cm and 0.5cm of nodeArrLRight] {\textcolor{red}{FALSE}\\\vspace{-0.4em}i.e., bug found};
+
+  \end{tikzpicture}
+\end{document}

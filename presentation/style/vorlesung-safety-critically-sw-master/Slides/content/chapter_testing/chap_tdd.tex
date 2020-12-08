@@ -1,0 +1,121 @@
+\tikzset{%
+	every state/.style={
+		draw=maincolor,
+		thick,
+		fill=maincolor!18,
+		inner sep=.8ex,
+		minimum size=0pt
+	},	
+	field/.style={
+		state,
+		shape aspect=5,
+		shape=rectangle
+	},
+	success/.style={
+		state,
+		field,
+		fill=green!60!black!50
+	},
+	error/.style={
+		state,
+		field,
+		fill=purple!50
+	},
+	shorten >=1pt,
+	initial text={}
+}
+
+\section{Test-Driven Development (TDD)}
+
+
+\subsection*{An Overview}
+
+\begin{frame}{Test-Driven Development}
+\begin{itemize}
+	\item Waterfall or V-Model propose to write tests after the code which is tested with them.
+	\item TDD proposes to write tests first, alternating with actual code
+	\item Often found in agile development methods
+	\item Tries to eliminate disadvantages of white-box testing and not sufficient test coverage
+	\item TDD as presented in this section is mainly for unit tests. For system tests it can be used in the same way. Write or at least specify the system test before programming the system
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Using Test-Driven Development}
+\begin{itemize}
+	\item Write tests before the code they test is written.
+	\item All such tests fail at first but should be fulfilled when the code is written.
+	\item The same person can write tests and code.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tool Support for Test-Driven Development}
+\begin{itemize}
+	\item Tool for writing tests and automatic test execution (for Java: JUnit)
+	\item Tool automatically building the project (Java: Ant, Maven, Gradle, ...)
+\end{itemize}
+\end{frame}
+
+\subsection*{TDD by Kent Beck}
+
+\begin{frame}{Test-Driven Development (Kent Beck)}
+\begin{itemize}
+	\item TDD done in micro steps (iterations)
+	\item Write a unit test, implement that unit (one iteration)
+	\item Write another unit test, change the written code to also fulfil this test (next iteration)
+	\item Repeat this iterations until every case is covered. Each iteration should only take minutes.
+	\item Each iteration has three steps:
+	\begin{itemize}
+		\item Write a test that tests a new behaviour. You should start with the easiest test case left. This test should fail.
+		\item Change the code with as least effort as possible. So solve exactly the wanted case. The written test should be fulfilled now.
+		\item Refactor the code such that is does not contain redundancy and looks good. Do not add new functionality.
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Test-Driven Development (Kent Beck)}
+\centering
+\begin{tikzpicture}
+\node[rectangle, draw, fill = red!80, minimum width = 3cm](0){\begin{tabular}{c} Write \\ a unit \\ test\end{tabular}};
+\node[rectangle, draw, fill = green!60, above left of = 0, node distance = 4cm, minimum width = 3cm](1){\begin{tabular}{c} Make \\ it \\ green\end{tabular}};
+\node[rectangle, draw, fill = blue!60, below left of = 1, node distance = 4cm, minimum width = 3cm](2){\begin{tabular}{c} Refactor \\ the \\ code\end{tabular}};
+\node[rectangle, draw, fill = yellow!90!black, below right of = 2, node distance = 4cm, minimum width = 3cm](3){\begin{tabular}{c} Analyse \\ needed \\ functionality\end{tabular}};
+\node[left of = 3, node distance = 5cm](start){};
+\node[right of = 3, node distance = 5cm](end){};
+
+\draw[-stealth, thick]
+(0) edge[bend right] (1)
+(1) edge[bend right] (2)
+(2) edge[bend right] (3)
+(3) edge[bend right] (0)
+(start) edge node[above]{start writing} node[below]{piece of code} (3)
+(3) edge node[above]{implementation} node[below]{complete} (end)
+;
+\end{tikzpicture}
+\end{frame}
+
+
+\subsection*{Advantages and Disadvantages}
+
+\begin{frame}{Advantages of Test-Driven Development}
+\begin{itemize}	
+	\item Developer thinks in an abstract way about all cases that can exist in the code
+	\item Developer directly get feedback on correctness
+	\item Systems written using TDD are easily testable
+	\item Developers not demotivated by writing tests in the end
+	\item Less problems if developer writes tests and code
+	\item Using TDD for unit and system tests results in a metric representing the progress during implementation
+	\item Using Becks method results in better code style due to the refactoring phase
+	\item In general TDD results in a more modular code and easier extendable programs
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Concerns of Test-Driven Development}
+\begin{itemize}
+	\item Main argument against TDD is the high effort. But many people say this is not the case because
+	\begin{itemize}
+		\item After writing the tests, implementing is faster
+		\item The developer directly gets feedback about correctness which results in less errors later
+	\end{itemize}
+	\item Studies were not able to show that less errors exist in written code thanks to using TDD
+\end{itemize}
+\end{frame}

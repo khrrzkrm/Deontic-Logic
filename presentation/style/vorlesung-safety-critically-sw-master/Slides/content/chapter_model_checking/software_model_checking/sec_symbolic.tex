@@ -1,0 +1,207 @@
+%!TEX root = ../../../main.tex
+
+\section{Symbolic Model Checking}
+
+% Functional properties of systems
+
+\begin{frame}{Recall}
+
+The functional properties of a software/hardware system can be expressed as
+\hl{temporal} properties
+
+\begin{itemize}
+  \itemsep1em
+  \item for a suitable model of the system, e.g. Kripke structure $\kripkedef$
+  \item in a suitable temporal logic, e.g. LTL
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Main classes of properties}
+\begin{itemize}
+  \itemsep1em
+  \item \hl{Invariance properties}: certain states of the system are
+  unreachable
+    \begin{itemize}
+      \item Reachability analysis
+    \end{itemize}
+  \item \hl{Safety properties}: certain events never happen
+    \begin{itemize}
+      \item Generalizes invariants and can be reduced to them
+    \end{itemize}  
+  \item \hl{Liveness properties}: certain events eventually happens
+    \begin{itemize}
+      \item Cycle detection (for finite-state systems)
+    \end{itemize}
+\end{itemize}
+
+\bigskip
+We focus on checking invariance properties in Software Model Checking
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Invariance properties}
+
+Given a Kripke structure $\kripkedef$
+
+\bigskip
+The set $\mreachables$ of \hl{reachable states} of $S$ is the smallest
+subset of $\mstates$ satisfying the following constraints:
+
+\bigskip
+\begin{enumerate}
+  \itemsep1em
+  \item $\minits \subseteq \mreachables$ \quad (initial states are reachable)
+  \item $\mreachables \bowtie \mtrans \subseteq \mreachables$ \quad
+    ($\mtrans$-successors of reachable states are reachable)
+\end{enumerate}
+
+\bigskip
+A \hl{state property} $\mproperty \subseteq \mstates$ is \hl{invariant} iff
+$\mreachables \subseteq \mproperty$
+
+
+\bigskip
+\textbf{Note:} We denote the set $\overline{\mproperty} = \mstates
+\setminus \mproperty$ as \hl{``bad states''}
+\end{frame}
+
+% ---------------------------------------------------------------------  
+
+\begin{frame}{Checking invariance}
+In general, to check that the state property $\mproperty$ is invariant for $\kripke$
+it suffices to
+
+\begin{enumerate}
+  \itemsep1em
+  \item compute $\mreachables$ and
+  \item check that $\overline{\mproperty} \bigcap \mreachables = \emptyset$ (no
+  bad state is reachable)
+\end{enumerate}
+
+\bigskip
+\uncover<2->{
+This can be done explicitly only if $\kripke$ is finite and relatively small (usually
+it is not the case)
+}
+
+\bigskip
+\uncover<3->{
+Alternatively, $\kripke$ can be represented \hl{symbolically} and use
+\begin{itemize}
+  \item BDD-based methods, \hl{if $\kripke$ is finite}
+  \item automata-based methods
+  \item logic-based methods
+\end{itemize}
+}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Logic-based Symbolic Model Checking}
+Applicable if the system $\kripke$ can be encoded in some logic (or a fragment
+of logic) $\logic$ with decidable entailment $\satl$
+
+\bigskip
+\uncover<2->{
+($\phi \satl \psi$ iff $\phi \wedge \neg \psi$ is \hl{unsatisfiable} in
+$\logic$ and $\satl \psi$ iff $\psi$ is \hl{satisfiable} in $\logic$)
+%every $\logic$-model of $\phi$ is a model of $\psi$)
+}
+
+\bigskip
+\uncover<3->{
+We assume a computable function for deciding the satisfiability in $\logic$
+}
+
+\bigskip
+\uncover<4->{
+Examples of $\logic$:
+\begin{itemize}
+  \item Propositional logic
+  \item Quantifier-free real (or linear integer) arithmetic with arrays and
+  uninterpreted functions
+  \item Quantified Boolean Formulas
+\end{itemize}
+}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Encoding of the transition system}
+Given a set of values $\domain$ in $\logic$ and $\varset$ a set of variables
+interpreted over $\domain$
+
+\bigskip
+We encodes the Kripke structure $\kripke$ in $\logic$ such that:
+\begin{itemize}
+  \item \hl{states} are described by \hl{variable assignments}
+  $s:V \rightarrow \domain$
+  
+  \item set of \hl{initial states} described by a formula $I$ with
+  free variables $X \subseteq V$
+  
+  \item \hl{transition relation} is specified by a formula $T$ with free
+  variables $X, X' \subseteq V, V'$ 
+  
+  \item \hl{state properties} are encoded by formulas $\phi$ with free
+  variables $X \subseteq V$
+\end{itemize}
+
+\bigskip
+\textbf{Notation:} Given a variable assignment $s: V \rightarrow \domain$ 
+%, a state $\sigma = (d_1, \ldots, d_n)$ 
+and a formula $\phi$ with
+free variables $X \subseteq V$ then $\phi(s) := \phi[x_i/s(x_i)]$ for all
+$x_i \in X$
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Example}
+\begin{center}
+  \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2cm, initial
+  text={}] 
+    \node[initial, state, minimum width=.9cm, minimum height=.9cm] (q0) {$p$};
+    \node[state, minimum width=.9cm, minimum height=.9cm] (q1) [right of = q0] {$\neg p$};        
+        
+    \path[->]   (q0)  edge [loop above] node {} (q0)
+                (q0)  edge        node {} (q1)
+                (q1)  edge [loop above] node {} (q1)
+    ;
+              
+  \end{tikzpicture}
+\end{center}
+\begin{align*}
+\varset =& \{q, p\} \text{, $q$ encodes states} \\
+I(q, p) =& q \wedge p \\
+T(q, p, q', p') = 
+  & (q \wedge q' \wedge p') \vee \\
+  & (q \wedge \neg q' \wedge \neg p') \vee \\
+  & (\neg q \wedge \neg q' \wedge \neg p') \\
+\phi_1 =& p \\
+\phi_2 =& q \vee \neg p
+\end{align*}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Strongest Inductive Invariant}
+The \hl{strongest inductive invariant (for $S$ in $\logic$)} is a formula
+$\psi$ such that $\satl \psi(r)$ iff $r \in \mreachables$
+
+\bigskip
+If we can compute $\psi$ from $I$ and $T$, then checking that property $\phi$ is
+invariant for $\kripke$ reduces to checking that $\psi \satl \phi$
+
+\bigskip
+\textbf{Problem:} $\psi$ may be very expensive or impossible to compute
+% , or not
+% even representable in $\logic$ 
+
+\bigskip
+\textbf{Solution:} approximate $\psi$ as efficiently as possible and as precise as needed
+\end{frame}
+

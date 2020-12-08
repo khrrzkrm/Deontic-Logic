@@ -1,0 +1,29 @@
+  \tiny
+  \usetikzlibrary{trees,shapes,decorations}
+  \begin{tikzpicture}[%
+    ->,
+    >=stealth,
+    node distance=0.3cm,
+    noname/.style={%
+      rectangle,
+      minimum width=5em,
+      minimum height=2em,
+      draw
+    }
+  ]
+    \node[noname] (1)                                             {[ x = 1; ] $l_1$};
+    \node[noname] (2) [below=of 1]                                {[ while(x < 1001) ] $l_2$};
+    \node[noname] (3) [below = 1cm of 2]                                {[ x = x + 1 ;] $l_3$};
+    \node[noname] (4) [below right= 1cm of 2]                                {[ ;; ] $l_4$};
+    
+   
+    
+
+      \path 
+   (1) edge                          node {} (2)
+   (2) edge     [bend right=45pt]                     node  [yshift=5pt,right]{yes} (3)
+   (2) edge                                         node  [yshift=5pt,right]{no} (4)
+   (3) edge [bend right=45pt]                        node {} (2);
+ 
+          
+  \end{tikzpicture}

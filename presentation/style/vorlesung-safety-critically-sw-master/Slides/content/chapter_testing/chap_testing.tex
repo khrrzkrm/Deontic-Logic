@@ -1,0 +1,78 @@
+\tikzset{%
+	every state/.style={
+		draw=maincolor,
+		thick,
+		fill=maincolor!18,
+		inner sep=.8ex,
+		minimum size=0pt
+	},	
+	field/.style={
+		state,
+		shape aspect=5,
+		shape=rectangle
+	},
+	success/.style={
+		state,
+		field,
+		fill=green!60!black!50
+	},
+	error/.style={
+		state,
+		field,
+		fill=purple!50
+	},
+	shorten >=1pt,
+	initial text={}
+}
+
+\chapter{Testing}
+\label{chap_testing}
+
+\mode
+<all>
+
+\targets{
+	\item Understand the basic principles of testing.
+	\item Know how and when to use testing in software development.
+	\item Understand code inspection and walkthroughs as human unit testing techniques.
+}
+
+
+
+\input{content/chapter_testing/testing_intro/sec_example}
+\input{content/chapter_testing/testing_intro/sec_principles}
+\input{content/chapter_testing/testing_intro/sec_human}
+\input{content/chapter_testing/testing_intro/sec_conclusion}
+
+
+
+%\input{content/chapter_testing/black+white/chap_black+white}
+\input{content/chapter_testing/black+white/sec_black} %MTEST as exercise?
+
+\input{content/chapter_testing/black+white/sec_junit}
+\input{content/chapter_testing/chap_tdd.tex}
+
+
+\input{content/chapter_testing/black+white/sec_white}
+\input{content/chapter_testing/black+white/sec_property}
+%\input{content/chapter_testing/black+white/sec_fuzzing}
+
+\input{content/chapter_testing/black+white/sec_conclusion}
+
+\input{content/chapter_testing/integration/sec_integration}
+\input{content/chapter_testing/integration/sec_ic}
+\input{content/chapter_testing/integration/sec_system}
+\input{content/chapter_testing/integration/sec_conclusion}
+\input{content/chapter_testing/integration/sec_summary}
+
+
+
+
+
+
+
+\mode<article>
+\exercises
+
+\mode
+<all>

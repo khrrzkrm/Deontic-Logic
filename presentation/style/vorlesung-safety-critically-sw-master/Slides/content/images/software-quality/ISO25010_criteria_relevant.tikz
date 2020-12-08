@@ -1,0 +1,64 @@
+\begin{tikzpicture}
+  \tikzstyle{level 1 concept}+=[font=\large,scale=1, sibling angle=45, minimum size=3.5cm]
+  \tikzstyle{level 2 concept}+=[font=\normalsize, level distance=4.3cm, text width=3cm, minimum width=3.3cm] %, minimum size=1.8cm, text width=1.5cm]%, sibling angle=90]
+    \tikzstyle{concept}+=[align=center]    
+
+  \path[mindmap,concept color=maincolor!50!black, text=white, every node/.style={concept,circular drop shadow, inner sep=2mm}]
+    node[concept,scale=1] {ISO 25010}
+    [clockwise from=315]   
+    child[concept color=red!50!black] {
+      node at (7, -2) {Functional Suitability}[clockwise from=0]
+      child { node[concept] {Completeness} }
+      child { node[concept] {Correctness} }
+      child { node[concept] {Appropriatness} }      
+    } 
+    child[concept color=maincolor!50!black] {
+          node at (0, -3) {Usability}[clockwise from=0]
+          child { node[concept] {Learnability} }
+          child { node[concept] {Appropriateness\\ Recognizeability} }
+          child { node[concept] {Operability} }
+          child { node[concept] {Accessibility} }
+          child { node[concept] {User Error Protection} }
+          child { node[concept] {User Interface Aesthetics} }
+    }   
+    child[concept color=red!50!black] {
+      node at (-7.5, -2.5) {Reliability}[clockwise from=315]
+      child { node[concept] {Maturity} }
+      child { node[concept] {Availability} }
+      child { node[concept] {Fault Tolerence} }
+      child { node[concept] {Recoverability} }
+    }
+    child[concept color=red!50!black] {
+      node at (-4, 0) {Compatibility}[clockwise from=160]
+      child { node[concept] {Co-existence} }
+      child { node[concept] {Interoperability} }
+    }  
+    child[concept color=maincolor!50!black] {
+      node at (-7, 5) {Portability}[clockwise from=180]
+      child { node[concept] {Adaptability} }
+      child { node[concept] {Installability} }
+      child { node[concept] {Replaceability} }
+    }  
+    child[concept color=maincolor!50!black] {
+      node at(0, 3) {Maintainability}[clockwise from=215]
+      child { node[concept] {Modularity} }
+      child { node[concept] {Reusability} }
+      child { node[concept] {Analyzability} }
+      child { node[concept] {Modifiability} }
+      child { node[concept] {Testability} }
+    }  
+    child[concept color=maincolor!50!black] {
+      node at (8,6) {Security}[clockwise from=180]
+      child { node[concept] {Confidentiality} }
+      child { node[concept] {Integrity} }
+      child { node[concept] {Non-repudiation} }
+      child { node[concept] {Accountability} }
+      child { node[concept] {Authenticity} }
+    }
+    child[concept color=red!50!black] {
+          node at (4,0) {Performance \\Efficiency}[clockwise from=85]
+          child { node[concept] {Time behavior} }
+          child { node[concept] {Ressource Utilization} }
+          child { node[concept] {Capacity} }
+    };
+\end{tikzpicture}

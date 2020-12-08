@@ -1,0 +1,18 @@
+  \tiny
+  \usetikzlibrary{trees,shapes,decorations}
+  \begin{tikzpicture}[scale=0.45]
+     
+  \node (max) at (0,4) {$\{x,y,z\}$};
+ \node (a) at (-2,2) {$\{x,y\}$};
+ \node (b) at (0,2) {$\{x,z\}$};
+ \node (c) at (2,2) {$\{y,z\}$};
+ \node (d) at (-2,0) {$\{x\}$};
+ \node (e) at (0,0) {$\{y\}$};
+ \node (f) at (2,0) {$\{z\}$};
+ \node (min) at (0,-2) {$\emptyset$};
+ \draw (min) -- (d) -- (a) -- (max) -- (b) -- (f)
+ (e) -- (min) -- (f) -- (c) -- (max)
+ (d) -- (b);
+ \draw[preaction={draw=white, -,line width=6pt}] (a) -- (e) -- (c);
+          
+  \end{tikzpicture}

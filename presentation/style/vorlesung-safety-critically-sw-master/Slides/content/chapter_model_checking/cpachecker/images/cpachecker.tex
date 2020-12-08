@@ -1,0 +1,51 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usepackage{xspace}
+\usepackage{xcolor}
+\newcommand\definergbcolor[2]{\definecolor{#1}{rgb}{#2}}
+\newcommand\definecmykcolor[2]{\definecolor{#1}{cmyk}{#2}}
+\newcommand{\kinduction}{$k$-induction\xspace}
+\newcommand{\kInduction}{$k$-Induction\xspace}
+\begin{document}
+\begin{tikzpicture}[line width=1pt]
+
+\node[text width=1.5cm] (sourcecode) at ( 0cm,3.5cm) {\resizebox{1.5cm}{!}{\input{content/chapter_model_checking/cpachecker/images/document-sign}}};
+\node[text width=1.5cm,align=center] (sourcecode-label) at (sourcecode) {Source Code};
+
+\node[text width=1.5cm] (spec) at ( 0cm,0cm) {\resizebox{1.5cm}{!}{\input{content/chapter_model_checking/cpachecker/images/document-sign}}};
+\node[text width=1.5cm,align=center] (spec-label) at (spec) {Spec};
+
+\node[text width=1.5cm] (results) at (10cm,3.5cm) {\resizebox{1.5cm}{!}{\input{content/chapter_model_checking/cpachecker/images/document-sign}}};
+\node[text width=1.5cm,align=center] (results-label) at (results) {Results};
+
+\node[draw,text width=2cm,align=center,fill=sosyblue!20] (frontend)
+ at (3cm, 3.5cm) {\mbox{Parser \&} \mbox{CFA Builder}};
+
+\node[draw,text width=2cm,align=center,fill=green!60] (kindalgorithm)  at (6cm, 5.25cm) {\kinduction \mbox{Algorithm}};
+\node[draw,text width=2cm,align=center,fill=green!60] (cegaralgorithm) at (6cm, 3.5cm) {CEGAR \mbox{Algorithm}};
+\node[draw,text width=2cm,align=center,fill=green!60] (cpaalgorithm)   at (6cm, 1.75cm) {CPA \mbox{Algorithm}};
+
+\node[draw,text width=1.5cm,align=center,fill=uniorange!60] (speccpa) at (3cm, 0cm) {Spec\\CPA};
+\node[draw,text width=1.5cm,align=center,fill=uniorange!60] (loccpa) at (5cm, 0cm) {Location\\CPA};
+\node[draw,text width=1.5cm,align=center,fill=uniorange!60] (callstackcpa) at (7cm, 0cm) {Callstack\\CPA};
+\node[draw,text width=1.5cm, align=center,fill=uniorange!60] (predicatecpa) at (9cm, 0cm) {Predicate CPA};
+
+\draw[->,double] (sourcecode) --(frontend);
+\draw[->,double] (spec) --(speccpa);
+\draw[->,double] (kindalgorithm) -|(results);
+\draw[->,double] (cpaalgorithm) -|(results);
+
+\draw[->] (frontend) |-(kindalgorithm);
+\draw[->] (frontend) |-(cegaralgorithm);
+\draw[->] (frontend) |-(cpaalgorithm);
+
+\draw[->] (cpaalgorithm) --($(cpaalgorithm) - (0,0.75cm)$) -|(speccpa);
+\draw[->] (cpaalgorithm) --($(cpaalgorithm) - (0,0.75cm)$) -|(loccpa);
+\draw[->] (cpaalgorithm) --($(cpaalgorithm) - (0,0.75cm)$) -|(callstackcpa);
+\draw[->] (cpaalgorithm) --($(cpaalgorithm) - (0,0.75cm)$) -|(predicatecpa);
+
+\draw (kindalgorithm.south east) edge[bend left,->] (cpaalgorithm.north east);
+\draw[->] (cegaralgorithm) --(cpaalgorithm);
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,38 @@
+% Defines the SALT language for the listings package.
+
+\RequirePackage{listings}
+
+\lstdefinelanguage{SALT}
+{morekeywords={
+  true, false,
+  always, historically, alwaysinpast,
+  between, betweeninpast,
+  eventually, once, eventuallyinpast,
+  from, after, frominpast,
+  holding, holdinginpast,
+  never, neverinpast,
+  next, previous, nextinpast,
+  nextn, previousn, nextninpast,
+  occurring, occurringinpast,
+  releases, triggered, releasesinpast,
+  until, since, untilinpast,
+  upto, before, uptoinpast,
+  required, req, optional, opt, weak,
+  inclusive, incl, exclusive, excl,
+  and, or, implies, equals, not,
+  if, then, else,
+  rejecton, accepton,
+  assert, declare, define,
+  allof, someof, noneof, exactlyoneof,
+  enumerate, list, as, in,
+  with, without,
+  timed,
+  stop
+},
+sensitive=true,
+morecomment=[l]{--},
+morestring=[b]"
+}
+
+% Inline SALT
+\newcommand{\salt}[2][]{\text{\lstinline[language=SALT, #1]?#2?}}

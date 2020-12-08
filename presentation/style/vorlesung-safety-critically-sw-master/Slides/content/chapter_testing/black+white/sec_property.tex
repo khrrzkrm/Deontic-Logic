@@ -1,0 +1,53 @@
+
+\subsection{Property-based Testing}
+
+\begin{frame}{Automatic test case generation}
+	How can I sufficiently test my code without writing hundreds of cases?
+	\xxx
+	\begin{block}{Idea}
+		Automatically generate input values.
+	\end{block}	
+
+	$\Rightarrow$ Problem: How can we know the correct output, if the input is randomly generated?
+\end{frame}
+
+
+
+\begin{frame}{Property-based Testing}
+	\begin{block}{Property-based Testing}
+		Define properties and criteria for outputs that should be true for any arbitrary inputs.
+		If the properties hold for big number of generated inputs, we assume that the code is correct.
+	\end{block}	
+
+		
+\end{frame}
+
+\begin{frame}{Property-based Testing}
+	Example: Test a function that takes two numbers and returns the sum of them.
+	\xxx
+	\begin{block}{Exercise}
+		Find three properties that are true for adding two numbers and that are not true for other mathematical operators $(-,*,/)$.
+	\end{block}	
+\end{frame}
+
+
+\begin{frame}{Property-based Testing}
+	
+	\begin{block}{Property 1}
+		Adding $1$ to any numbers twice has the same result as adding $2$. (Associative Property)
+	\end{block}	
+
+	\begin{block}{Property 2}
+		Adding number $a$ to number $b$ has the same result as adding $b$ to $a$. (Commutative Property)
+	\end{block}	
+	
+	\begin{block}{Property 3}
+		Adding $0$ to any numbers $a$ results in $a$. (Neutral Element)
+	\end{block}	
+	\xxx
+	These three properties can be checked for every random generated input.\\
+	
+	$\Rightarrow$ A more complex example will be introduced in the exercises.
+
+		
+\end{frame}

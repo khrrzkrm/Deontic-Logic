@@ -1,0 +1,28 @@
+def slift[X,Y,Z](x: Events[X], y: Events[Y], f: (X,Y) => Z) := {
+  def xx := merge(x, last(x, y))
+  def yy := merge(y, last(y, x))
+  def ff(a: Option[X], b: Option[Y]) :=
+    if isNone(a) || isNone(b) then None[Z]
+    else Some(f(getSome(a), getSome(b)))
+  return lift(xx, yy, ff)
+}
+
+def filter[X](z: Events[Bool], x: Events[X]) := {
+  def zz := merge(z, last(z, x))
+  def f(c: Option[Bool], a: Option[X]) :=
+    if !isNone(c) && getSome(c)
+    then a else None[X]
+  return lift(zz, x, f)
+}
+
+def prev[A](x: Events[A]) := last(x, x)
+
+@liftable
+def isSome[A](x: Option[A]) := !isNone(x)
+
+def on[A,B](x: Events[A], trig: Events[B]) := {
+  def xx := merge(x, last(x, trig))
+  def f(a: Option[A], t: Option[B]) :=
+    if isNone(t) then None[A] else a
+  return lift(xx, trig, f)
+}

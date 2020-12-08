@@ -1,0 +1,239 @@
+
+\newcommand{\vect}[1]
+  {\overline #1}
+
+\newcommand{\varset}
+  { V }
+  
+\newcommand{\domain}
+  { \mathcal{D} }
+
+
+% --------------------------------------------------------------
+% ---------------------- Logic ---------------------------------
+% --------------------------------------------------------------
+
+\newcommand{\satl}
+  { \models_{\logic} }
+
+\newcommand{\sat}
+  { \models }
+
+\newcommand{\unsat}
+  {\not\models}
+
+% --------------------------------------------------------------
+% -------------------- Kripke structure ------------------------
+% --------------------------------------------------------------
+
+\newcommand{\mstates}{S}
+\newcommand{\minits}{I}
+\newcommand{\mtrans}{T}  
+\newcommand{\mlabels}{\nu}
+\newcommand{\mreachables}{R}
+\newcommand{\mproperty}{P}
+
+\newcommand{\kripke}{{\cal K}}    
+\newcommand{\kripkedef}{\kripke = (\mstates, \mtrans, \minits, AP, \mlabels)}
+      
+% Type assignment
+\newcommand{\ftype}
+  { \tau }
+  
+\newcommand{\type}[1]
+  { \ftype(#1) }
+
+% Variable assignment
+\newcommand{\fval}
+  { v }
+\newcommand{\val}[1]
+  { v(#1) }
+  
+% Variable
+\newcommand{\var}
+  { x \in V}
+
+
+
+
+% --------------------------------------------------------------
+% -------------------- State transition system (2) -------------
+% --------------------------------------------------------------
+
+
+
+\newcommand{\sysdef}
+  {S : (V, I, T)}
+
+\newcommand{\sys}
+  {S = (I(\vect{x}), T(\vect{x}, \vect{x'})) }
+
+\newcommand{\inv}
+  {P(\vect{x})}
+
+
+
+% --------------------------------------------------------------
+% -------------------- Program  --------------------------------
+% --------------------------------------------------------------
+
+
+\newcommand{\progdef}
+  {\langle V,I,T \rangle}
+  
+\newcommand{\prog}
+  {P = \progdef}
+
+
+% --------------------------------------------------------------
+% -------------------- Program (imperative)  -------------------
+% --------------------------------------------------------------
+
+% Location
+\newcommand{\iprogl}
+  {l}
+  
+% Transition
+\newcommand{\iprogt}
+  {\tau}
+  
+% Constraint
+\newcommand{\iprogc}
+  {\rho}
+  
+  
+  
+\newcommand{\iprogsymb}
+  {P}
+
+\newcommand{\iprogvars}
+  {V}
+
+\newcommand{\iproglocs}
+  {L}
+
+  
+\newcommand{\iprogtrans}
+  {T}
+
+\newcommand{\iprog}
+  {\iprogsymb = (\iprogvars, \iproglocs, \iprogl_0, \iprogtrans)}
+
+
+\newcommand{\iprogstates}
+  {S}
+
+\newcommand{\pre}
+  {Pre}
+
+\newcommand{\post}
+  {Post}
+
+
+\newcommand{\preop}[1]
+  {\pre(#1)}
+  
+\newcommand{\postop}[1]
+  {\post(#1)} 
+
+  
+  
+  
+%-------------- k-Induction definitions ------------------------- 
+  
+% Simulation relation 
+\newcommand{\simul}[1]
+  {\preceq_{#1}}
+
+\newcommand{\nsimul}[1]
+  {\npreceq_{#1}}
+  
+\newcommand{\simuld}
+  {\simul{d}}
+  
+\newcommand{\simulr}
+  {\simul{r}}
+
+
+  
+% Execution paths
+
+\newcommand{\stateseq}
+  {s_0, s_1, \ldots , s_n}
+
+\newcommand{\execpathof}[2]
+  {\pi^{#1}(#2)}
+
+\newcommand{\execpath}[1]
+  {\execpathof{#1}{s_0, s_1, \ldots, s_n}}
+
+\newcommand{\execpathij}[3]
+  {\execpathof{#1}{s_{#2}, \ldots, s_{#3}}}
+  
+  
+% Interpolants
+
+\newcommand{\interp}
+  { \mathcal{I} }
+  
+  
+%---------------- Abstraction ------------------------------------
+
+% Abstract elements
+\newcommand{\aelems}
+  {L} 
+
+% Ordering  
+\newcommand{\aorder}
+  {\sqsubseteq}
+
+\newcommand{\astrictorder}
+  {\sqsubset}
+
+
+
+% Definition of the lattice  
+\newcommand{\latticedef}
+  {\lattsymb = (\aelems, \aorder, \bot, \top, \join, \meet)}
+
+
+% Abstract domain
+\newcommand{\apre}
+  {Pre^{\#}}
+
+\newcommand{\apost}
+  {Post^{\#}}
+
+\newcommand{\apredef}
+  {\apre: \aelems \times T \to \aelems}
+
+\newcommand{\apostdef}
+  {\apost: \aelems \times T \to \aelems}
+
+\newcommand{\apreop}[1]
+  {\apre(#1)}
+  
+\newcommand{\apostop}[1]
+  {\apost(#1)}
+
+\newcommand{\fconcrete}
+  {\sem{\cdot}}
+
+\newcommand{\fconcretedef}
+  {\fconcrete: \aelems \to 2^{\mstates}}
+
+\newcommand{\adomain}
+  {(\lattice, \fconcrete, \apre, \apost)}
+
+
+
+
+
+% --------------------------------------------------------------
+% -------------------- Slides ----------------------------------
+% --------------------------------------------------------------
+  
+\newcommand{\slidepart}[2]
+  {\bigskip \uncover<#1->{#2}}
+
+

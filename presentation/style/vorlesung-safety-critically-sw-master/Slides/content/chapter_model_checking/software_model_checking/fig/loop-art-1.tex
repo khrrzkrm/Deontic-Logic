@@ -1,0 +1,28 @@
+
+\begin{figure}[htbp]
+  \begin{center}
+	\begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=1.2cm]
+		
+		 	\node[artloc={$\{ \}$}] (0) []  	{$0$};		
+  			\node[artloc={$\{ i = 0 \}$}] (1) [below of = 0] 	{$1$};
+ 			\node[artloc={$\{ i = 0 \}$}] (2) [below of = 1]	{$2$};		
+ 			
+ 			\node[artloc={$\{ \}$}] (11) [below of = 2] 	{$1$};
+ 			
+ 			\node[artloc={$\{ \}$}] (3) [below of = 11]	{$3$};
+ 			
+ 			\node[artloc={$\{ \}$}, fill=red!50] (7) [below of = 3]	{$\mathcal{E}$};	 	
+	 	 
+	
+ 			\path[trans]  			
+ 				(0) edge [left] node {$i := 0$} (1)				
+				(1) edge [left] node {$i \leq 5$} (2)
+				(2) edge [left] node {$i := i + 1$} (11)				 						
+ 				(11) edge [left] node {$i > 5$} (3)
+ 				(3) edge [left] node {$i \neq 6$} (7)					
+ 			;				
+ 		
+ 		
+	\end{tikzpicture}
+  \end{center}
+\end{figure}

@@ -1,0 +1,197 @@
+\documentclass[language=en,sheet=7,prefix]{exercise}
+
+\usepackage[characters]{ltl}
+
+\newcommand{\sem}[1]{\llbracket #1\rrbracket}
+
+\lstdefinelanguage{tessla}{
+  morekeywords={def,in,out},
+  morecomment=[l]{\#},
+  morekeywords={[2]merge,last,if,then,else,last,time,default,filter,prev},
+  morekeywords={[3]Events,Unit,Int}
+}
+
+\exerciseCourse{Development of Safety-Critical Software}
+\exerciseAuthors{Martin Leucker, Malte Schmitz}
+\exerciseTerm{Winter term 18}
+
+\begin{document}
+
+\begin{solution}
+  \textbf{Do not upload this file to the Moodle and do not send this file to the students in any other way!}
+\end{solution}
+
+\task[Finite LTL]
+
+Lets $\Sigma = 2^{\op{AP}}$ be an alphabet. We consider finite words $w \in \Sigma^+$.
+
+\begin{enumerate}
+  \item Write an LTL formula stating that eventually there must be state containing the atomic proposition $a \in \op{AP}$. Discuss what happens when we didn't found $a$ before the word ends. Are there different ways to consider the end of the word in such a formula?
+  \item Write an LTL formula requiring a state containing the atomic proposition $a \in \op{AP}$ in the first three letters of the word. Discuss what happens when the word is shorter than three states. Are there different ways to consider the end of the word in such a formula?
+  \item Write an LTL formula stating that every state of the word must contain the atomic proposition $a \in \op{AP}$. Discuss what happens when the word ends. Are there different ways to consider the end of the word in such a formula?
+  \item Write an LTL formula requiring the first three states of the word to contain the atomic proposition $a \in \op{AP}$. Discuss what happens when the word is shorter than three states. Are there different ways to consider the end of the word in such a formula?
+  \item Consider $a \LTLuntil b$. When is this formula satisfied? What happens if the word ends before the formula was satisfied? Are there different ways to consider the end of the word in the semantics of until?
+  \item Come up with at least three different but equivalent LTL formulas stating that the atomic proposition $a \in \op{AP}$ holds in the last state of $w$.
+\end{enumerate}
+
+\begin{solution}
+  \begin{enumerate}
+    \item The formula $\LTLfinally a$ requires that eventually there is a state containing $a$. If the word ends before we found $a$ then the formula is violated. If the formula would be satisfied either by the end of the word or when we found $a$ the formula would be a tautology.
+    \item We can use
+      \[ a \LTLor \LTLnext a \LTLor \LTLnext \LTLnext a. \]
+      This formula is only satisfied when $a$ was found. If the word ends before we found $a$ the formula is violated. By using $\LTLweaknext$ instead $\LTLnext$ the formula would be satisfied for shorter words independent of the $a$.
+    \item The formula $\LTLglobally a$ requires all states to contain $a$. This only makes sense if we only consider all the states of the finite word. If this formula would require the word to continue infinitely it would be violated on all finite words and hence be a contradiction.
+    \item We can use
+      \[ a \LTLand \LTLnext a \LTLand \LTLnext \LTLnext a. \]
+      This formula is only satisfied if the word has at least three states. By using $\LTLweaknext$ instead $\LTLnext$ the formula would be satisfied for shorter words, too, if all the existing states contain $a$.
+    \item $a \LTLuntil b$ is satisfied for all words which contain $b$ in at least one state if they contain $a$ in all the states before the state containing $b$. If the finite word does not contain a $b$ at all then this formula is not fulfilled. This can be weakened using
+    \begin{align}
+      a \LTLweakuntil b &\equiv (a \LTLuntil b) \LTLor \LTLglobally a \\
+      & \equiv \LTLfinally\LTLnot a \LTLimp (a \LTLuntil b) \\
+      & \equiv a \LTLuntil (b \LTLor \LTLglobally a).
+    \end{align}
+    On infinite words this weak version of the until operator is fulfilled if all infinitely many states contain $a$. On finite words it is fulfilled if all finitely many states contain $a$. Hence in this case the end of the word doesn't make much of a difference distinguishing the weak and strong version of this operator.
+    \item Based on the lecture we can use $\LTLfinally\LTLnot\LTLnext\LTLtrue$ to detect the end of the word. We can extend this to $\LTLfinally((\LTLnot\LTLnext\LTLtrue)\LTLand a)$ which is equivalent to $\LTLfinally((\LTLweaknext\LTLfalse)\LTLand a)$. Another possibility is $\LTLglobally\LTLfinally a$ which is equivalent to $\LTLfinally\LTLglobally a$. This equivalence only holds on finite words!
+  \end{enumerate}
+\end{solution}
+
+\task[Impartial LTL]
+
+Lets $\Sigma = 2^{\op{AP}}$ be an alphabet. Consider the four-valued LTL semantics on finite words $w \in \Sigma^+$ which distinguishes between final verdicts without further changes and current verdicts which might change on extensions of the word. This semantics is defined on the four-valued boolean lattice $\mathbb B_4 = \{ \bot, \bot^c, \top^c, \top \}$. The values $\bot^c$ and $\top^c$ indicate current verdicts which might change on some extensions of the word. We use the semantics relation $\op{\models} \subseteq \Sigma^+ \times \op{LTL}$ to indicate the two-valued semantics on finite LTL and the semantics function $\op{sem}_4 : \Sigma^+ \times \op{LTL} \to \mathbb B_4$ to indicate four-valued semantics on finite LTL. We write $\sem{w \models \phi}_4 := \op{sem}_4(w, \phi)$. Compute and justify your results:
+
+\begin{enumerate}
+  \item $\sem{\{a\}\{b\} \models a \LTLuntil b}_4$
+  \item $\sem{\{a\}\{\,\} \models a \LTLuntil b}_4$
+  \item $\sem{\{a\}\{a\} \models a \LTLuntil b}_4$
+  \item $\sem{\{a\}\{b\} \models a \LTLweakuntil b}_4$
+  \item $\sem{\{a\}\{\,\} \models a \LTLweakuntil b}_4$
+  \item $\sem{\{a\}\{a\} \models a \LTLweakuntil b}_4$
+  \item $\sem{\{a\}\{a,b\} \models b \LTLrelease a}_4$
+  \item $\sem{\{a\}\{b\} \models b \LTLrelease a}_4$
+  \item $\sem{\{a\}\{a\} \models b \LTLrelease a}_4$
+\end{enumerate}
+
+\begin{solution}
+  \begin{enumerate}
+    \item $\sem{\{a\}\{b\} \models a \LTLuntil b}_4 = \top$, because $\{a\}\{b\} \models a \LTLuntil b$ and $\forall u \in \Sigma^+: \{a\}\{b\}u \models a \LTLuntil b$.
+    \item $\sem{\{a\}\{\,\} \models a \LTLuntil b}_4 = \bot$, because $\{a\}\{\,\} \not\models a \LTLuntil b$ and $\forall u \in \Sigma^+: \{a\}\{\,\}u \not\models a \LTLuntil b$.
+    \item $\sem{\{a\}\{a\} \models a \LTLuntil b}_4 = \bot^c$, because $\{a\}\{a\} \not\models a \LTLuntil b$, but $\{a\}\{a\}\{b\} \models a \LTLuntil b$.
+    \item $\sem{\{a\}\{b\} \models a \LTLweakuntil b}_4 = \top$, because $\{a\}\{b\} \models a \LTLweakuntil b$ and $\forall u \in \Sigma^+: \{a\}\{b\}u \models a \LTLweakuntil b$.
+    \item $\sem{\{a\}\{\,\} \models a \LTLweakuntil b}_4 = \bot$, because $\{a\}\{\,\} \not\models a \LTLweakuntil b$ and $\forall u \in \Sigma^+: \{a\}\{\,\}u \not\models a \LTLweakuntil b$.
+    \item $\sem{\{a\}\{a\} \models a \LTLweakuntil b}_4 = \top^c$, because $\{a\}\{a\} \models a \LTLweakuntil b$, but $\{a\}\{a\}\{\,\} \not\models a \LTLweakuntil b$.
+    \item $\sem{\{a\}\{a,b\} \models b \LTLrelease a}_4 = \top$, because $\{a\}\{a,b\} \models b \LTLrelease a$ and $\forall u \in \Sigma^+: \{a\}\{a,b\}u \models b \LTLrelease a$.
+    \item $\sem{\{a\}\{b\} \models b \LTLrelease a}_4 = \bot$, because $\{a\}\{b\} \not\models b \LTLrelease a$ and $\forall u \in \Sigma^+: \{a\}\{b\}u \not\models b \LTLrelease a$.
+    \item $\sem{\{a\}\{a\} \models b \LTLrelease a}_4 = \top^c$, because $\{a\}\{a\} \models b \LTLrelease a$, but $\{a\}\{a\}\{b\} \not\models b \LTLrelease a$.
+  \end{enumerate}
+\end{solution}
+
+\task[Stream Runtime Verification]
+
+In this task we use TeSSLa to simulate stream runtime verification on synchronized streams. We use the assumption that all input streams have events at all possible timestamps for $\mathbb T = \mathbb N_0$.
+
+Download the input files and specification templates from the Moodle and get the latest version of TeSSLa\footnote{\url{http://www.tessla.io}}.
+Your specification should start by including the synchronous TeSSLa library. Then you should declare the input stream $t$:
+
+\lstinputlisting[language=tessla]{srv_template.tessla}
+
+Write a TeSSLa specification for this input sequence:
+\[ t = 14\, 17\, 20\, 22\, 27\, 12\, 17\, 2\, 6\, 2\, 12\, 15\, 22\, 23\, 24\, 25\, 26\, 2\, 3\, 4\, 5\, 6 \]
+
+\begin{enumerate}
+  \item Compute the delta, i.e. the relative difference between each event's value and its predecessor's value.
+  \item Compute the average value of $t$ over the last four events.
+  \item Count the number of events where $t>20$ holds.
+  \item Count the number of events where $t<10$ holds.
+  \item Raise an error if the number of events where $t>20$ holds exceeds the number of events where $t<10$ holds by more than 2.
+\end{enumerate}
+
+\begin{solution}
+  \lstinputlisting[language=tessla]{srv_solution.tessla}
+\end{solution}
+
+\task[Non-Synchronous Stream Runtime Verification]
+
+In this task we use TeSSLa to perform stream runtime verification on non-synchronized streams.
+
+Download the input files and specification templates from the Moodle and get the latest version of TeSSLa\footnotemark[1].
+Your specification should start by including the TeSSLa standard library. Then you should declare the input stream $t$:
+
+\lstinputlisting[language=tessla]{nonsync_template.tessla}
+
+Write a TeSSLa specification for this input sequence:
+
+\begin{align}
+  t = & (0,14)\, (17,17)\, (20,20)\, (30,22)\, (32,27)\, (35,12)\, (63,17)\, (75,2)\\
+      & (82,6)\, (90,2)\, (93,12)\, (98,15)\, (109,22)\, (133,23)\, (144,24)\, (155,25)\\
+      & (172,26)\, (176,2)\, (180,3)\, (194,4)\, (206,5)\, (209,6)
+\end{align}
+
+\begin{enumerate}
+  \item Compute the delta, i.e. the relative difference between each event's value and its predecessor's value.
+  \item Compute the weighted delta, i.e. the delta divided by the time passed between the two events.
+  \item Compute the average value of $t$ over the last four events.
+  \item Compute the weighted average value of $t$ over the last four events, i.e. the average weighted by the time the value remained unchanged. Since the current event is always weighted with 0 this is in fact the weighted average over the previous three events.
+  \item Count the number of events where $t>20$ holds.
+  \item Count the number of events where $t<10$ holds.
+  \item Raise an error if the number of events where $t>20$ holds exceeds the number of events where $t<10$ holds by more than 2.
+\end{enumerate}
+
+\begin{solution}
+  \lstinputlisting[language=tessla]{nonsync_solution.tessla}
+\end{solution}
+
+\task[Verifying a C Program With TeSSLa]
+
+Download the C program \texttt{producer.c} from the Moodle. This short C program simulates a producer-consumer scenario where messages are produced and then later on consumed / processed. The function \texttt{produce} generates a new message by calling \texttt{generate} and stores it in an array which simulates a message queue. The function \texttt{consume} removes a random message from the array and processes it by calling \texttt{process}. The main loop produces and consumes some messages in a random pattern.
+
+We use the TeSSLa RV tools provided as a docker image to verify this C program. Following the instructions on the TeSSLa website\footnotemark[1] on how to use the docker image.
+
+Your specification should start by including the RV stream library followed by the TeSSLa standard library. Since the input streams are declared in the RV stream library, there is no need to declare any input streams manually:
+
+\lstinputlisting[language=tessla]{producer_template.tessla}
+
+In the docker image you can verify the C program with your specification using the following command:
+
+\begin{lstlisting}[gobble=2,language=bash]
+  docker run \ # run a docker image
+    --volume $(pwd):/wd \ # map current directory to /wd in container
+    --workdir /wd \ # change directory to /wd in container
+    --rm \ # remove the container afterwards
+    registry.isp.uni-luebeck.de/tessla/tessla-docker \ # image name
+    tessla_rv \ # script to start in the container
+      producer.c \ # C program
+      --spec producer.tessla # TeSSLa specification 
+\end{lstlisting}
+
+\begin{enumerate}
+  \item Generate an event stream with an event for every call of \texttt{produce} and another event stream with an event for every return of that function.
+  \item Compute the runtime of \texttt{produce} on every return of that function by subtraction the timestamp of the call event from the timestamp of the return event.
+  \item Compute the average runtime of \texttt{produce} by summing up all runtimes computed above and dividing them by the number of calls.
+  \item Create another event stream with an event for every call of the \texttt{consume} function. Compute the number of generated but not processed messages by subtracting the number of processed messages from the number of generated messages.
+  \item Instrument the C program so that we can access the message IDs generated by \texttt{generate} and passed to \texttt{process}.
+  \item Check that \texttt{generate} produces strictly increasing message IDs.
+  \item Check that \texttt{generate} produces sequential message IDs.
+  \item Check that every generated message ID is eventually processed: Collect a set of currently generated but not yet processed message IDs.
+  \item Compute the average time it took to process a message: Collect a map where every message ID is associated with the timestamp of its generation. For every processed message ID you can now computation the time it took from the generation if that message to its processing. Now you can compute the average of all these durations.
+\end{enumerate}
+
+\begin{solution}
+  \lstinputlisting[language=tessla]{producer_solution.tessla}
+
+  The \texttt{producer.c} was instrumented by adding the following include:
+  \begin{lstlisting}[language=C,gobble=4]
+    #include <tessla_debug.h>
+  \end{lstlisting}
+
+  At the end of the \texttt{generate} function before returning \texttt{lastMessageId} we add:
+  \begin{lstlisting}[language=C,gobble=4]
+    tessla_debug(1, (int64_t) lastMessageId);
+  \end{lstlisting}
+
+  At the beginning of \texttt{process} we add:
+  \begin{lstlisting}[language=C,gobble=4]
+    tessla_debug(2, (int64_t) id);
+  \end{lstlisting}
+\end{solution}
+
+\end{document}

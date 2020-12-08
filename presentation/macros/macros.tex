@@ -1,0 +1,140 @@
+\newcommand{\image}[3]{
+  \mode<presentation>{\includegraphics[#2]{content/#1}}
+  \mode<article>{\includegraphics[#3]{content/#1}}
+}
+
+\newcommand{\placeholder}{\bullet}
+
+\newcommand{\sem}[1]{\ensuremath{\llbracket #1 \rrbracket}}
+\newcommand{\Sem}[3][]{\ensuremath{\sem{#2 \models #3}_{#1}}}
+
+\newcommand{\eqclass}[1]{\ensuremath{[ #1 ]}}
+\newcommand{\eqset}[1]{\ensuremath{#1/\text{$\equiv$}}}
+\newcommand{\posbool}[1]{\ensuremath{B^+(#1)}}
+
+\newcommand{\eg}{e.\,g.\xspace}
+\newcommand{\ie}{i.\,e.\xspace}
+\newcommand{\wrt}{with respect to\xspace}
+
+% minimal model
+\def\minmodels{\mathrel|\joinrel\equiv}
+
+% lattice operations
+\let\meet\sqcap
+\let\join\sqcup
+\let\dual\overline
+
+% eval functions
+\newcommand{\evl}{\ensuremath{\op{evlFLTL}}}
+\newcommand{\evlF}{\ensuremath{\op{evlFLTL}_4}}
+
+% nicer phi and epsilon symbols
+\let\phi\varphi
+\let\epsilon\varepsilon
+
+\let\wp\relax
+\DeclareMathOperator{\wp}{wp}
+
+% OLD stuff
+
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\Bthree}{\mathbb{B}_3}
+\newcommand{\Bfour}{\mathbb{B}_4}
+
+
+\newcommand{\FLTL}{\textrm{FLTL}\xspace}
+\newcommand{\LTL}{\textrm{LTL}\xspace}
+\newcommand{\LTLPred}{\ensuremath{\textrm{LTL}_\cP}\xspace}
+\newcommand{\LTLthree}{\ensuremath{{\textrm{LTL}_3}}\xspace}
+
+\newcommand{\AP}{\mathrm{AP}}  %
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cPhat}{{\hat{\mathcal{P}}}}
+\newcommand{\lattice}{\cL}
+
+\newcommand{\logic}{\mathfrak{L}}
+\newcommand{\SemL}[2]{\Sem[\logic]{#1}{#2}}
+\newcommand{\SemF}[2]{\Sem[F]{#1}{#2}}
+\newcommand{\SemFF}[2]{\Sem[4]{#1}{#2}}
+\newcommand{\SemT}[2]{\Sem[3]{#1}{#2}}
+\newcommand{\SemRV}[2]{\Sem[RV]{#1}{#2}}
+\newcommand{\SemFf}[3]{\Sem[F]{#1,#2}{#3}}
+\newcommand{\SemRVf}[3]{\Sem[RV]{#1,#2}{#3}}
+\newcommand{\SemTf}[3]{\Sem[3]{#1,#2}{#3}}
+\newcommand{\Semf}[3]{\Sem{#1,#2}{#3}}
+%
+\newcommand{\SemW}[2]{\Sem[-]{#1}{#2}}
+\newcommand{\SemS}[2]{\Sem[+]{#1}{#2}}
+\newcommand{\SemSW}[2]{\Sem[\pm]{#1}{#2}}
+\newcommand{\SemWS}[2]{\Sem[\mp]{#1}{#2}}
+\newcommand{\SemLTL}[2]{\Sem[\omega]{#1}{#2}}
+%
+\newcommand{\SemPredPP}[2]{\Sem[\cPhat]{#1}{#2}}
+%
+\newcommand{\semExp}[2]{{\mathtt{ftl4}(#1,#2)}}
+\newcommand{\fltlRew}[2]{{\mathtt{fltlRew}(#1,#2)}}
+
+
+%\newcommand{\Def}[1]{\alert{#1}}
+
+\newcommand{\cA}{{\mathcal{A}}}
+\newcommand{\cF}{{\mathcal{F}}}
+%\newcommand{\cL}{{\mathcal{L}}}
+\newcommand{\cM}{{\mathcal{M}}}
+% \newcommand{\BA}{{\mathrm{BA}}}
+% \newcommand{\NFA}{{\mathrm{NFA}}}
+% \newcommand{\DFA}{{\mathrm{DFA}}}
+\newcommand{\BA}{\mathrm{BA}}
+\newcommand{\NFA}{\mathrm{NFA}}
+\newcommand{\DFA}{\mathrm{DFA}}
+%\newcommand{\Sem}[2]{{[#1 \models #2]}}
+
+\newcommand{\transPP}[2]{\stackrel{(#1,#2)}{\rightarrow}}
+\newcommand{\rest}{|}
+
+\newcommand{\true}{\ensuremath{\mathit{true}}\xspace} 
+\newcommand{\false}{\ensuremath{\mathit{false}}\xspace}
+\newcommand{\X}{\mathit{X}}
+\newcommand{\nX}{\bar{\X}}    %
+\newcommand{\U}{\mathrel{\mathit{U}}} %
+\newcommand{\R}{\mathrel{\mathit{R}}} %
+
+\newcommand{\Untill}{\mathit{U}}
+\newcommand{\Release}{\mathit{R}}
+\renewcommand{\complement}[1]{{\overline{#1}}}
+
+\newcommand{\pbot}{{\bot^p}}
+\newcommand{\ptop}{{\top^p}}
+
+\newcommand{\nphi}{{\neg\phi}}
+
+\newcommand{\monitor}{\ensuremath{{\sf monitor}}\xspace}
+\newcommand{\step}{\ensuremath{{\sf step}}\xspace}
+\newcommand{\decide}{\ensuremath{{\sf decide}}\xspace}
+%\newcommand{\emptiness}{\ensuremath{{\sf check}}\xspace}
+\newcommand{\emptiness}{\ensuremath{\text{\sf non-empty}}\xspace}
+
+\newcommand{\extrapolate}{\ensuremath{{\sf extrapolate}}\xspace}
+%\newcommand{\abstractfct}{\ensuremath{{\sf abstract}}\xspace}
+\newcommand{\abstractfct}{\ensuremath{\alpha}}
+
+%%% COPIED FROM THE ATVA MACRO FILE
+
+\newcommand{\formulae}{\ensuremath{F}\xspace}
+\newcommand{\cS}{\ensuremath{{\cal S}}\xspace}
+\newcommand{\acc}{\mathit{Acc}}
+\newcommand{\ATASCcap}{Satisfiability Check by Automata Abstraction\xspace}
+\newcommand{\ATASC}{satisfiability check by automata abstraction\xspace}
+\newcommand{\lang}{\cL}
+\newcommand{\PLTL}{\ensuremath{{\bf PLTL^\mathrm{mod}}}\xspace}
+\newcommand{\ex}{\mathsf{extrapolate}}
+\newcommand{\FP}{Forgettable Past\xspace}
+\newcommand{\fp}{forgettable past\xspace}
+\newcommand{\RLTL}{\ensuremath{{\bf RLTL}}\xspace}
+\newcommand{\SoneS}{\ensuremath{{\bf S1S}}\xspace}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 

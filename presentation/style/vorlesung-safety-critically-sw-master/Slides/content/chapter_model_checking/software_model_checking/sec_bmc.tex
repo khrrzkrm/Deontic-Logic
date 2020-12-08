@@ -1,0 +1,234 @@
+%!TEX root = ../../../main.tex
+
+\section{Bounded Model Checking}
+
+\begin{frame}{Bounded Model Checking (1)}
+
+A technique to falsify invariants
+\begin{itemize}
+  \itemsep1em
+  \item best suited for ``bug finding''
+  \item checks the existence of counterexamples to the property
+\end{itemize}
+
+\bigskip
+Based on unrolling the transition system up to some bound
+\begin{itemize}
+  \itemsep1em  
+  \item considers execution traces of the length $k$
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Bounded Model Checking (2)}
+Encoding of the transition system in any logic (or fragment of a logic) $\logic$
+with decidable entailment
+\begin{itemize}
+  \itemsep1em
+  \item e.g. quantifier-free real (or linear integer) arithmetic with arrays and   
+  uninterpreted functions  
+  \item model-checking problem is encoded as satisfiability problem in $\logic$
+\end{itemize}
+
+\bigskip
+Bounded Model Checking is unsound in general:
+\begin{itemize}
+  \itemsep1em
+  \item under-approximation and hence:
+  \item not finding bugs does not mean its absense in the system
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Algorithm}
+\begin{enumerate}
+\itemsep1.2em
+\item Constructs a formula in logic $\logic$ that is satisfiable iff there exists a
+length-$k$ counterexample:
+$$I(s_0) \wedge \bigwedge_{0 \leq i < k} T(s_i, s_{i+1}) \wedge \neg \phi(s_k)$$
+
+\item If the formula is satisfiable, there exists at least one
+$k$-length counterexample
+\begin{itemize}
+  \item Each variable assignment represents a counterexample
+\end{itemize}
+
+\item If no counterexample is found (the formula is unsatisfiable), the method
+increases $k$ until
+\begin{itemize}
+  \item a counterexample is found
+  \item the search becomes intractable, or
+  \item $k$ reaches a certain bound
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Example}
+
+\begin{center}
+  \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2cm, initial
+  text={}] 
+    \node[initial,state, onslide=<2->{highlight}] (q0)
+      {$q_0$};
+      \node[state, onslide=<3->{highlight}] (q1) [right of = q0]    
+        {$q_1$};        
+      \node[state, onslide=<4->{highlight}] (q2) [right of = q1]
+        {$q_2$};
+    \node[state, bad] (q3) [right of = q2]
+      {$q_3$};
+    
+    
+        
+      \path[->]   (q0)  edge [loop above] node {} (q0)
+            (q0)  edge        node {} (q1)
+            (q1)  edge [loop above] node {} (q1)  
+                edge        node {} (q2)                    
+            (q3)  edge [loop above] node {} (q3)  
+    ;
+    
+    \only<6->{
+      \path[->] (q2) edge [] node {} (q3);
+    }
+              
+  \end{tikzpicture}
+\end{center}
+
+\bigskip
+\uncover<2->{
+\alt<6>{
+\begin{itemize}
+  \item[] \underline{$k=3$}: \quad\small  $I(s_0) \wedge T(s_0, s_1)
+  \wedge T(s_1, s_2) \wedge T(s_2, s_3) \wedge \neg \phi(s_3)$
+  \begin{itemize}
+    \item[] \hl{Counterexample}: $q_0 \rightarrow q_1 \rightarrow q_2 \rightarrow q_3$
+  \end{itemize}
+\end{itemize}
+}{
+\begin{itemize}
+  \item[] \underline{$k=0$}:  \quad $I(s_0) \wedge \neg \phi(s_0)$
+  \begin{itemize}
+    \item[] $q_0$
+  \end{itemize}
+\end{itemize}
+}}
+
+\uncover<3-5>{
+\begin{itemize}
+  \item[] \underline{$k=1$}:  \quad $I(s_0) \wedge T(s_0, s_1) \wedge \neg
+  \phi(s_1)$
+  \begin{itemize}
+    \item[] $q_0 \rightarrow q_0$; \quad $q_0 \rightarrow q_1$    
+  \end{itemize}
+\end{itemize}
+}
+
+\uncover<4-5>{
+\begin{itemize}
+  \item[] \underline{$k=2$}:  \quad $I(s_0) \wedge T(s_0, s_1) \wedge T(s_1, s_2)
+  \wedge \neg \phi(s_2)$
+  \begin{itemize}
+    \item[] $q_0 \rightarrow q_0 \rightarrow q_0$; \quad $q_0 \rightarrow q_0
+    \rightarrow q_1$; \quad $q_0 \rightarrow q_1 \rightarrow q_1$; \quad $q_0
+    \rightarrow q_1 \rightarrow q_2$
+  \end{itemize}
+\end{itemize}
+}
+
+\uncover<5>{
+\begin{itemize}
+  \item[] \underline{$k=n$}:  \quad $I(s_0) \wedge T(s_0, s_1) \wedge \ldots
+  \wedge T(s_{n-1}, s_n) \wedge \neg \phi(s_n)$
+  \begin{itemize}
+    \item[] $\underbrace{q_0 \leadsto \ldots \leadsto q_0}_n$; \quad 
+    $\underbrace{q_0 \leadsto \ldots \leadsto q_1}_n$; \quad 
+    $\underbrace{q_0 \leadsto \ldots \leadsto q_2}_n$; \quad \ldots
+  \end{itemize}
+\end{itemize}
+}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Bounded Model Checking}
+
+The original BMC algorithm, although complete for finite-state systems, is
+limited in practice to \hl{falsification}
+
+\bigskip
+BMC can prove that an invariant $\phi$ holds on a system $\kripke$ if a bound $k$
+is known such that:
+\begin{itemize}
+  \item if no counterexample of length $k$ is found, $\kripke \satl \phi$
+\end{itemize}
+
+\bigskip
+The optimum value of $k$ is usually very expensive to obtain
+\begin{itemize}
+  \item Finding it is at least as hard as the model-checking problem itself
+\end{itemize}
+
+\bigskip
+Unrolling of the transition system appears to be a ``bootleneck'' of the method
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+% \begin{frame}{Bounded Model Checking}
+
+% \begin{center}
+%   \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2cm, initial
+%   text={}] 
+%     \node[initial,state] (q0)
+%       {$q_0$};
+%       \node[state] (q1) [right of = q0]   
+%         {$q_1$};        
+%       \node[state] (q2) [right of = q1]
+%         {$q_2$};
+%     \node[state, dashed] (q3) [right of = q2]
+%       {$q_3$};
+    
+    
+        
+%       \path[->]   (q0)  edge [loop above] node {} (q0)
+%             (q0)  edge        node {} (q1)
+%             (q1)  edge [loop above] node {} (q1)  
+%                 edge        node {} (q2)                    
+%             (q3)  edge [loop above] node {} (q3)  
+%     ;   
+    
+%     \only<3->{
+%       \path[->] (q2) edge [] node {} (q3);
+%     }
+              
+%   \end{tikzpicture}
+% \end{center}
+
+% \setbeamercovered{transparent}
+
+% \uncover<1-2>{
+% Can we prove that the bad state $q_3$ is unreachable without unrolling the
+% transition relation ?
+% \uncover<2->{\textcolor{green}{Yes}}
+% }
+
+% \slidepart{3}{
+% Can we find a counterexample in more efficient way than using BMC ?
+% \uncover<4->{\textcolor{brown}{Maybe}} 
+% }
+
+% \slidepart{4}{
+% \begin{itemize}
+%   \item<4-5> Interpolation-based model checking  
+%   \item<4> Backward reachability
+%   \item<4-5> Temporal induction ($k$-induction + enhancements)
+%   \item<4-5> Inductive Generalization of Counterexamples to Induction
+% \end{itemize}
+% }
+
+% \setbeamercovered{invisible}
+
+% \end{frame}

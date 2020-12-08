@@ -1,0 +1,15 @@
+\usetikzlibrary{fit,calc,shadows}
+
+% Define styles for balloons and lines
+\tikzstyle{line} =    [draw, rounded corners=3pt, -latex]
+\tikzstyle{balloon} = [draw, color=TUMorange, thick, fill=TUMorange, opacity=.15, inner sep=4pt, rounded corners=2pt]
+\tikzstyle{comment} = [draw, fill=TUMorange!70, text=white, text width=3cm, minimum height=.5cm, rounded corners, drop shadow, align=left, font=\scriptsize]
+
+% Command to place a TikZ anchor at the current position
+\newcommand*{\tikzmark}[2][0]{%
+  \tikz[overlay,remember picture,baseline] \coordinate (#2) at ($ (0,0)+(#1,0) $) {};}
+
+% Command to draw a balloon over two anchors
+\newcommand<>{\balloon}[3][balloon]{%
+  \coordinate (c) at ($(#2)+(0,1ex)$);
+  \node#4 (#1) [balloon, fit=(#3) (c)] {};}

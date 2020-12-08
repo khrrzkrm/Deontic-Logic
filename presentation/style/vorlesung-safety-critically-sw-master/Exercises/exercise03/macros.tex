@@ -1,0 +1,223 @@
+% Commands
+\newcommand{\caml}{\textsf{{OCaml}}\xspace}
+\newcommand{\cic}{\textsf{{CIC}}\xspace}
+\newcommand{\C}{\textsf{C}\xspace}
+
+\newcommand{\tool}[1]{\textsf{#1}\xspace}
+\newcommand{\framac}{\tool{Frama-C}}
+\newcommand{\acsl}{\tool{ACSL}}
+\newcommand{\eacsl}{\tool{E-ACSL}}
+\newcommand{\compcert}{\tool{CompCert}}
+\newcommand{\Value}{\tool{Value}}
+\newcommand{\eva}{\tool{Eva}}
+\newcommand{\coq}{\tool{Coq}}
+\newcommand{\rex}{\tool{Relextract}}
+\newcommand{\cfp}{\tool{CfP}}
+\newcommand{\tisanalyzer}{\tool{TIS-Analyzer}}
+\newcommand{\tisinterpreter}{\tool{TIS-Interpreter}}
+\newcommand{\tis}{\tool{TrustInSoft}}
+\newcommand{\AES}{\tool{AES}}
+\newcommand{\polarssl}{\tool{mbed-TLS}}
+\newcommand{\reltree}{\tool{Rel-tree}}
+\newcommand{\mfl}{\tool{MFL}}
+\newcommand{\isa}{\tool{Isabelle}}
+\newcommand{\lit}{\tool{LIT}}
+\newcommand{\lia}{\tool{LIA}}
+\newcommand{\kw}[1]{\texttt{#1}}
+%\newcommand{\bs}{\ensuremath{\backslash}}
+\newcommand{\modif}[1]{{#1}\xspace}
+
+\newcommand{\eg}{\textit{e.g.}\xspace}
+\newcommand{\ie}{\textit{i.e.}\xspace}
+\newcommand{\etc}{\textit{etc.}\xspace}
+\newcommand{\cf}{\textit{cf.}\xspace}
+
+% Math shortcuts
+\newcommand{\neginf}{\ensuremath{-\infty}}
+\newcommand{\posinf}{\ensuremath{+\infty}}
+\newcommand{\zinf}{\ensuremath{\mathbb{Z}_\infty}}
+
+% Comments
+%% \newcommand{\commentMA}[1]{\color{red}((MA: {#1}))\color{black}}
+%% \newcommand{\commentJS}[1]{\color{blue}((JS: {#1}))\color{black}}
+%% \newcommand{\proposeMA}[2]{\sout{#1}\commentMA{#2 }} % needs 'ulem' package
+%% \newcommand{\proposeJS}[2]{\sout{#1}\commentJS{#2 }} % needs 'ulem' package
+
+% Predicates
+
+\newcommand{\predone}{P_{ind}}
+\newcommand{\predoneb}{\tilde{P}_{ind}}
+\newcommand{\predb}{\tilde{\pred}}
+\newcommand{\taub}{\tilde{\tau}}
+\newcommand{\rul}{Res}
+\newcommand{\termb}{\tilde{\term}}
+\newcommand{\con}{Conc}
+\newcommand{\arb}{\rightsquigarrow}
+\newcommand{\predtwo}{P_{ax}}
+\newcommand{\relt}{\tool{Reltree}}
+\newcommand{\predax}{P_{ax}}
+\newcommand{\pred}{P}
+\newcommand{\predtwoo}{Q}
+\newcommand{\defpred}[1]{\kw{defined}(#1)}
+
+% Term Identifiers
+\newcommand{\idone}{I}
+\newcommand{\idtwo}{H}
+
+% Terms
+\newcommand{\funct}{F}
+\newcommand{\termone}{T_{ind}}
+\newcommand{\termoneb}{\tilde{T}_{ind}}
+\newcommand{\term}{T}
+
+\newcommand{\termtwo}{T_{ax}}
+\newcommand{\termtwoo}{U}
+\newcommand{\termthree}{V}
+\newcommand{\termfour}{W}
+
+% Values
+\newcommand{\valone}{V}
+\newcommand{\valtwo}{W}
+
+% Symbolic Expressions
+\newcommand{\sexpset}{\ensuremath{\mathbb{E}}}
+\newcommand{\sexpsetinf}{\ensuremath{\mathbb{E}_\infty}}
+%\newcommand{\sexpsetpm}{\ensuremath{\sexpset^\pm}}
+\newcommand{\sexpone}{E}
+\newcommand{\sexptwo}{D}
+\newcommand{\semax}[2]{\kw{max}(#1, #2)}
+\newcommand{\semin}[2]{\kw{min}(#1, #2)}
+
+% Symbolic Identifiers
+\newcommand{\sidset}{\ensuremath{\mathbb{S}}}
+\newcommand{\sidsetpm}{\ensuremath{\sexpset^\pm}}
+\newcommand{\sidone}{S}
+\newcommand{\sidtwo}{V}
+
+% Symbolic Ranges
+\newcommand{\srangeset}{\ensuremath{\mathbb{R}}}
+\newcommand{\srangeone}{R}
+\newcommand{\srange}[2]{\left[#1,#2\right]}
+
+% ACSL to terms sequent constructor
+\newcommand{\lvtosid}[3]{\ensuremath{#1 \vdash #2 \Leftarrow #3}}
+\newcommand{\termtosid}[3]{\ensuremath{#1 \vdash #2 \Rightarrow #3}}
+
+% ACSL constraints sequent constructor
+\newcommand{\predtocstr}[3]{\ensuremath{#1 \vdash #2 \Rightarrow #3}}
+
+% Functions
+\newcommand{\bounds}[2]{bounds(#1, #2)}
+\newcommand{\tbase}[1]{\ensuremath{\operatorname{base}(#1)}}
+\newcommand{\toffset}[1]{\ensuremath{\operatorname{offset}(#1)}}
+\newcommand{\trange}[1]{range(#1)}
+\newcommand{\proj}[2]{\pi_{#1}(#2)}
+\newcommand{\fmin}[2]{min(#1,#2)}
+\newcommand{\fmax}[2]{max(#1,#2)}
+
+\newcommand{\cst}{\textit{Constructor}}
+\newcommand{\defini}{\textit{definition}}
+\newcommand{\ax}{\textit{Axiomatic}}
+\newcommand{\induct}{\textit{Inductive}}
+\newcommand{\ter}{\textit{Term}}
+\newcommand{\pr}{\textit{Predicate}}
+
+%cstructore and axioms
+\newcommand{\axiom}{Ax}
+\newcommand{\binder}{B}
+\newcommand{\csd}{Cd}
+\newcommand{\cstr}{Pa}
+\newcommand{\indd}{ID}
+\newcommand{\axiomd}{Ad}
+\newcommand{\funcd}{F}
+\newcommand{\fd}{Dec}
+\newcommand{\vd}{Vd}
+\newcommand{\cond}{Cc}
+\newcommand{\case}{Case}
+
+\newcommand{\logicd}{Ld}
+\newcommand{\ind}{Id}
+\newcommand{\indc}{Idc}
+% Memory values
+\newcommand{\memone}{M}
+\newcommand{\memtwo}{N}
+
+
+% Left values
+\newcommand{\lvalone}{L}
+\newcommand{\lvaltwo}{\lvalone'}
+\newcommand{\memacsone}[1]{\ensuremath{\star\!\! #1}} % mem access w/ spacing
+\newcommand{\memacstwo}[1]{\ensuremath{\star #1}} % mem access w/o spacing
+
+% Offsets
+\newcommand{\offone}{R}
+\newcommand{\offtwo}{S}
+\newcommand{\memrange}[2]{\ensuremath{#1\kw{..}#2}}
+
+% Integers
+\newcommand{\intone}{n}
+\newcommand{\intn}{n}
+\newcommand{\inttwo}{k}
+\newcommand{\intthree}{h}
+\newcommand{\intset}{\mathbb{N}}
+
+\newcommand{\zed}{\mathbb{Z}}
+
+% C vars
+\newcommand{\cvarone}{x}
+\newcommand{\cvartwo}{y}
+\newcommand{\cvarset}{\mathcal{V}}
+
+% Pivots
+\newcommand{\pivone}{P}
+\newcommand{\pivtwo}{Q}
+\newcommand{\pivthree}{R}
+\newcommand{\pivset}{\mathcal{P}}
+\newcommand{\pivsetof}[1]{\pivset(#1)}
+
+% Intervals
+\newcommand{\inter}[2]{ival(#1, #2)} % cmp operator, term
+\newcommand{\neutral}[1]{neutral\_ival(#1)} % type
+\newcommand{\ival}[2]{\left[#1;\, #2\right]}
+\newcommand{\ivalempty}{\left[-\right]}
+\newcommand{\ivalone}{I}
+\newcommand{\ivaltwo}{J}
+
+% Valid and Init Predicates
+\newcommand{\valid}[1]{\kw{{\bs{}valid}}(#1)}
+\newcommand{\rvalid}[1]{\kw{{\bs{}valid\_read}(#1)}}
+\newcommand{\init}[1]{\kw{{\bs{}initialized}(#1)}}
+
+% Constraints
+\newcommand{\test}[1]{\kw{RTC}(#1)}
+\newcommand{\nalias}[1]{\kw{NEQ}(#1)}
+\newcommand{\rtestone}{X} % runtime test
+\newcommand{\cstrone}{C} % generic constraint
+\newcommand{\intcstrone}{D} % integer constraint
+
+% Environments
+\newcommand{\env}{\Gamma}
+\newcommand{\envof}[1]{\env(#1)}
+\newcommand{\envupdate}[2]{\env \left[#1 \mapsto #2\right]}
+\newcommand{\id}{id}
+\newcommand{\vid}[1]{id_{#1}}
+
+% Memory model and c.
+\newcommand{\loc}{\ell}
+\newcommand{\range}[2]{\left(#1\kw{..}#2\right)}
+\newcommand{\locof}[1]{\mathcal{L}oc(#1)}
+\newcommand{\mem}{\Sigma}
+\newcommand{\memupone}[3]{#1 \left[#2 \leftarrow #3\right]}
+\newcommand{\memadd}[3]{#1 \cup \left\{#2 \mapsto #3\right\}}
+
+% cmp and bop
+\newcommand{\cmp}{\kw{cop}}
+\newcommand{\bop}{\kw{bop}}
+\newcommand{\lop}{\kw{lop}}
+% Solutions of the domain
+\newcommand{\solone}{d}
+\newcommand{\soltwo}{e}
+
+% Typing
+\newcommand{\type}[1]{type(#1)}
+\newcommand{\typing}[2]{#1~:~#2}

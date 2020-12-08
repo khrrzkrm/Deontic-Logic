@@ -1,0 +1,50 @@
+
+
+  \tiny
+  \usetikzlibrary{trees,shapes,decorations}
+  \begin{tikzpicture}[%
+    ->,
+    shorten >=2pt,
+    >=stealth,
+    node distance=0.7cm,
+    noname/.style={%
+      rectangle,
+      minimum width=5em,
+      minimum height=3em,
+      draw
+    }
+  ]
+    \node[noname] (1)                                             {[ y = 2;] $l_1$};
+    \node[noname] (2) [below=of 1]                                {[ x = y + 1;] $l_2$};
+    \node[noname] (3) [below=of 2]                                {[ if ( x == 4) ] $l_3$};
+    
+    \node[ellipse,
+    minimum width=5em,
+    minimum height=2em,draw] (12) [right= of 2] {x value is 3};
+    
+    \node[ellipse,
+    minimum width=5em,
+    minimum height=2em,draw] (13) [right= of 3] {if returns no};
+    
+    \node[rectangle,
+    minimum width=5em,
+    minimum height=2em,draw] (4) [below right=of 3]                          {\color{white} [ y = 6;] $l_4$};
+     {};
+     
+     \node[
+     minimum width=5em,
+     minimum height=2em,cross out,color=red,draw] (11) [fill=green!30!black!70,below right=of 3]   {[ y = 6;] $l_4$};      
+ 
+    \node[noname] (5) [below= 1.5cm of 3]                         {[ while (x <1000) ] $l_5$};
+    \node[noname] (6) [below right=of 5]                          {[ x = x + 1;] $l_6$};
+    \node[noname] (7) [below=of 5]                                {[ y = x - 3;] $l_7$};
+
+    \path (1) edge                   node {} (2)
+          (2) edge                   node {} (3)
+          (3) edge                   node [yshift=5pt,right,color=red]{yes} (4)
+          (4) edge                   node {} (5)
+          (3) edge                   node [yshift=5pt,right]{no} (5)
+          (5) edge [bend right=20pt] node [yshift=3pt,right]{yes} (6)
+          (5) edge                   node [yshift=5pt,right]{no} (7)
+          (6) edge [bend right=20pt] node {} (5);
+  \end{tikzpicture}

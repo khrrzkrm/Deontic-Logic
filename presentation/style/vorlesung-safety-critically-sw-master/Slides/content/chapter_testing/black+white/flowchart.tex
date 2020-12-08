@@ -1,0 +1,85 @@
+\newcommand{\resetpathstyle}{
+  \tikzset{
+    alphastyle/.style={},
+    betastyle/.style={},
+    gammastyle/.style={},
+    deltastyle/.style={},
+    epsilonstyle/.style={},
+  }
+  \let\alphabold\relax
+  \let\betabold\relax
+  \let\gammabold\relax
+  \let\deltabold\relax
+  \let\epsilonbold\relax
+  \def\alphasymbol{$\alphabold\alpha$}
+  \def\betasymbol{$\betabold\beta$}
+  \def\gammasymbol{$\gammabold\gamma$}
+  \def\deltasymbol{$\deltabold\delta$}
+  \def\epsilonsymbol{$\epsilonbold\epsilon$}
+}
+\resetpathstyle
+
+\newcommand<>{\alertpath}[3]{\only#4{
+  \resetpathstyle
+  \expandafter\def\csname #1bold\endcsname{\boldsymbol}
+  \expandafter\def\csname #2bold\endcsname{\boldsymbol}
+  \expandafter\def\csname #3bold\endcsname{\boldsymbol}
+  \tikzset{
+    #1style/.style={
+      font=\bfseries,
+      alertedcolor,
+      thick
+    },
+    #2style/.style={
+      font=\bfseries,
+      alertedcolor,
+      thick
+    },
+    #3style/.style={
+      font=\bfseries,
+      alertedcolor,
+      thick
+    }
+  }
+  \begin{tikzpicture}[
+      stmt/.style={
+        state,
+        rectangle,
+        minimum height=4ex,
+        minimum width=6em
+      },
+      cond/.style={
+        state,
+        diamond,
+        shape aspect=1.5,
+        inner sep=0pt
+      },
+      on grid,
+      node distance=.8cm and 2.5cm,
+      shorten >=2pt,
+      shorten <=2pt
+    ]
+    \node[coordinate] (init) {};
+    \node[cond, below=of init] (cond1) {\shortstack{$a>1 \wedge {}$\\$b = 0$}};
+    \node[stmt,below right=of cond1] (stmt1) {$x:=x/a$};
+    \node[coordinate,below left=of stmt1] (join1) {};
+    \node[cond,below=of join1] (cond2) {\shortstack{$a=2 \vee {}$\\$x > 1$}};
+    \node[stmt,below right=of cond2] (stmt2) {$x := x + 1$};
+    \node[coordinate,below left=of stmt2] (join2) {};
+    \node[coordinate,below=of join2] (final) {};
+    \path[thick, ->]
+      (init) edge[alphastyle] node[left] {\alphasymbol} (cond1)
+      (cond1) edge[betastyle] node[very near start, right] {no} node[left] {\betasymbol} (join1)
+      (join1) edge[alphastyle] (cond2)
+      (cond2) edge[deltastyle] node[very near start, right] {no} node[left] {\deltasymbol} (join2)
+      (join2) edge[alphastyle] (final);
+    \draw[thick, ->, gammastyle]
+      (cond1) -| node[above,very near start] {yes} node[right] {\gammasymbol} (stmt1);
+    \draw[thick, ->, gammastyle]
+      (stmt1) |- (join1);
+    \draw[thick, ->, epsilonstyle]
+      (cond2) -| node[above,very near start] {yes} node[right] {\epsilonsymbol} (stmt2);
+    \draw[thick, ->, epsilonstyle]
+      (stmt2) |- (join2);
+  \end{tikzpicture}
+}}

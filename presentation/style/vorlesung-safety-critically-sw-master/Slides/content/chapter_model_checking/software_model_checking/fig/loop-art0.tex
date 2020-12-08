@@ -1,0 +1,27 @@
+
+\begin{figure}[htbp]
+	\begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2cm]
+	 	
+	 	\node (0) {ART$_0$: };
+	 	
+	 	\node[artloc={$\{ \}$}, node distance = 1cm] (1) 
+	 		[right of = 0]	{$1$};
+	 				
+  		\node[artloc={$\{ \}$}] (2) 
+  			[right of = 1] 	{$2$};	
+ 		
+ 		\node[artloc={$\{ \}$}] (4) 
+ 			[right of = 2]	{$4$};
+ 		
+ 		\node[artloc={$\{ \}$}] (6) 
+ 			[right of = 4]	{$\mathcal{E}$};
+ 				 
+		\path[trans]  
+ 			
+ 			(1) edge node [below] {$i := 0$} 	(2)
+			(2) edge node [below] {$i > 5$}		(4)	
+			(4) edge node [below] {$i \neq 6$}	(6)		 									
+ 			;
+ 					
+	\end{tikzpicture}
+\end{figure}

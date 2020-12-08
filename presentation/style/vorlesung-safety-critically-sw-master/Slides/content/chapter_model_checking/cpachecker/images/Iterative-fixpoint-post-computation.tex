@@ -1,0 +1,33 @@
+\documentclass[preview]{standalone}
+\usepackage{../sosy-beamer}
+
+\begin{document}
+  \begin{tikzpicture}
+  \tikzset{custEllipse/.style={ellipse, draw}}
+
+  % r_outer
+  \onslide<4-4>{
+    \node[custEllipse, fill=blue!20, text height =4cm, minimum width = 10cm,label={[anchor=south east,above=2mm]315:R}] (r-outer) {};
+  }
+
+  % r2
+  \onslide<3-4>{
+    \node[custEllipse, fill=blue!40, text height = 2.5cm, minimum width = 7cm, xshift=-0.75cm, yshift=0.4cm,label={[anchor=south,above=2mm]315:$R_2$}] at (r-outer.center) (r2) {};
+  }
+
+  % r1
+  \onslide<2-4>{
+    \node[custEllipse, fill=blue!60, text height = 1.5cm, minimum width = 4cm, xshift=-0.75cm, yshift=0.4cm, label={[anchor=south,above=2mm]315:$R_1$}] at (r2.center) (r1) {};
+  }
+
+  % r0
+  \onslide<1-4>{
+    \node[custEllipse, fill=blue!90, text height = 0.8cm, minimum width = 2.5cm, xshift=-0.5cm, yshift=0.27cm, label={[anchor=center,below=4mm]$R_0$}] at (r1.center) {};
+  }
+
+  % dots from r2 to r_outer
+  \onslide<4-4>{
+    \path ($(r2.south east) + (-0.5,0)$) -- ($(r-outer.south east) + (-0.75, 0)$) node [font=\huge, midway, sloped] {$\dots$};
+  }
+  \end{tikzpicture}
+\end{document}

@@ -1,0 +1,1122 @@
+%!TEX root = ../presentation.tex
+
+\tikzset{
+  event/.style={
+    draw,
+    inner sep=0pt,
+    circle,
+    minimum width=4mm
+  },
+  events/.style={
+    xscale=.8,
+    yscale=.6,
+    shorten >=0pt
+  }
+}
+
+\providecommand{\signaldx}{.15}
+\providecommand{\signaldy}{.35}
+%\firstbar{color}{(x,y)}{length}{caption}
+\providecommand{\firstbar}[4]{
+  \pgfmathsetmacro{\signallength}{#3-\signaldx}
+  \filldraw[draw=black,fill=#1]
+    #2 ++(0,\signaldy) -- ++(\signallength,0) -- ++(\signaldx,-\signaldy)
+    --++(-\signaldx,-\signaldy) -- ++(-\signallength,0) -- cycle;
+  \pgfmathsetmacro{\halflength}{.5*#3}
+  \path #2 ++(\halflength,0) node {#4};
+}
+%\midbar{color}{(x,y)}{length}{caption}
+\providecommand{\midbar}[4]{
+  \pgfmathsetmacro{\signallength}{#3-2*\signaldx}
+  \filldraw[draw=black,fill=#1]
+    #2 -- ++(\signaldx,\signaldy) --++(\signallength,0) --++(\signaldx,-\signaldy)
+    --++(-\signaldx,-\signaldy) --++(-\signallength,0) -- cycle;
+  \pgfmathsetmacro{\halflength}{.5*#3}
+  \path #2 ++(\halflength,0) node {#4};
+}
+%\lastbar{color}{(x,y)}{length}{caption}
+\providecommand{\lastbar}[4]{
+  \pgfmathsetmacro{\signallength}{#3-\signaldx}
+  \fill[#1]
+    #2 -- ++(\signaldx,\signaldy) -- ++(\signallength,0) --++(0,-\signaldy)
+    --++(0,-\signaldy) --++(-\signallength,0) -- cycle;
+  \draw[black]
+    #2 -- ++(\signaldx,\signaldy) -- ++(\signallength,0)
+    #2 -- ++(\signaldx,-\signaldy) -- ++(\signallength,0);
+  \pgfmathsetmacro{\halflength}{.5*#3}
+  \path #2 ++(\halflength,0) node {#4};
+}
+%\onlybar{color}{(x,y)}{length}{caption}
+\providecommand{\onlybar}[4]{
+  \pgfmathsetmacro{\signallength}{#3}
+  \fill[#1]
+    #2 ++(0,\signaldy) -- ++(\signallength,0) -- ++(0,-\signaldy) 
+    --++(0,-\signaldy) -- ++(-\signallength,0);
+  \draw
+    #2 -- ++(0,\signaldy) -- ++(\signallength,0) ++(0,-\signaldy) 
+    ++(0,-\signaldy) -- ++(-\signallength,0) -- #2;
+  \pgfmathsetmacro{\halflength}{.5*#3}
+  \path #2 ++(\halflength,0) node {#4};
+}
+
+\chapter{Stream Runtime Verificiation}
+\label{chap_rv}
+\targets{
+  \item Understand the idea behind event and stream processing.
+  \item Understand the concept of timestamped event streams and non-synchronized streams.
+  \item Learn how the stream specification language TeSSLa works.
+  \item Be able to write specifications in the stream processing language TeSSLa.
+}
+
+\section{Stream Processing}
+
+\subsection{The Idea}
+
+\begin{frame}{Temporal Specification Languages}
+  \tikzset{
+    caption/.style={
+      text width=10cm,
+      anchor=west,
+      font=\color{maincolor}\bfseries\small
+    },
+    legend/.style={
+      text width=10cm,
+      anchor=west
+    },
+    formula/.style={
+      anchor=west
+    },
+    event/.style={
+      cross out,
+      draw=eventcolor,
+      inner sep=2pt,
+      very thick
+    }
+  }
+
+  \newcommand{\greenevents}{
+    \colorlet{eventcolor}{green!50!black}
+    \raisebox{-6pt}{\scalebox{.5}{
+      \begin{tikzpicture}[thick, on grid=false, xscale=.3, yscale=.5]
+        \draw[|->]
+          (0,0)
+          -- ++(1,0) node[event] {}
+          -- ++(3,0) node[event] {}
+          -- (9,0);
+        \draw[|->]
+          (0,-1)
+          -- ++(2,0) node[event] {}
+          -- ++(1,0) node[event] {}
+          -- ++(5,0) node[event] {}
+          -- (9,-1);
+        \draw[|->]
+          (0,-2)
+          -- ++(1,0) node[event] {}
+          -- ++(5,0) node[event] {}
+          -- (9,-2);
+      \end{tikzpicture}}}}
+
+  \newcommand{\blueevents}{
+    \colorlet{eventcolor}{maincolor}
+    \raisebox{-3pt}{\scalebox{.5}{
+      \begin{tikzpicture}[thick, on grid=false, xscale=.3, yscale=.5]
+        \draw[|->]
+          (0,0)
+          -- ++(3,0) node[event] {}
+          -- ++(1,0) node[event] {}
+          -- ++(4,0) node[event] {}
+          -- (9,0);
+        \draw[|->]
+          (0,-1)
+          -- ++(4,0) node[event] {}
+          -- ++(2,0) node[event] {}
+          -- (9,-1);
+      \end{tikzpicture}}}}
+
+  \newcommand{\greensignals}{
+    \colorlet{eventcolor}{examplecolor}
+    \raisebox{-8pt}{\scalebox{.5}{
+      \begin{tikzpicture}[thick, on grid=false, xscale=.3, yscale=.5]
+        \draw[|->] (0,0) -- (9,0);
+        \path[ultra thick, draw=eventcolor] plot coordinates {(.5,0) (.75,.4) (3.75,.4) (4.25,-.4) (6.75,-.4) (7.25,.4) (9,.4)};
+        \draw[|->] (0,-1) -- (9,-1);
+        \path[ultra thick, draw=eventcolor, yshift=-1cm] plot coordinates {(.5,0) (.75,-.4) (4.75,-.4) (5.25,.4) (7.75,.4) (8.25,-.4) (9,-.4)};
+        \draw[|->] (0,-2) -- (9,-2);
+        \path[ultra thick, draw=eventcolor, yshift=-2cm] plot coordinates {(.5,0) (2,0) (2.25,-.4) (4.75,-.4) (5.25,.4) (9,.4)};
+      \end{tikzpicture}}}}
+
+  \newcommand{\bluesignals}{
+    \colorlet{eventcolor}{maincolor}
+    \raisebox{-4pt}{\scalebox{.5}{
+      \begin{tikzpicture}[thick, on grid=false, xscale=.3, yscale=.5]
+        \draw[|->] (0,0) -- (9,0);
+        \path[ultra thick, draw=eventcolor] plot coordinates {(.5,0) (.75,-.4) (4.75,-.4) (5.25,.4) (7.75,.4) (8.25,-.4) (9,-.4)};
+        \draw[|->] (0,-1) -- (9,-1);
+        \path[ultra thick, draw=eventcolor, yshift=-1cm] plot coordinates {(.5,0) (.75,.4) (3.75,.4) (4.25,-.4) (6.75,-.4) (7.25,.4) (9,.4)};
+      \end{tikzpicture}}}}
+
+  \begin{tikzpicture}[on grid]
+    \node[caption] (re) {LTL formula,\\regular expression};
+    \node[right=-1.5cm of re, formula] {$\bigg\{a_1a_2a_3\ldots, b_1b_2b_3\ldots, \ldots\bigg\}$};
+    \node[below right=.9cm and -1.5cm of re, legend] {Set of traces};
+
+    \node[caption, below=2.3cm of re] (cep) {Stream / event\\ processor};
+    \node[right=-1.5cm of cep, formula] {$\bigg\{\bigg(\op{\greenevents}, \op{\blueevents}\bigg), \ldots \bigg\}$};
+    \node[below right=.9cm and -1.5cm of cep, legend] {Function from streams to streams};
+
+    \node[caption, below=2.3cm of cep] (frp) {Functional reactive\\ program};
+    \node[right=-1.5cm of frp, formula] {$\bigg\{\bigg(\op{\greensignals}, \op{\bluesignals}\bigg), \ldots \bigg\}$};
+    \node[below right=.9cm and -1.5cm of frp, legend] {Function from signals to signals};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{SRV Example}
+  \begin{lstlisting}[language=tessla,gobble=4]
+    in temperature: Events[Int]
+
+    def low := temperature < 3
+    def high := temperature > 8
+    def unsafe := low || high
+
+    out *
+  \end{lstlisting}
+
+  \begin{center}
+    \begin{tikzpicture}[y=.6cm]
+      \node[event, fill=maincolor!18] at (1,0) (t1) {6};
+      \node[event, fill=maincolor!18] at (2,0) (t2) {2};
+      \node[event, fill=maincolor!18] at (3,0) (t3) {1};
+      \node[event, fill=maincolor!18] at (4,0) (t4) {5};
+      \node[event, fill=maincolor!18] at (5,0) (t5) {9};
+
+      \node[event, fill=alertedcolor!18] at (1,-1) (l1) {ff};
+      \node[event, fill=examplecolor!18] at (2,-1) (l2) {tt};
+      \node[event, fill=examplecolor!18] at (3,-1) (l3) {tt};
+      \node[event, fill=alertedcolor!18] at (4,-1) (l4) {ff};
+      \node[event, fill=alertedcolor!18] at (5,-1) (l5) {ff};
+
+      \node[event, fill=alertedcolor!18] at (1,-2) (h1) {ff};
+      \node[event, fill=alertedcolor!18] at (2,-2) (h2) {ff};
+      \node[event, fill=alertedcolor!18] at (3,-2) (h3) {ff};
+      \node[event, fill=alertedcolor!18] at (4,-2) (h4) {ff};
+      \node[event, fill=examplecolor!18] at (5,-2) (h5) {tt};
+
+      \node[event, fill=alertedcolor!18] at (1,-3) (u1) {ff};
+      \node[event, fill=examplecolor!18] at (2,-3) (u2) {tt};
+      \node[event, fill=examplecolor!18] at (3,-3) (u3) {tt};
+      \node[event, fill=alertedcolor!18] at (4,-3) (u4) {ff};
+      \node[event, fill=examplecolor!18] at (5,-3) (u5) {tt};
+
+      \path[shorten >=0pt]
+        (0,0) node[left] {temperature} edge[|-]
+        (t1) (t1) edge (t2) (t2) edge (t3) (t3) edge (t4) (t4) edge (t5) (t5) edge[->] +(1,0)
+        (0,-1) node[left] {low} edge[|-]
+        (l1) (l1) edge (l2) (l2) edge (l3) (l3) edge (l4) (l4) edge (l5) (l5) edge[->] +(1,0)
+        (0,-2) node[left] {high} edge[|-]
+        (h1) (h1) edge (h2) (h2) edge (h3) (h3) edge (h4) (h4) edge (h5) (h5) edge[->] +(1,0)
+        (0,-3) node[left] {unsafe} edge[|-]
+        (u1) (u1) edge (u2) (u2) edge (u3) (u3) edge (u4) (u4) edge (u5) (u5) edge[->] +(1,0);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\subsection{Lifting Functions to Streams}
+
+\begin{frame}{Lifting Functions to Streams}
+  \begin{itemize}
+    \item Data domains: $\mathbb R$, $\N$, $\B$, \ldots
+    \item Streams are words, i.e. sequences of data values\\
+      $\mathcal S_{\mathbb D} := {\mathbb D}^+$, e.g. $\mathcal S_{\mathbb R}$, $\mathcal S_{\N}$, $\mathcal S_{\B}$, \ldots
+    \item Functions on the data domain
+      \begin{align}
+        \op{<}&: \mathbb R \times \mathbb R \to \B\\
+        \op{\vee}&: \B \times \B \to \B\\
+        \op{\neg}&: \B \to \B
+      \end{align}
+    \item Goal: Lift these functions to streams
+      \begin{align}
+        \op{<}&: \mathcal S_{\mathbb R} \times \mathcal S_{\mathbb R} \to \mathcal S_{\B}\\
+        \op{\vee}&: \mathcal S_{\B} \times \mathcal S_{\B} \to \mathcal S_{\B}\\
+        \op{\neg}&: \mathcal S_{\B} \to \mathcal S_{\B}
+      \end{align}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Lift}
+  \[ \op{lift}: (\mathbb D \to \mathbb D') \to (\mathcal S_{\mathbb D} \to \mathcal S_{\mathbb D'}) \]
+
+  \begin{center}
+    \begin{tikzpicture}[y=1cm, x=1.5cm]
+      \node[event, fill=maincolor!18] at (1,0) (t1) {};
+      \node[event, fill=maincolor!18] at (2,0) (t2) {};
+      \node[event, fill=maincolor!18] at (3,0) (t3) {};
+
+      \node[event, fill=maincolor!18] at (1,-1) (l1) {};
+      \node[event, fill=maincolor!18] at (2,-1) (l2) {};
+      \node[event, fill=maincolor!18] at (3,-1) (l3) {};
+
+      \path[shorten >=0pt]
+        (0,0) node[left] {$\mathcal S_{\mathbb D} \ni x$} edge[|-]
+        (t1) (t1) edge (t2) (t2) edge (t3) (t3) edge[->] +(1,0)
+        (0,-1) node[left] {$\mathcal S_{\mathbb D'} \ni \op{lift}(f)(x)$} edge[|-]
+        (l1) (l1) edge (l2) (l2) edge (l3) (l3) edge[->] +(1,0);
+      \path[maincolor, thick, auto, ->]
+        (t1) edge node[maincolor] {$f$} (l1)
+        (t2) edge node[maincolor] {$f$} (l2)
+        (t3) edge node[maincolor] {$f$} (l3);
+    \end{tikzpicture}
+  \end{center}
+
+  \pause
+
+  \[ \op{lift}: (\mathbb D \times \mathbb D' \to \mathbb D'') \to (\mathcal S_{\mathbb D} \times \mathcal S_{\mathbb D'} \to \mathcal S_{\mathbb D''}) \]
+
+  \begin{center}
+    \begin{tikzpicture}[y=.75cm, x=1.5cm]
+      \node[event, fill=maincolor!18] at (1,0) (t1) {};
+      \node[event, fill=maincolor!18] at (2,0) (t2) {};
+      \node[event, fill=maincolor!18] at (3,0) (t3) {};
+
+      \node[event, fill=maincolor!18] at (1,-1) (l1) {};
+      \node[event, fill=maincolor!18] at (2,-1) (l2) {};
+      \node[event, fill=maincolor!18] at (3,-1) (l3) {};
+
+      \node[event, fill=maincolor!18] at (1,-3) (u1) {};
+      \node[event, fill=maincolor!18] at (2,-3) (u2) {};
+      \node[event, fill=maincolor!18] at (3,-3) (u3) {};
+
+      \path[shorten >=0pt]
+        (0,0) node[left] {$\mathcal S_{\mathbb D} \ni x$} edge[|-]
+        (t1) (t1) edge (t2) (t2) edge (t3) (t3) edge[->] +(1,0)
+        (0,-1) node[left] {$\mathcal S_{\mathbb D'} \ni y$} edge[|-]
+        (l1) (l1) edge (l2) (l2) edge (l3) (l3) edge[->] +(1,0)
+        (0,-3) node[left] {$\mathcal S_{\mathbb D''} \ni \op{lift}(f)(x,y)$} edge[|-]
+        (u1) (u1) edge (u2) (u2) edge (u3) (u3) edge[->] +(1,0);
+      \path[maincolor, thick, auto, ->]
+        (t1) edge[in=60, out=-60] node[pos=.6] {$f$} (u1)
+        (t2) edge[in=60, out=-60] node[pos=.6] {$f$} (u2)
+        (t3) edge[in=60, out=-60] node[pos=.6] {$f$} (u3)
+        (l1) edge[in=60, out=-40] (u1)
+        (l2) edge[in=60, out=-40] (u2)
+        (l3) edge[in=60, out=-40] (u3);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Accessing Previous Events}
+  \[ \op{prev}: \mathcal S_{\mathbb D} \times \mathbb D \to \mathcal S_{\mathbb D} \]
+
+  \begin{center}
+    \begin{tikzpicture}[y=1cm, x=1.5cm, remember picture]
+      \node[event, fill=maincolor!18] at (1,0) (t1) {};
+      \node[event, fill=maincolor!18] at (2,0) (t2) {};
+      \node[event, fill=maincolor!18] at (3,0) (t3) {};
+
+      \node[event, fill=maincolor!18] at (1,-1) (l1) {};
+      \node[event, fill=maincolor!18] at (2,-1) (l2) {};
+      \node[event, fill=maincolor!18] at (3,-1) (l3) {};
+
+      \path[shorten >=0pt]
+        (0,0) node[left] {$\mathcal S_{\mathbb D} \ni x$} edge[|-]
+        (t1) (t1) edge (t2) (t2) edge (t3) (t3) edge[->] +(1,0)
+        (0,-1) node[left] {$\mathcal S_{\mathbb D} \ni \op{prev}(x, \op{\tikz[remember picture]\node[inner sep=0pt] (d) {$d$};})$} edge[|-]
+        (l1) (l1) edge (l2) (l2) edge (l3) (l3) edge[->] +(1,0);
+      \path[maincolor, thick, auto, ->]
+        (d) edge[shorten <=1pt, out=90, in=135] (l1)
+        (t1) edge (l2)
+        (t2) edge (l3);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Computing the Delta}
+  \begin{lstlisting}[language=tessla,gobble=4]
+    in temperature: Events[Int]
+
+    def p := prev(temperature, 0)
+    def delta := abs(temperature - p)
+
+    out *
+  \end{lstlisting}
+
+  \begin{center}
+    \begin{tikzpicture}[y=.6cm]
+      \node[event, fill=maincolor!18] at (1,0) (t1) {6};
+      \node[event, fill=maincolor!18] at (2,0) (t2) {2};
+      \node[event, fill=maincolor!18] at (3,0) (t3) {1};
+      \node[event, fill=maincolor!18] at (4,0) (t4) {5};
+      \node[event, fill=maincolor!18] at (5,0) (t5) {9};
+
+      \node[event, fill=maincolor!18] at (1,-1) (l1) {0};
+      \node[event, fill=maincolor!18] at (2,-1) (l2) {6};
+      \node[event, fill=maincolor!18] at (3,-1) (l3) {2};
+      \node[event, fill=maincolor!18] at (4,-1) (l4) {1};
+      \node[event, fill=maincolor!18] at (5,-1) (l5) {5};
+
+      \node[event, fill=maincolor!18] at (1,-2) (h1) {6};
+      \node[event, fill=maincolor!18] at (2,-2) (h2) {4};
+      \node[event, fill=maincolor!18] at (3,-2) (h3) {1};
+      \node[event, fill=maincolor!18] at (4,-2) (h4) {4};
+      \node[event, fill=maincolor!18] at (5,-2) (h5) {4};
+
+      \path[shorten >=0pt]
+        (0,0) node[left] {temperature} edge[|-]
+        (t1) (t1) edge (t2) (t2) edge (t3) (t3) edge (t4) (t4) edge (t5) (t5) edge[->] +(1,0)
+        (0,-1) node[left] {p} edge[|-]
+        (l1) (l1) edge (l2) (l2) edge (l3) (l3) edge (l4) (l4) edge (l5) (l5) edge[->] +(1,0)
+        (0,-2) node[left] {delta} edge[|-]
+        (h1) (h1) edge (h2) (h2) edge (h3) (h3) edge (h4) (h4) edge (h5) (h5) edge[->] +(1,0);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\subsection{Recursive Equations}
+
+\begin{frame}[fragile]{Aggregating Data of a Stream}
+  \begin{lstlisting}[language=tessla,gobble=4]
+    in x: Events[Int]
+
+    def p := prev(sum, 0)
+    def sum := p + x
+
+    out *
+  \end{lstlisting}
+
+  \begin{center}
+    \begin{tikzpicture}[y=.75cm, x=1.5cm]
+      \node[event, fill=maincolor!18] at (1,0) (t1) {2};
+      \node[event, fill=maincolor!18] at (2,0) (t2) {1};
+      \node[event, fill=maincolor!18] at (3,0) (t3) {4};
+
+      \node[event, fill=maincolor!18] at (1,-1) (l1) {0};
+      \node[event, fill=maincolor!18] at (2,-1) (l2) {2};
+      \node[event, fill=maincolor!18] at (3,-1) (l3) {3};
+
+      \node[event, fill=maincolor!18] at (1,-3) (u1) {2};
+      \node[event, fill=maincolor!18] at (2,-3) (u2) {3};
+      \node[event, fill=maincolor!18] at (3,-3) (u3) {7};
+
+      \path[shorten >=0pt]
+        (0,0) node[left] {x} edge[|-]
+        (t1) (t1) edge (t2) (t2) edge (t3) (t3) edge[->] +(1,0)
+        (0,-1) node[left] {p} edge[|-]
+        (l1) (l1) edge (l2) (l2) edge (l3) (l3) edge[->] +(1,0)
+        (0,-3) node[left] {sum} edge[|-]
+        (u1) (u1) edge (u2) (u2) edge (u3) (u3) edge[->] +(1,0);
+      \path[maincolor, thick, ->]
+        (t1) edge[in=60, out=-60] node[left, pos=.6, inner sep=2pt] {$+$} (u1)
+        (t2) edge[in=60, out=-60] node[left, pos=.6, inner sep=2pt] {$+$} (u2)
+        (t3) edge[in=60, out=-60] node[left, pos=.6, inner sep=2pt] {$+$} (u3)
+        (l1) edge[in=60, out=-40] (u1)
+        (l2) edge[in=60, out=-40] (u2)
+        (l3) edge[in=60, out=-40] (u3)
+        (u1) edge[out=30, in=-150] (l2)
+        (u2) edge[out=30, in=-150] (l3);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Counting All Events with Even Data}
+  \begin{lstlisting}[language=tessla,gobble=4]
+    in x: Events[Int]
+
+    def p := prev(count, 0)
+    def even := x % 2 == 0
+    def count := if even
+                 then p + 1
+                 else p
+
+    out *
+  \end{lstlisting}
+
+  \begin{center}
+    \begin{tikzpicture}[y=.6cm]
+      \node[event, fill=maincolor!18] at (1,0) (t1) {1};
+      \node[event, fill=maincolor!18] at (2,0) (t2) {2};
+      \node[event, fill=maincolor!18] at (3,0) (t3) {1};
+      \node[event, fill=maincolor!18] at (4,0) (t4) {3};
+      \node[event, fill=maincolor!18] at (5,0) (t5) {2};
+
+      \node[event, fill=alertedcolor!18] at (1,-1) (e1) {ff};
+      \node[event, fill=examplecolor!18] at (2,-1) (e2) {tt};
+      \node[event, fill=alertedcolor!18] at (3,-1) (e3) {ff};
+      \node[event, fill=alertedcolor!18] at (4,-1) (e4) {ff};
+      \node[event, fill=examplecolor!18] at (5,-1) (e5) {tt};      
+
+      \node[event, fill=maincolor!18] at (1,-2) (l1) {0};
+      \node[event, fill=maincolor!18] at (2,-2) (l2) {0};
+      \node[event, fill=maincolor!18] at (3,-2) (l3) {1};
+      \node[event, fill=maincolor!18] at (4,-2) (l4) {1};
+      \node[event, fill=maincolor!18] at (5,-2) (l5) {1};
+
+      \node[event, fill=maincolor!18] at (1,-3) (h1) {0};
+      \node[event, fill=maincolor!18] at (2,-3) (h2) {1};
+      \node[event, fill=maincolor!18] at (3,-3) (h3) {1};
+      \node[event, fill=maincolor!18] at (4,-3) (h4) {1};
+      \node[event, fill=maincolor!18] at (5,-3) (h5) {2};
+
+      \path[shorten >=0pt]
+        (0,0) node[left] {x} edge[|-]
+        (t1) (t1) edge (t2) (t2) edge (t3) (t3) edge (t4) (t4) edge (t5) (t5) edge[->] +(1,0)
+        (0,-1) node[left] {even} edge[|-]
+        (e1) (e1) edge (e2) (e2) edge (e3) (e3) edge (e4) (e4) edge (e5) (e5) edge[->] +(1,0)
+        (0,-2) node[left] {p} edge[|-]
+        (l1) (l1) edge (l2) (l2) edge (l3) (l3) edge (l4) (l4) edge (l5) (l5) edge[->] +(1,0)
+        (0,-3) node[left] {count} edge[|-]
+        (h1) (h1) edge (h2) (h2) edge (h3) (h3) edge (h4) (h4) edge (h5) (h5) edge[->] +(1,0);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\section{Non-Synchronized Streams}
+
+\begin{frame}[fragile,t]{Non-Synchronized Streams: Example}
+  \xxx
+
+  \begin{tikzpicture}[events]
+    \node[left] at (0,0) {$a$};
+    \firstbar{maincolor!18}{(0,0)}{2}{2}
+    \midbar{maincolor!18}{(2,0)}{4}{4}
+    \lastbar{maincolor!18}{(6,0)}{2}{6}
+
+    \node[left] at (0,-1) {$b$};
+    \firstbar{maincolor!18}{(0,-1)}{4}{1}
+    \midbar{maincolor!18}{(4,-1)}{2}{3}
+    \lastbar{maincolor!18}{(6,-1)}{2}{5}
+
+    \onslide<2->
+    \node[left] at (0,-2) {$c$};
+    \firstbar{maincolor!18}{(0,-2)}{2}{3}
+    \midbar{maincolor!18}{(2,-2)}{2}{5}
+    \midbar{maincolor!18}{(4,-2)}{2}{7}
+    \lastbar{maincolor!18}{(6,-2)}{2}{11}
+
+    \onslide<1->
+  \end{tikzpicture}
+
+  \vskip1ex
+
+  \begin{onlyenv}<2->
+    \begin{lstlisting}[gobble=6,language=tessla]
+      def c := a + b
+    \end{lstlisting}
+
+    \vskip5ex
+
+    \begin{tikzpicture}[events, xscale=.87]
+      \onslide<3->
+      \node[event, fill=maincolor!18] at (2,0) (z1) {};
+      \node[event, fill=maincolor!18] at (4,0) (z2) {};
+      \node[event, fill=maincolor!18] at (5,0) (z3) {};
+      \node[event, fill=maincolor!18] at (7,0) (z4) {};
+      \node[event, fill=maincolor!18] at (9,0) (z5) {};
+      \node[event, fill=maincolor!18] at (11,0) (z6) {};
+      \path
+        (0,0) node[left] {$x$} edge[|-]
+        (z1) (z1) edge (z2) (z2) edge (z3) (z3) edge (z4) (z4) edge (z5) (z5) edge (z6) (z6) edge[->] +(2,0);
+
+      \onslide<4>
+      \node[left] at (0,-2) {$c$};
+      \firstbar{maincolor!18}{(0,-2)}{2}{0}
+      \midbar{maincolor!18}{(2,-2)}{2}{1}
+      \midbar{maincolor!18}{(4,-2)}{1}{2}
+      \midbar{maincolor!18}{(5,-2)}{2}{3}
+      \midbar{maincolor!18}{(7,-2)}{2}{4}
+      \midbar{maincolor!18}{(9,-2)}{2}{5}
+      \lastbar{maincolor!18}{(11,-2)}{2}{6}
+
+      \onslide<5->
+      \node[event, fill=alertedcolor!18] at (6,-1) (r1) {};
+      \node[event, fill=alertedcolor!18] at (8,-1) (r2) {};
+      \path
+        (0,-1) node[left] {$r$} edge[|-]
+        (r1) (r1) edge (r2) (r2) edge[->] +(5,0);
+
+      \node[left] at (0,-2) {$c$};
+      \firstbar{maincolor!18}{(0,-2)}{2}{0}
+      \midbar{maincolor!18}{(2,-2)}{2}{1}
+      \midbar{maincolor!18}{(4,-2)}{1}{2}
+      \midbar{maincolor!18}{(5,-2)}{1}{3}
+      \midbar{maincolor!18}{(6,-2)}{1}{0}
+      \midbar{maincolor!18}{(7,-2)}{1}{1}
+      \midbar{maincolor!18}{(8,-2)}{1}{0}
+      \midbar{maincolor!18}{(9,-2)}{2}{1}
+      \lastbar{maincolor!18}{(11,-2)}{2}{2}
+
+      \onslide<1->
+    \end{tikzpicture}
+  \end{onlyenv}
+
+  \vskip1ex
+
+  \begin{onlyenv}<4>
+    \begin{lstlisting}[gobble=6,language=tessla]
+      def c := count(x)
+    \end{lstlisting}
+  \end{onlyenv}
+
+  \begin{onlyenv}<5->
+    \begin{lstlisting}[gobble=6,language=tessla]
+      def c := count(x, reset = r)
+    \end{lstlisting}
+  \end{onlyenv}
+\end{frame}
+
+\begin{frame}[t]{Non-Synchronized Streams}
+  \xxx
+
+  \begin{definition}[Non-Synchronized Stream]
+    An \emph{non-synchronized stream} over a time domain $\mathbb T$ and a data domain $\mathbb D$ is a sequence: $\mathcal S_{\mathbb D} := (\mathbb T \times \mathbb D)^+$.
+  \end{definition}
+
+  \xxx
+
+  \begin{centering}
+    \begin{columns}[t]
+      \column{4.5cm}
+      \inhead{Synchronized}
+      \begin{itemize}
+        \item Sequence position\strut
+        \item Events on fixed grid\\\strut
+        \item All streams have events at all positions
+      \end{itemize}
+
+      \column{4.5cm}
+      \inhead{Non-Synchronized}
+      \begin{itemize}
+        \item Timestamp\strut
+        \item Events anywhere\\ on time domain\strut
+        \item Different streams might have events at different timestamps
+      \end{itemize}
+    \end{columns}
+  \end{centering}
+\end{frame}
+
+\subsection{Lifting Functions to Streams}
+
+\begin{frame}{Lift}
+  \[ \op{lift}: (\mathbb D_\bot \times \mathbb D'_\bot \to \mathbb D''_\bot) \to (\mathcal S_{\mathbb D} \times \mathcal S_{\mathbb D'} \to \mathcal S_{\mathbb D''}) \]
+  \hfill $\mathbb D_\bot := \mathbb D \cup \{ \bot \}$
+
+  \xxx
+
+  \begin{center}
+    \begin{tikzpicture}[y=.75cm, x=1.5cm]
+      \node[event, fill=maincolor!18] at (1,0) (t1) {};
+      \node[event, fill=none, draw=none] at (2,0) (t2) {};
+      \node[event, fill=maincolor!18] at (3,0) (t3) {};
+
+      \node[event, fill=maincolor!18] at (1,-1) (l1) {};
+      \node[event, fill=maincolor!18] at (2,-1) (l2) {};
+      \node[event, fill=none, draw=none] at (3,-1) (l3) {};
+
+      \node[event, fill=maincolor!18, dashed] at (1,-3) (u1) {};
+      \node[event, fill=maincolor!18, dashed] at (2,-3) (u2) {};
+      \node[event, fill=maincolor!18, dashed] at (3,-3) (u3) {};
+
+      \path[shorten >=0pt]
+        (0,0) node[left] {$\mathcal S_{\mathbb D} \ni x$} edge[|-]
+        (t1) (t1) edge (t3) (t3) edge[->] +(1,0)
+        (0,-1) node[left] {$\mathcal S_{\mathbb D'} \ni y$} edge[|-]
+        (l1) (l1) edge (l2) (l2) edge[->] +(2,0)
+        (0,-3) node[left] {$\mathcal S_{\mathbb D''} \ni \op{lift}(f)(x,y)$} edge[|-]
+        (u1) (u1) edge (u2) (u2) edge (u3) (u3) edge[->] +(1,0);
+      \path[maincolor, thick, auto, ->]
+        (t1) edge[in=60, out=-60] node[pos=.6] {$f$} (u1)
+        (t2) edge[in=60, out=-60] node[pos=.6] {$f$} (u2)
+        (t3) edge[in=60, out=-60] node[pos=.6] {$f$} (u3)
+        (l1) edge[in=60, out=-40] (u1)
+        (l2) edge[in=60, out=-40] (u2)
+        (l3) edge[in=60, out=-40] (u3);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Lift: Merge}
+  \begin{itemize}
+     \item Process streams in an \alert{event-oriented fashion}
+     \item \alert{Merge} combines two streams into one,\\
+       giving preference to the first stream when both streams contain identical timestamps.
+  \end{itemize}
+
+  \begin{center}
+    \begin{tikzpicture}[events]
+      \node[event, fill=maincolor!18] at (1,0) (x1) {2};
+      \node[event, fill=maincolor!18] at (3,0) (x2) {4};
+      \path
+        (0,0) node[left] {$x$} edge[|-]
+        (x1) (x1) edge (x2) (x2) edge[->] +(1,0);
+
+      \node[event, fill=alertedcolor!18] at (2,-1) (y1) {1};
+      \node[event, fill=alertedcolor!18] at (3,-1) (y2) {3};
+      \path
+        (0,-1) node[left] {$y$} edge[|-]
+        (y1) (y1) edge (y2) (y2) edge[->] +(1,0);
+
+      \node[event, fill=maincolor!18] at (1,-2) (z1) {2};
+      \node[event, fill=alertedcolor!18] at (2,-2) (z2) {1};
+      \node[event, fill=maincolor!18] at (3,-2) (z3) {4};
+      \path
+        (0,-2) node[left] {$\op{merge}(x,y)$} edge[|-]
+        (z1) (z1) edge (z2) (z2) edge (z3) (z3) edge[->] +(1,0);
+    \end{tikzpicture}
+  \end{center}
+
+  \vskip-4ex
+  \begin{align}
+    \op{merge}(x,y) &= \op{lift}(\op{f})(x,y)\\
+    \op{f}&: \mathbb D_\bot \times \mathbb D_\bot \to \mathbb D_\bot \\
+    \op{f}(a,b) &= \begin{cases}
+      b & \text{if } a = \bot \\
+      a & \text{else}
+    \end{cases}
+  \end{align}
+\end{frame}
+
+\begin{frame}{Accessing Previous Events: Last}
+  \begin{itemize}
+     \item Needed to define properties over sequences of events.
+     \item Last refers to values of events on one stream\\
+       \alert{occurring strictly before} events on another stream
+  \end{itemize}
+
+  \[ \op{last}: \mathcal S_{\mathbb D} \times \mathcal S_{\mathbb D'} \to \mathcal S_{\mathbb D} \]
+
+  \begin{center}
+    \begin{tikzpicture}[events]
+      \node[event, fill=maincolor!18] at (2,0) (x1) {1};
+      \node[event, fill=maincolor!18] at (4,0) (x2) {2};
+      \node[event, fill=maincolor!18] at (5,0) (x3) {3};
+      \node[event, fill=maincolor!18] at (8,0) (x4) {4};
+      \path
+        (0,0) node[left] {$x$} edge[|-]
+        (x1) (x1) edge (x2) (x2) edge (x3) (x3) edge (x4) (x4) edge[->] +(1,0);
+
+      \node[event, fill=alertedcolor!18] at (1,-1) (y1) {};
+      \node[event, fill=alertedcolor!18] at (3,-1) (y2) {};
+      \node[event, fill=alertedcolor!18] at (6,-1) (y3) {};
+      \node[event, fill=alertedcolor!18] at (8,-1) (y4) {};
+      \path
+        (0,-1) node[left] {$y$} edge[|-]
+        (y1) (y1) edge (y2) (y2) edge (y3) (y3) edge (y4) (y4) edge[->] +(1,0);
+
+      \node[event, fill=maincolor!18] at (3,-2) (z1) {1};
+      \node[event, fill=maincolor!18] at (6,-2) (z2) {3};
+      \node[event, fill=maincolor!18] at (8,-2) (z3) {3};
+      \path
+        (0,-2) node[left] {$\op{last}(x,y)$} edge[|-]
+        (z1) (z1) edge (z2) (z2) edge (z3) (z3) edge[->] +(1,0);
+
+      \path[thick, maincolor, shorten >=1pt, ->]
+        (x1) edge[bend right=10] (z1)
+        (x3) edge[bend right=10] (z2)
+        (x3) edge[out=0,in=150] (z3);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Accessing Timestamps}
+  \begin{itemize}
+     \item Provides access to the \alert{timestamps} of events
+     \item Produces events carrying their \alert{timestamps as data value}
+     \item Hence \alert{all operators} for data values can be applied to timestamps.
+  \end{itemize}
+
+  \[ \op{time}: \mathcal S_{\mathbb D} \to \mathcal S_{\mathbb T} \]
+
+  \begin{center}
+    \begin{tikzpicture}[events]
+      \node[event, fill=maincolor!18, label=above:1] at (1,0) (a1) {};
+      \node[event, fill=maincolor!18, label=above:3] at (3,0) (a2) {};
+      \node[event, fill=maincolor!18, label=above:4] at (4,0) (a3) {};
+      \path
+        (0,0) node[left] {$x$} edge[|-]
+        (a1) (a1) edge (a2) (a2) edge (a3) (a3) edge[->] +(1,0);
+
+      \node[event, fill=alertedcolor!18] at (1,-1) (t0) {1};
+      \node[event, fill=alertedcolor!18] at (3,-1) (t1) {3};
+      \node[event, fill=alertedcolor!18] at (4,-1) (t2) {4};
+      \path
+        (0,-1) node[left] {$\op{time}(x)$} edge[|-]
+        (t0) (t0) edge (t1) (t1) edge (t2) (t2) edge[->] +(1,0);
+
+      \node[event, fill=alertedcolor!18] at (3,-2) (u1) {1};
+      \node[event, fill=alertedcolor!18] at (4,-2) (u2) {3};
+      \path
+        (0,-2) node[left] {$\op{last}(\op{time}(x), x)$} edge[|-]
+        (u1) (u1) edge (u2) (u2) edge[->] +(1,0);
+
+      \node[event, fill=maincolor!18] at (3,-3) (d1) {2};
+      \node[event, fill=maincolor!18] at (4,-3) (d2) {1};
+      \path
+        (0,-3) node[left] {$\op{time}(x) - \op{last}(\op{time}(x), x)$} edge[|-]
+        (d1) (d1) edge (d2) (d2) edge[->] +(1,0);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Signal Lift}
+  \vskip-4ex
+  \begin{align}
+    \op{slift}&: (\mathbb D \times \mathbb D' \to \mathbb D'') \to (\mathcal S_{\mathbb D} \times \mathcal S_{\mathbb D'} \to \mathcal S_{\mathbb D''}) \\
+    \op{slift}(f)(x, y) &= \op{lift}(f')(x', y') \\
+    x' &= \op{merge}(x, \op{last}(x, y)) \\
+    y' &= \op{merge}(y, \op{last}(y, x)) \\
+    f'(a,b) &= \begin{cases}
+      f(a,b) & \text{if } a \neq \bot \wedge b \neq \bot \\
+      \bot & \text{else}
+    \end{cases}
+  \end{align}
+
+  \begin{center}
+    \begin{tikzpicture}[y=.75cm, x=1.5cm]
+      \node[event, fill=alertedcolor!18] at (1,0) (x1) {};
+      \node[event, fill=none, draw=none] at (2,0) (x2) {};
+      \node[event, fill=alertedcolor!18] at (3,0) (x3) {};
+
+      \node[event, fill=examplecolor!18] at (1,-1) (y1) {};
+      \node[event, fill=examplecolor!18] at (2,-1) (y2) {};
+      \node[event, fill=none, draw=none] at (3,-1) (y3) {};
+
+      \node[event, fill=alertedcolor!18] at (1,-2) (xx1) {};
+      \node[event, fill=alertedcolor!18] at (2,-2) (xx2) {};
+      \node[event, fill=alertedcolor!18] at (3,-2) (xx3) {};
+
+      \node[event, fill=examplecolor!18] at (1,-3) (yy1) {};
+      \node[event, fill=examplecolor!18] at (2,-3) (yy2) {};
+      \node[event, fill=examplecolor!18] at (3,-3) (yy3) {};
+
+      \node[event, fill=maincolor!18] at (1,-5) (z1) {};
+      \node[event, fill=maincolor!18] at (2,-5) (z2) {};
+      \node[event, fill=maincolor!18] at (3,-5) (z3) {};
+
+      \path[shorten >=0pt]
+        (0,0) node[left] {$\mathcal S_{\mathbb D} \ni x$} edge[|-]
+        (x1) (x1) edge (x3) (x3) edge[->] +(1,0)
+        (0,-1) node[left] {$\mathcal S_{\mathbb D'} \ni y$} edge[|-]
+        (y1) (y1) edge (y2) (y2) edge[->] +(2,0)
+        (0,-2) node[left] {$\mathcal S_{\mathbb D} \ni x'$} edge[|-]
+        (xx1) (xx1) edge (xx2) (xx2) edge (xx3) (xx3) edge[->] +(1,0)
+        (0,-3) node[left] {$\mathcal S_{\mathbb D'} \ni y'$} edge[|-]
+        (yy1) (yy1) edge (yy2) (yy2) edge (yy3) (yy3) edge[->] +(1,0)
+        (0,-5) node[left] {$\mathcal S_{\mathbb D''} \ni \op{slift}(f)(x,y)$} edge[|-]
+        (z1) (z1) edge (z2) (z2) edge (z3) (z3) edge[->] +(1,0);
+      \path[alertedcolor, thick, ->]
+        (x1) edge[bend left=45] (xx1)
+        (x1) edge (xx2)
+        (x3) edge (xx3);
+      \path[examplecolor, thick, ->]
+        (y1) edge[bend right=45] (yy1)
+        (y2) edge[bend right=45] (yy2)
+        (y2) edge (yy3);
+      \path[maincolor, thick, ->, auto]
+        (xx1) edge[in=60, out=-60] node[pos=.6] {$f$} (z1)
+        (xx2) edge[in=60, out=-60] node[pos=.6] {$f$} (z2)
+        (xx3) edge[in=60, out=-60] node[pos=.6] {$f$} (z3)
+        (yy1) edge[in=60, out=-40] (z1)
+        (yy2) edge[in=60, out=-40] (z2)
+        (yy3) edge[in=60, out=-40] (z3);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Signal Lift of Addition}
+  \begin{itemize}
+    \item \alert{Signal lift} allows to lift operations on arbitrary data types to streams.
+    \item E.g. the \alert{addition} on integer numbers can be lifted to streams of integers.
+  \end{itemize}
+
+  \xxx
+
+  \begin{center}
+    \begin{tikzpicture}[events]
+      \node[left] at (0,0) {$a$};
+      \firstbar{maincolor!18}{(0,0)}{2}{2}
+      \lastbar{maincolor!18}{(2,0)}{4}{4}
+      \node[left] at (0,-1) {$b$};
+      \firstbar{maincolor!18}{(0,-1)}{4}{1}
+      \lastbar{maincolor!18}{(4,-1)}{2}{3}
+      \node[left] at (0,-2) {$a+b$};
+      \firstbar{maincolor!18}{(0,-2)}{2}{3}
+      \midbar{maincolor!18}{(2,-2)}{2}{5}
+      \lastbar{maincolor!18}{(4,-2)}{2}{7}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Signal Lift of Negation}
+  \begin{itemize}
+    \item \alert{Signal lift} allows to lift operations on arbitrary data types to streams.
+    \item E.g. the \alert{negation} of booleans can be lifted to a stream of booleans.
+  \end{itemize}
+
+  \xxx
+
+  \begin{center}
+    \begin{tikzpicture}[events]
+      \node[left] at (0,0) {$a$};
+      \firstbar{examplecolor!18}{(0,0)}{2}{true}
+      \midbar{alertedcolor!18}{(2,0)}{2}{false}
+      \lastbar{examplecolor!18}{(4,0)}{2}{true}
+      \node[left] at (0,-1) {$\neg a$};
+      \firstbar{alertedcolor!18}{(0,-1)}{2}{false}
+      \midbar{examplecolor!18}{(2,-1)}{2}{true}
+      \lastbar{alertedcolor!18}{(4,-1)}{2}{false}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Signal Lift of If-Then-Else}
+  \begin{itemize}
+    \item \alert{Signal lift} allows to lift operations on arbitrary data types to streams.
+    \item E.g. the ternary \alert{if-then-else} function can be lifted to\\
+      a stream of booleans and two streams of identical type.
+  \end{itemize}
+
+  \xxx
+
+  \begin{center}
+    \begin{tikzpicture}[events]
+      \node[left] at (0,0) {$a$};
+      \firstbar{maincolor!18}{(0,0)}{2}{1}
+      \lastbar{maincolor!18}{(2,0)}{4}{3}
+      \node[left] at (0,-1) {$b$};
+      \firstbar{gray!18}{(0,-1)}{4}{2}
+      \lastbar{gray!18}{(4,-1)}{2}{4}
+      \node[left] at (0,-2) {$a>b$};
+      \firstbar{alertedcolor!18}{(0,-2)}{2}{false}
+      \midbar{examplecolor!18}{(2,-2)}{2}{true}
+      \lastbar{alertedcolor!18}{(4,-2)}{2}{false}
+      \node[left] at (0,-3) {$\op{if} a>b \op{then} a \op{else} b$};
+      \firstbar{gray!18}{(0,-3)}{2}{2}
+      \midbar{maincolor!18}{(2,-3)}{2}{3}
+      \lastbar{gray!18}{(4,-3)}{2}{4}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Filtering Events}
+  \begin{itemize}
+     \item Process streams in an \alert{event-oriented fashion}
+     \item \alert{Filter} the events of one stream based on a second boolean stream
+       interpreted as piecewise constant signal.
+  \end{itemize}
+
+  \vskip-4ex
+  \begin{align}
+    \op{filter}&: \mathcal S_{\mathbb B} \times \mathcal S_{\mathbb D} \to \mathcal S_{\mathbb D} \\
+    \op{filter}(z, x) &= \op{lift}(f)(z', x) \\
+    z' &= \op{merge}(z, \op{last}(z, x)) \\
+    f(c,a) &= \begin{cases}
+      a & \text{if } c = \op{true} \\
+      \bot & \text{else}
+    \end{cases}
+  \end{align}
+
+  \begin{center}
+    \begin{tikzpicture}[events]
+      \node[event, fill=maincolor!18] at (1,0) (x1) {1};
+      \node[event, fill=maincolor!18] at (3,0) (x2) {2};
+      \node[event, fill=maincolor!18] at (4,0) (x3) {3};
+      \node[event, fill=maincolor!18] at (5,0) (x4) {4};
+      \node[event, fill=maincolor!18] at (6,0) (x5) {5};
+      \path
+        (0,0) node[left] {$x$} edge[|-]
+        (x1) (x1) edge (x2) (x2) edge (x3) (x3) edge (x4) (x4) edge (x5) (x5) edge[->] +(1,0);
+
+      \node[left] at (0,-1) {$z$};
+      \firstbar{examplecolor!18}{(0,-1)}{2}{true}
+      \midbar{alertedcolor!18}{(2,-1)}{3}{false}
+      \lastbar{examplecolor!18}{(5,-1)}{2}{true}
+
+      \node[event, fill=maincolor!18] at (1,-2) (z1) {1};
+      \node[event, fill=maincolor!18] at (5,-2) (z4) {4};
+      \node[event, fill=maincolor!18] at (6,-2) (z5) {5};
+      \path
+        (0,-2) node[left] {$\op{filter}(z,x)$} edge[|-]
+        (z1) (z1) edge (z4) (z4) edge (z5) (z5) edge[->] +(1,0);  
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\subsection{Recursive Equations}
+
+\begin{frame}[fragile]{Recursive Equations in TeSSLa}
+  \begin{itemize}
+    \item The \alert{last} operator allows to write \alert{recursive equations}
+    \item The \alert{merge} operation allows to \alert{initialize} recursive equations with an initial event from an other stream.
+    \item Express \alert{aggregation} operations like the \alert{sum} over all values of a stream. 
+  \end{itemize}
+
+  \vskip3ex
+
+  \begin{center}
+    \begin{tikzpicture}[events]
+      \node[event, fill=maincolor!18] at (2,0) (z1) {2};
+      \node[event, fill=maincolor!18] at (4,0) (z2) {1};
+      \node[event, fill=maincolor!18] at (6,0) (z3) {3};
+      \path
+        (0,0) node[left] {$x$} edge[|-]
+        (z1) (z1) edge (z2) (z2) edge (z3) (z3) edge[->] +(2,0);
+
+      \node[event, fill=examplecolor!18] at (2,-1) (l1) {0};
+      \node[event, fill=examplecolor!18] at (4,-1) (l2) {2};
+      \node[event, fill=examplecolor!18] at (6,-1) (l3) {3};
+      \path
+        (0,-1) node[left] {$\op{last}(s, x)$} edge[|-]
+        (l1) (l1) edge (l2) (l2) edge (l3) (l3) edge[->] +(2,0);  
+
+      \node[left] at (0,-2) {$s$};
+      \firstbar{maincolor!18}{(0,-2)}{2}{0}
+      \midbar{maincolor!18}{(2,-2)}{2}{2}
+      \midbar{maincolor!18}{(4,-2)}{2}{3}
+      \lastbar{maincolor!18}{(6,-2)}{2}{6}
+    \end{tikzpicture}
+  \end{center}
+
+  \vskip1ex
+
+  \begin{lstlisting}[gobble=4,language=tessla]
+    def s := merge(last(s, x) + x, 0)
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[label=current,fragile]{Recursive Equations in TeSSLa}{How It Works}
+  \qquad
+  \begin{tikzpicture}[events]
+    \begin{scope}[yshift=0cm]
+      \node[event, fill=maincolor!18] at (2,0) (x1) {2};
+      \node[event, fill=maincolor!18] at (4,0) (x2) {1};
+      \path
+        (0,0) node[left=6pt] {$x$}
+        (0,0) edge[|-] (x1)
+        (x1) edge (x2)
+        (x2) edge[->] +(2,0);
+    \end{scope}
+
+    \begin{scope}[yshift=-1cm]
+      \uncover<3->{\node[event, fill=gray!18] at (2,0) (l1) {0};}
+      \uncover<6->{\node[event, fill=alertedcolor!18] at (4,0) (l2) {2};}
+      \path (0,0) node[left=6pt] {$\op{last}(s, x)$};
+      \only<2->{\path (0,0) edge[|-] (l1);}
+      \only<5->{\path (l1) edge (l2);}
+      \only<8->{\path (l2) edge[->] +(2,0);}
+    \end{scope}
+
+    \begin{scope}[yshift=-2cm]
+      \uncover<4->{\node[event, fill=alertedcolor!18] at (2,0) (p1) {2};}
+      \uncover<7->{\node[event, fill=examplecolor!18] at (4,0) (p2) {3};}
+      \path (0,0) node[left=6pt] {$\op{last}(s, x) + x$};
+      \only<2->{\path (0,0) edge[|-] (p1);}
+      \only<5->{\path (p1) edge (p2);}
+      \only<8->{\path (p2) edge[->] +(2,0);}
+    \end{scope}
+
+    \begin{scope}[yshift=-3cm]
+      \node[event, fill=gray!18] at (0,0) (n1) {0};
+      \path
+        (0,0) node[left=6pt] {$0$}
+        (n1) edge[->] (6,0);
+    \end{scope}
+
+    \begin{scope}[yshift=-4cm]
+      \uncover<2->{\node[event, fill=gray!18] at (0,0) (m0) {0};}
+      \uncover<4->{\node[event, fill=alertedcolor!18] at (2,0) (m1) {2};}
+      \uncover<7->{\node[event, fill=examplecolor!18] at (4,0) (m2) {3};}
+      \path (0,0) node[left=6pt] {$s = \op{merge}(\op{last}(s, x) + x, 0)$};
+      \only<2->{\path (m0) edge (m1);}
+      \only<5->{\path (m1) edge (m2);}
+      \only<8->{\path (m2) edge[->] +(2,0);}
+    \end{scope}
+
+    \uncover<3->{\path[thick, ->, shorten >=1pt] (m0) edge[gray] (l1);}
+    \uncover<4->{\path[thick, ->, shorten >=1pt] (x1) edge[bend left=45, maincolor] (p1) (l1) edge[bend left=45, gray] (p1);}
+    \uncover<6->{\path[thick, ->, shorten >=1pt] (m1) edge[alertedcolor] (l2);}
+    \uncover<7->{\path[thick, ->, shorten >=1pt] (x2) edge[bend left=45, maincolor] (p2) (l2) edge[bend left=45, alertedcolor] (p2);}
+  \end{tikzpicture}
+\end{frame}
+
+\section{Advanced TeSSLa}
+
+\subsection{Macros}
+
+\begin{frame}[fragile]{Macros in TeSSLa: Counting}
+  \begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=tessla]
+    # Count the number of events on `values`.
+    def count[A,B](v: Events[A]) := {
+      def c: Events[Int] := merge(
+        # increment counter
+        last(c, v) + 1
+      , 0)
+      c
+    }
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Macros in TeSSLa: Counting With Reset}
+  \begin{lstlisting}[gobble=4,basicstyle=\ttfamily\footnotesize,language=tessla]
+    # Count the number of events on `v`. Reset the
+    # output to 0 on every event on `r`.
+    def count[A,B](v: Events[A], r: Events[B]) := {
+      def c: Events[Int] := merge(
+
+        # most recent event on `r`
+        if merge(time(r) > time(v), false)
+        then 0
+      
+        # most recent `r` and `v` simultaneously
+        else if merge(time(r) == time(v), false)
+        then 1
+      
+        # most recent even on `v`
+        else last(c, v) + 1
+
+      , 0)
+      c
+    }
+  \end{lstlisting}
+\end{frame}
+
+\subsection{Data Structures}
+
+\begin{frame}{Data Types in TeSSLa}
+  \begin{itemize}
+    \item TeSSLa is defined \alert{agnostically} with respect\\
+      \qquad to \alert{any time or data domain}.
+    \item \alert{Different data structures} can be used\\
+      \qquad to \alert{represent time and data}.
+    \item Monitoring in hardware:\\
+      \qquad \alert{atomic data types}, e.g. int or float.
+    \item Monitoring in software:\\
+      \qquad \alert{complex data structures} like lists, trees and maps.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Have We Already Seen This Event?}
+  \begin{lstlisting}[language=tessla,gobble=4]
+    in x: Events[Int]
+
+    def seen: Events[Set[Int]] :=
+      merge(Set_add(last(seen, x), x),
+        Set_empty[Int])
+
+    def new_or_old :=
+      if Set_contains(last(seen, x), x)
+      then "old"
+      else "new"
+
+    out *
+  \end{lstlisting}
+\end{frame}
+
+\section*{Conclusion}
+
+\begin{frame}{Conclusion}
+  \begin{enumerate}
+    \item \alert{Stream processing} is about \alert{deriving} intermediate and output streams from input streams.
+    \item There are three \alert{fundamental principles}: \alert{Lifting functions} from the data domain to streams, accessing \alert{previous events} and \alert{recursive} equations.
+    \item \alert{Synchronized streams} are \alert{sequences of events}. Events are on a \alert{fixed grid} and all streams have \alert{events at all positions}.
+    \item \alert{Non-synchronized streams} are \alert{sequences of timestamped events}. Events can \alert{occur anywhere} on the time domain and different streams might have \alert{events at different timestamps}.
+    \item We have seen the \alert{basic operators} of the stream-based temporal specification language \alert{TeSSLa}: \alert{lift}, \alert{merge}, \alert{last}, \alert{time}, \alert{signal lift} and \alert{filter}.
+  \end{enumerate}
+\end{frame}

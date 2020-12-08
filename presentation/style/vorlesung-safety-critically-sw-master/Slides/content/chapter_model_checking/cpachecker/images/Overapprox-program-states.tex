@@ -1,0 +1,39 @@
+\documentclass[preview]{standalone}
+\usepackage{../sosy-beamer}
+
+\begin{document}
+  \begin{tikzpicture}[
+  ellipseNode/.style={
+    ellipse,
+    draw,
+    on grid,
+    minimum width = 5cm,
+    minimum height = 3.5cm,
+    fill = sosyblue},
+  cloudNode/.style={
+    cloud,
+    cloud ignores aspect,
+    draw,
+    on grid,
+    align = center},
+  innerCloudNode/.style={
+    cloudNode,
+    cloud puffs=9.89,
+    minimum width = 4cm,
+    minimum height = 1.5cm,
+    top color = sosyblue!20,
+    bottom color = sosyblue!60},
+  outerCloudNode/.style={
+    cloudNode,
+    cloud puffs=6.32,
+    minimum width = 2.25cm,
+    minimum height = 1.0cm,
+    fill = black}]
+
+    \node (nodeEllipse) [ellipseNode, label={[shift={(0ex,-6ex)}]Overapproximation}] {};
+
+    \node (nodeInnerCloud) [innerCloudNode, below = 0.5cm of nodeEllipse] {Reachable\\States};
+
+    \node (nodeOuterCloud) [outerCloudNode, below right = 1cm and 3.5cm of nodeEllipse] {\textcolor{white}{Error}\\\textcolor{white}{States}};
+  \end{tikzpicture}
+\end{document}

@@ -1,0 +1,123 @@
+\subsection*{Testing}
+
+\subsubsection*{Myers Testing Principles}
+
+\begin{Frame}[allowframebreaks]{Myers Testing Principles}
+  \textcolor{maincolor}{A necessary part of a test case is a definition of the expected output or result.}
+  \begin{itemize}
+    \item The eye sees what it wants to see.
+  \end{itemize}
+
+  \textcolor{maincolor}{A programmer should avoid attempting to test his or her own program.}
+  \begin{itemize}
+    \item Programmers cannot bring themselves to the attitude of wanting to expose errors.
+    \item The programmer may have misunderstood the specification.
+    \item However: partially unavoidable for debugging and small projects. (See unit testing.)
+  \end{itemize}
+
+  \textcolor{maincolor}{A programming organization should not test its own programs.}\\ \vspace*{1ex}
+
+  \textcolor{maincolor}{Thoroughly inspect the results of each test.}
+  
+  \framebreak
+
+  \textcolor{maincolor}{Test cases must be written for invalid and unexpected, as well as valid and expected, input conditions.}
+  \begin{itemize}
+    \item Another reason why the programmer should avoid testing his/her program.
+  \end{itemize}
+
+  \textcolor{maincolor}{Examining a program to see if it does not do what it is supposed to do is only half of the battle. The other half is seeing whether the program does what it is not supposed to do.}
+  \begin{itemize}
+    \item Programs should also be tested for \alert{unwanted side effects.}
+  \end{itemize}
+  
+  \textcolor{maincolor}{Avoid throw-away test cases unless the program is truly a throw-away program.}
+  \begin{itemize}
+    \item Test cases are \alert{a valuable investment.}
+  \end{itemize}
+  
+  \framebreak
+
+  \textcolor{maincolor}{Do not plan a testing effort under the tacit assumption that no errors will be found.}
+  \begin{itemize}
+    \item For instance, do not allow too little time for testing!
+  \end{itemize}
+
+  \textcolor{maincolor}{The probability of the existence of more errors in a section of a program is proportional to the number of errors already found in that section.}
+  \begin{itemize}
+    \item If a section of the program seems more error prone than others, focus your effort on it.
+  \end{itemize}
+
+  \textcolor{maincolor}{Testing is an extremely creative and intellectually challenging task.}
+\end{Frame}
+
+\subsubsection*{Testing Along the Software Cycle}
+
+\begin{Frame}{Kinds of Testing}
+  \begin{tabbing}
+    \inhead{Unit (module) testing} \qquad \= \only<2->{\alert{$\longleftarrow$ unit design}}\\
+    Testing of small pieces of code\\[1ex]
+    %
+    \inhead{Integration testing} \>\only<2->{\alert{$\longleftarrow$ system design}}\\
+    Testing if pieces of code work well together\\[1ex]
+    %
+    \inhead{System testing} \>\only<2->{\alert{$\longleftarrow$ specification}}\\
+    Test of the whole system\\[1ex]
+    %
+    \inhead{Acceptance testing} \>\only<2->{\alert{$\longleftarrow$ requirements}}\\
+    Test performed by the client\\[1ex]
+    %
+    \onslide<3->
+    \inhead{Regression testing}\\
+    Tests performed after changes in the system\\
+    (updates, new functionalities)
+  \end{tabbing}
+\end{Frame}
+
+\begin{Frame}[fragile]{Testing in the V Model}
+  \newcommand{\define}[1]{\inhead{#1} \\ \scriptsize define test cases}
+  \newcommand{\code}{\inhead{Coding} \\ \scriptsize write code}
+  \newcommand{\run}[1]{\inhead{#1} \\ \scriptsize run test cases}
+
+  \begin{tikzpicture}[
+    state/.style={
+      draw=maincolor,
+      thick,
+      fill=maincolor!18,
+      text width=2.5cm,
+      align=center,
+      font=\linespread{0.7}\selectfont,
+      minimum height=8mm
+    },
+    heigh state/.style={
+      state,
+      minimum height=12mm
+    },
+    node distance=5mm and -2.2cm
+  ]
+    \node[heigh state] (define requirements) {\define{Requirements\\ Engineering}};
+    \node[heigh state, below right=of define requirements] (define specification) {\define{Functional\\ Specification}};
+    \node[state, below right=of define specification] (define system) {\define{System Design}};
+    \node[state, below right=of define system] (define modules) {\define{Module Design}};
+    \node[state, below right=5mm and -1cm of define modules] (code) {\code};
+    \node[state, above right=5mm and -1cm of code] (test modules) {\run{Unit Test}};
+    \node[state, above right=of test modules] (test system) {\run{Integration Test}};
+    \node[heigh state, above right=of test system] (test specification) {\run{System Test}};
+    \node[heigh state, above right=of test specification] (test requirements) {\run{Acceptance Test}};
+    \path[very thick,maincolor,->]
+      (define requirements) edge (define specification)
+      (define specification) edge (define system)
+      (define system) edge (define modules)
+      (define modules) edge[shorten >=3pt] (code)
+      (code) edge[shorten >=3pt] (test modules)
+      (test modules) edge (test system)
+      (test system) edge (test specification)
+      (test specification) edge (test requirements);
+    \path[dashed, thick,->,shorten <=3pt, shorten >=3pt,transform canvas={yshift=-2mm}]
+      (define requirements) edge (test requirements)
+      (define specification) edge (test specification)
+      (define system) edge (test system)
+      (define modules) edge (test modules);
+  \end{tikzpicture}
+\end{Frame}
+

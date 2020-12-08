@@ -1,0 +1,6 @@
+# Assumption: All input streams have events at all timestamps 0, 1, 2, 3, ...
+
+def prev[A](a: Events[A], d: A) := {
+  def trigger: Events[Int] := merge(first(1, delay(trigger, ())), 1)
+  return merge(last(a, trigger), d)
+}

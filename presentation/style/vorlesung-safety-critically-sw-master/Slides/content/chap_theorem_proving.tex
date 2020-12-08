@@ -1,0 +1,82 @@
+% Macros and configuration for this chapter
+\lstdefinelanguage[]{Coq}[]{}{literate=%
+{>}{{$>$}}{1}
+{<}{{$<$}}{1}
+{=}{{$=$}}{1}
+{-}{{$-$}}{1}
+{+}{{$+$ }}{1}
+{~}{{$\sim$}}{1}
+{===}{$\equiv$ }{1}
+{...}{$\ldots$ }{2}
+{<--}{\reflectbox{$\leadsto$}}{3}
+{->}{$\rightarrow$ }{1}
+{=>}{$\Rightarrow$ }{1}
+{>=}{$\ge$}{1}
+{<=}{$\le$}{1}
+{:=}{$\coloneqq$}{2}
+{/\\}{{$\wedge$}}{1}
+{\\/}{{$\vee$}}{1}
+{forall}{$\forall$}{1}
+{TTrue}{{True}}{4}
+{FFalse}{{False}}{5}
+{True}{{$\top$}}{1}
+{False}{{$\bot$}}{1}
+%{'a}{{$\alpha$}}{1}
+%{'b}{{$\beta$}}{1}
+%{'c}{{$\gamma$}}{1}
+%{'d}{{$\delta$}}{1}
+%{'e}{{$\varepsilon$}}{1}}
+,
+morekeywords={Inductive,Definition,Fixpoint,Lemma,Theorem,Proof,Qed,Require,Import,Set,Type,Prop,match,fun,apply,intros,exact,destruct,split,simpl,reflexivity,exfalso,induction,rewrite,left,right}
+}
+\lstdefinestyle{Coq}{language=Coq}
+\lstset{style=Coq}
+
+\lstdefinelanguage[]{Coqorig}[]{}{literate=%
+{>}{{$>$}}{1}
+{<}{{$<$}}{1}
+{=}{{$=$}}{1}
+{-}{{$-$}}{1}
+{+}{{$+$ }}{1}
+% {~}{{$\sim$}}{1}
+{===}{$\equiv$ }{1}
+{...}{$\ldots$ }{2}
+{<--}{\reflectbox{$\leadsto$}}{3}
+{->}{$\rightarrow$ }{1}
+{=>}{$\Rightarrow$ }{1}
+{>=}{$\ge$}{1}
+{<=}{$\le$}{1}
+{:=}{$\coloneqq$}{2}
+{/\\}{{$\wedge$}}{1}
+{\\/}{{$\vee$}}{1}
+{forall}{$\forall$}{1}
+% {~}{{$¬$}}{1}
+%{'a}{{$\alpha$}}{1}
+%{'b}{{$\beta$}}{1}
+%{'c}{{$\gamma$}}{1}
+%{'d}{{$\delta$}}{1}
+%{'e}{{$\varepsilon$}}{1}}
+,
+morekeywords={Inductive,Definition,Fixpoint,Lemma,Theorem,Proof,Qed,Require,Import,Set,Type,Prop,match,fun,apply,intros,exact,destruct,split,simpl,reflexivity,exfalso,induction,rewrite,left,right}
+}
+\lstdefinestyle{Coq}{language=Coq}
+\lstset{style=Coq}
+
+\chapter{Theorem Proving}
+\label{chap_theorem}
+
+\targets{
+  \item \textit{Programming}: By using Recursive Functions and Inductive Data Types
+  \item \textit{Specifying}: Understand how Logical Formulas can be encoded as Types
+  \item \textit{Proving}: Prove Logical Formulas about Programs in the interactive theorem prover Coq
+}
+
+\input{content/theorem-proving/intro}
+\input{content/theorem-proving/prog}
+\input{content/theorem-proving/props-as-types}
+
+\mode<article>
+\exercises
+
+\mode
+<all>

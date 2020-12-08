@@ -1,0 +1,68 @@
+\begin{document}
+		
+	\mode
+	<article>
+	
+	\frontmatter
+	
+	\input{style/titlepage.tex}
+	
+	\pdfbookmark{\contentsname}{tableofcontents}
+	\markright{}
+	\dominitoc
+	\tableofcontents
+	
+	\input{content/introduction.tex}
+	\newpage
+	\mainmatter
+	
+	\mode
+	<beamer>
+	
+	\input{style/titleframe.tex}
+	\input{style/parttocframe.tex}
+	
+	\mode
+	<all>
+	
+	
+	\input{content/chapter_intro/chap_introduction}
+%	
+	\input{content/chapter_testing/chap_testing}
+	
+	\input{content/chap_static_analysis}
+	
+	\input{content/chapter_model_checking/chap_model_checking}
+	
+	\input{content/chap_theorem_proving}	
+	\input{content/chap_rv}
+	\input{content/chap_srv}
+	\input{content/chap_hardware_srv}
+
+  \input{content/chap_rust}
+  \input{content/chap_rust_depth}
+
+	
+	\input{content/chap_spark}
+	
+%	\input{content/chap_specifications}
+	
+	\input{content/chap_certification}
+	
+%	\input{content/chap_latex}
+	
+	\mode
+	<article>
+	
+	\bibliographystyle{alpha}
+	\bibliography{literature}
+	
+	\mode
+	<all>
+	
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "rv.script"
+%%% End: 

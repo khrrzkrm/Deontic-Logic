@@ -1,0 +1,71 @@
+\documentclass[language=en,sheet=3,prefix]{exercise}
+\exerciseCourse{Development of Safety Critical Systems (Sichere Software)}
+\exerciseAuthors{Martin Leucker, Karam Kharraz, Felix Lange}
+\exerciseTerm{Winter term 18}
+%\exerciseDeadline{8th/12th of November 2018}
+\usepackage{xspace}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes.geometric}
+\include{macros}
+\begin{document}
+
+\framac is a platform dedicated to the analysis of source code written in
+the \C programming language. The \framac platform gathers several analysis techniques into a single collaborative extensible framework. The goal is to combine the results computed by different analyses techniques organized as Plug-ins. The tool rely on a formal specification language called \acsl \footnote{\url{https://frama-c.com/download/acsl-implementation-Chlorine-20180501.pdf}} to express properties, assumptions \etc  \\ The \eva \footnote{\url{https://frama-c.com/download/frama-c-value-analysis.pdf}} (Evolved value analysis) plug-in computes variation domains for program variables using abstract interpretation techniques. The installation steps of \framac are available on the official website \footnote{\url{https://frama-c.com/install-aluminium-20160501.html}} . The source code of the lab tasks is available in Gitlab \footnote{\url{https://gitlab.isp.uni-luebeck.de/kharraz/lab_Eva}} .
+
+\task[Hands on \eva with fixed-width integer types overflow]
+\begin{lstlisting}[language=c,gobble=2]
+   int average(int a,int b){
+     int z = (a+b)/2;
+     return z ;
+   }
+\end{lstlisting}
+The function $average$ computes the average values of two numbers. In this implementation, the "developer" used the type $int$. 
+\eva is able to detect possible $RTE$ (RunTime Errors)  without specifying the related properties in \acsl. Try the following command:
+
+\begin{lstlisting}[language=Java]
+ frama-c-gui -val average1.c -main average
+\end{lstlisting}
+
+the tool detects 2 possibilities of overflow with an orange flag. The average of two values in $[a,b]$ is always in $[a,b]$, why is the tool raising those two alarms. Is it a false positive?\\
+
+Suppose that this function was designed for positive values only, we can specify this  by adding an \acsl precondition by adding this lines before the function: 
+\begin{lstlisting}[language=c]
+/*@ requires a > 0;
+    requires b > 0; */ 
+\end{lstlisting}
+
+Start the analysis again, what is the difference and why ?\\
+Modify the code of function average to avoid the alarm(overflow) without modifying the output of the oracle tests $(12,14), (11,14), (11,13)$.\\
+Now, suppose that this function is designed for positive and negative values. Remove the preconditions, what is the result found by \eva for the modified function average? Why?\\
+Modify the function code again to avoid the possible overflows and getting the same result for the aforementioned test oracles.
+\\
+
+\task[\eva: widening, precision, termination]
+Consider the following program:\\
+\begin{lstlisting}[language=c]
+int x, y = 50;
+void main(){
+	while(y<100){
+		y = y + (100 - y)/2;
+		x= y / (y-124);
+		}
+}
+\end{lstlisting}
+There appears to be a risk of division by zero in line 5. Use the following command:
+\begin{lstlisting}[language=Java]
+frama-c-gui -val divsion.c
+\end{lstlisting}
+What is the result ?\\
+To unroll the loop execution execute the following command:
+\begin{lstlisting}[language=Java]
+frama-c-gui -val divsion.c -ulevel 10
+\end{lstlisting}
+Is the value of  $y$ reaching a fixpoint? is the result of the previous analysis a true positive then?
+
+Execute the analysis without widening, run the following command:
+\begin{lstlisting}[language=Java]
+frama-c-gui -val divsion.c -slevel 100
+\end{lstlisting}
+
+Is there still an alarm, what is the new information given by the tool? What is the differences between the tool with option -slevel and  $CTF^I$ seen in the class?
+\end{document}

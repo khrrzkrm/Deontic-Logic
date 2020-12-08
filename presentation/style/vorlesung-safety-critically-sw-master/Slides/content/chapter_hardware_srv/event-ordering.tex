@@ -1,0 +1,132 @@
+%!TEX root = ../../presentation.tex
+
+\begin{frame}[fragile]{Event Ordering Constraints}{Order of Function Calls}
+  \small
+
+  \begin{block}{Property}
+    Every call to \texttt{getAllowedSpeed} leads to a call of \texttt{computeAllowedSpeedDistant} or \texttt{computeAllowedSpeedMagnet}.
+  \end{block}
+
+  \scriptsize
+
+  \begin{lstlisting}[gobble=4,language=tessla]
+    # specify events of interest
+    def call := function_call("getAllowedSpeed")
+    def return := function_return("getAllowedSpeed")
+    def computeDistant :=
+      function_call("computeAllowedSpeedDistant")
+    def computeMagnet :=
+      function_call("computeAllowedSpeedMagnet")
+
+    # specify property over the events
+    def computation := on(return,
+      time(computeDistant) > time(call) ||
+      time(computeMagnet) > time(call))
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Event Ordering Constraints}{B Not Allowed After A}
+  \small
+
+  \begin{block}{Property}
+    Once the function \texttt{computeAllowedSpeedMagnet} was called for the first time we must be past the 500~Hz inductor and hence the function \texttt{computeAllowedSpeedDistant} must not be called any more.
+  \end{block}
+
+  \begin{lstlisting}[gobble=4,language=tessla]
+    # specify events of interest
+    def computeDistant :=
+      function_call("computeAllowedSpeedDistant")
+    def computeMagnet :=
+      function_call("computeAllowedSpeedMagnet")
+
+    # specify property over the events
+    def magnetAfterDistant :=
+      time(computeMagnet) > time(computeDistant)
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[t,fragile]{Burst Pattern}
+  \begin{itemize}
+    \item Combination of timing and event ordering.
+    \item AUTOSAR Timing Extension and EAST-ADL2 timing extension TADL2
+    \item Pattern checks if events happen in bursts.
+  \end{itemize}
+
+  \xxx
+
+  \begin{tikzpicture}[events,xscale=.9]
+    \node[small unit, fill=blue!10] at (1,0) (z1) {};
+    \node[small unit, fill=blue!10] at (1.5,0) {};
+    \node[small unit, fill=blue!10] at (2,0) {};
+    \only<3->{\node[small unit, fill=blue!10] at (2.5,0) {};}
+    \node[small unit, fill=blue!10] at (4.5,0) {};
+    \node[small unit, fill=blue!10] at (5.5,0) {};
+    \only<4->{\node[small unit, fill=blue!10] at (7,0) {};}
+    \node[small unit, fill=blue!10] at (9,0) (z7) {};
+    \begin{pgfonlayer}{background}
+      \path
+        (0,0) node[left] {$x$} edge[|-]
+        (z1) (z1) edge (z7) (z7) edge[->] +(3.5,0);
+    \end{pgfonlayer}
+    \draw[|-|,blue] (1,-.5) -- node[below]{2\,s} +(2,0);
+    \draw[-|,blue] (3,-.5) -- node[below]{1\,s} +(1,0);
+    \draw[|-|,blue] (4.5,-.5) -- node[below]{2\,s} +(2,0);
+    \draw[-|,blue] (6.5,-.5) -- node[below]{1\,s} +(1,0);
+    \draw[|-|,blue] (9,-.5) -- node[below]{2\,s} +(2,0);
+    \draw[-|,blue] (11,-.5) -- node[below]{1\,s} +(1,0);
+
+    \only<2->{\node[left] at (0,-2) {$p$};}
+    \only<2>{
+      \onlybar{green!50!black!10}{(0,-2)}{12.5}{true}
+    }
+    \only<3>{
+      \firstbar{green!50!black!10}{(0,-2)}{2.5}{true}
+      \midbar{red!10}{(2.5,-2)}{2}{false}
+      \lastbar{green!50!black!10}{(4.5,-2)}{8}{true}
+    }
+    \only<4>{
+      \firstbar{green!50!black!10}{(0,-2)}{2.5}{true}
+      \midbar{red!10}{(2.5,-2)}{2}{false}
+      \midbar{green!50!black!10}{(4.5,-2)}{2.5}{true}
+      \midbar{red!10}{(7,-2)}{2}{false}
+      \lastbar{green!50!black!10}{(9,-2)}{3.5}{true}
+    }
+  \end{tikzpicture}
+
+  \xxx
+
+  \begin{onlyenv}<2->
+    \begin{lstlisting}[gobble=6,language=tessla]
+      def p := bursts(x, burstLength = 2s,
+                         waitingPeriod = 1s,
+                         burstAmount = 3)
+    \end{lstlisting}
+  \end{onlyenv}
+\end{frame}
+
+\begin{frame}[fragile,t]{Checking Complex Events Patterns}
+  \small
+  \begin{block}{Property}
+    There are maximal 3 function calls in a period of 100\,ms\\
+    with at least half a second of silence between the bursts.
+  \end{block}
+
+  \begin{lstlisting}[gobble=4,language=tessla]
+    # specify events of interest
+    def calls := merge(
+      function_call("getAllowedSpeed"),
+      function_call("computeAllowedSpeedDistant"),
+      function_call("computeAllowedSpeedMagnet"))
+
+    # specify property over the events
+    def b := bursts(calls, burstLength = 100ms,
+                           waitingPeriod = 500ms,
+                           burstAmount = 3)
+  \end{lstlisting}
+
+  Such \alert{pattern specifications} can spot \alert{abnormal behaviour}
+  which helps detecting \alert{interesting parts of traces} of
+  \alert{partially unknown systems}.
+
+  \par
+\end{frame}

@@ -1,0 +1,43 @@
+  \tiny
+  \usetikzlibrary{trees,shapes,decorations}
+  \begin{tikzpicture}[%
+    ->,
+    shorten >=2pt,
+    >=stealth,
+    node distance=0.3cm,
+    noname/.style={%
+      rectangle,
+      minimum width=5em,
+      minimum height=2em,
+      draw
+    }
+  ]
+    \node[noname] (1)                                             {[ z = 1 ] $l_1$};
+    \node[noname] (2) [fill=blue!80!black!20,below=of 1]                                {[ y = 2 ] $l_2$};
+    \node[noname] (3) [below=of 2]                                {[ x = 3 ] $l_3$};
+    \node[noname] (4) [below=of 3]                                {[ if (z > 0) ] $l_4$};
+    \node[noname] (5) [below right=of 4]                          {[ y = z ] $l_5$};
+    \node[noname] (6) [below=of 5]                                {[ if ( z < 2) ] $l_6$};
+    \node[noname] (7) [below right=of 6]                                {[ z = 7 ] $l_7$};
+    
+%    \node[rectangle,
+%    minimum width=5em,
+%    minimum height=2em,draw] (9) [below= 2.5cm of 4] {\color{white}[ return y] $l_8$};
+    \node[
+    minimum width=5em,
+    minimum height=2em,draw] (8) [below= 2.5cm of 4]                                {\color{black}[ return y] $l_8$};
+    
+
+      \path 
+   (1) edge                   node [xshift=8pt,right]{\{z\}} (2)
+   (2) edge                   node [xshift=8pt,right]{\{y, z\}} (3)
+   (3) edge                   node [xshift=8pt,right]{\{y, z\}} (4)
+   (4) edge                   node [xshift=8pt,right]{\{z\}} (5)
+   (4) edge                   node [yshift=-25pt,right]{\{y\}} (8)
+   (5) edge                   node [xshift=8pt,right] {\{y, z\}} (6)
+   (6) edge                   node [xshift=8pt,right] {\{y\}} (7)
+   (7) edge                   node [above]{\{y\}} (8)
+   (6) edge                   node [above]{\{y\}} (8);
+ 
+          
+  \end{tikzpicture}

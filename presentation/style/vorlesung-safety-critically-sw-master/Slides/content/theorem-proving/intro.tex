@@ -1,0 +1,330 @@
+% !TeX root = ../../presentation-local.tex
+
+\section{Introduction}
+
+\begin{frame}{(Again) Using Logic for Verification}
+\begin{itemize}
+	\item Consider
+	\begin{itemize}
+		\item \textbf{Program} $P$ of type $ℕ \times ℕ \rightarrow ℕ$ that does something interesting... like adding two numbers!
+		\item \textbf{Specification} $\phi$: For every input $m, n$ the terms $P(m, n)$ and $P(n, m)$ should reduce to the same value (\say{commutativity})
+	\end{itemize}
+
+	\pause
+
+	\item $P$ and $\phi$ must be describable in the logic
+	\begin{align*}
+		\phi_P &:= ∀ m, n.~ \left(\begin{aligned}
+			  P(0, n)   &\succ n\\
+			∧~ P(S~m, n) &\succ S(P(m, n))
+		\end{aligned}\right)\\[1em]
+		\phi &:= ∀ m, n.~∃ x.~ P(m, n) \succ^{*} x ∧ P(n, m) \succ^* x
+	\end{align*}
+
+	\pause
+
+	\item $\succ$ denotes \textit{term reduction}, but different computation models could be described, e.g. transitions on Kripke structures, manipulations of stack machines, memory transformations...
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{(Again) Using Logic for Verification}
+	\begin{align*}
+		\phi_P &:= ∀ m, n.~ \left(\begin{aligned}
+			  P(0, n)   &\succ n\\
+			∧~ P(S~m, n) &\succ S(P(m, n))
+		\end{aligned}\right)\\[1em]
+		\phi &:= ∀ m, n.~∃ x.~ P(m, n) \succ^{*} x ∧ P(n, m) \succ^* x
+	\end{align*}
+~\\[1.5em]
+\begin{itemize}
+
+	\item We want to \textbf{verify}: Is $P$ correct with respect to $\phi$?
+	\item In logical terms: Is formula $φ_P → φ$ \textbf{valid}?
+	\begin{itemize}
+		\item What does \say{valid} mean again? Recap on next slide!
+	\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Start simple: Propositional Logic}
+\begin{itemize}
+	\item Syntax
+	\begin{itemize}
+		\item Formulas $\phi, \psi := p \in AP~|~ ⊥ ~|~ \phi \rightarrow \psi$
+		\item Atomic propositions $AP$
+		\item (further connectives $\neg, ∧, ∨, ...$ can be used as notation)
+	\end{itemize}
+
+	\pause
+
+	\item Semantics
+	\begin{itemize}
+		\item Truth domain $T := \{0, 1\}$
+		\item Interpretations $v \in AP \rightarrow T$
+		\item Evaluation function
+		\begin{align*}
+		\llbracket p \rrbracket_v &:= v(p)\\
+		\llbracket ⊥ \rrbracket_v &:= 0\\
+		\llbracket \phi \rightarrow \psi \rrbracket_v &:= \left\{\begin{aligned}
+			1 & \quad\text{if $\llbracket \phi \rrbracket_v = 0$ or $\llbracket \psi \rrbracket_v = 1$}\\
+			0 & \quad\text{otherwise}
+		\end{aligned}\right.
+		\end{align*}
+		\item~\\[-1em]
+		\begin{tabular}{l r @{\qquad}l}
+		Satisfaction          & $v \vDash \phi$ & $:\Leftrightarrow \quad \llbracket \phi \rrbracket_v = 1$ \\
+		Validity              & $\vDash \phi$   & $:\Leftrightarrow \quad v \vDash \phi ~~\text{for all $v$}$ \\
+		\end{tabular}
+		\item $φ$ is called a tautology if $\vDash \phi$
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Why \textit{proving}?}
+\begin{itemize}
+	\item Goal: Given $\phi$, does $\vDash \phi$ hold?
+	\item First approach:
+	Evaluate and check $\llbracket \phi \rrbracket_v = 1$ for all $v$
+
+	\pause
+
+	\item Problem:
+	\begin{itemize}
+		\item for Propositional Logic: Possible, but there are $2^n$ interpretations (where $n$ is the number of vars in $\phi$)
+		\item for First-Order Logic: Impossible, there may be \textbf{infinitely} many interpretations
+	\end{itemize}
+
+	\pause
+
+	\item Help:
+	\begin{itemize}
+		\item Use a proof system
+		\item Idea: Construct a \textbf{finite} proof that $φ$ holds\\[1em]
+		\item Proof system must be \textit{sound}: \\
+		If $\phi$ can be proven ($\vdash \phi$), then $\phi$ is valid \hspace{3.1em}($\vDash \phi$)\\[1em]
+		\item Proof system \textit{may} be \textit{complete}:\\
+		If $\phi$ is valid \hspace{2.8em} ($\vDash \phi$), then $\phi$ can be proven ($\vdash \phi$)
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Proof System for Propositional Logic}
+\begin{itemize}
+\item Natural deduction via entailment relation $Γ ⊢ φ$
+\begin{itemize}
+	\item $Γ$ is a finite set of formulas $ψ_1, ψ_2, ..., ψ_n$
+	\item \say{from $Γ$, one can \textbf{deduce} $φ$}
+\end{itemize}
+
+\pause
+
+\item Defined by inference rules:\\
+{\footnotesize
+\begin{align*}
+&
+\inferrule*[left={\footnotesize$φ ∈ Γ$},right=Assump]
+{
+	~
+}
+{
+	Γ ⊢ φ
+}
+%
+\qquad
+%
+&&
+\inferrule*[right=DoubleNeg]
+{
+	Γ, (φ \rightarrow ⊥) ⊢  ⊥
+}
+{
+	Γ ⊢ φ
+}
+%
+\\[1em]
+%
+&
+\inferrule*[right=ImpIntro]
+{
+	Γ,ψ ⊢ φ
+}
+{
+	Γ ⊢ ψ \rightarrow φ
+}
+%
+\qquad
+%
+&&
+\inferrule*[right=ImpElim]
+{
+	Γ ⊢ ψ \rightarrow φ\\
+	Γ ⊢ ψ
+}
+{
+	Γ ⊢ φ
+}
+\end{align*}}~\\
+
+\pause
+
+\item This system is \textit{sound}:\\
+If $\phi$ can be proven ($\vdash \phi$), then $\phi$ is valid ($\vDash \phi$)
+\item This system is \textit{complete}:\\
+If $\phi$ is valid ($\vDash \phi$), then $\phi$ can be proven ($\vdash \phi$)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Proof Trees}
+\begin{itemize}
+\item Check validity of $φ := p \rightarrow (q \rightarrow p)$
+
+\pause
+
+\item Prove $⊢ φ$ by the following proof tree
+$$
+\inferrule*[Right=ImpIntro]
+{
+	\inferrule*[Right=ImpIntro]
+	{
+		\inferrule*[left={\footnotesize$p ∈ \{p, q\}$},Right=Assump]
+		{ }
+		{p, q ⊢ p}
+	}
+	{p ⊢  q \rightarrow p}
+}
+{⊢ p \rightarrow (q \rightarrow p)}
+$$
+
+\pause
+
+\item By soundness of $⊢$, $φ$ is valid
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Proof Trees in Type Systems, 1}
+\begin{itemize}
+	\item In a typed programming language, we want to check that $t$ is a term of type $T$
+
+	\pause
+
+	\item Terms
+	\begin{itemize}
+		\item $3+2$
+		\item $\mathit{if}~\mathit{true}~\mathit{then}~\mathit{true}~\mathit{else}~\mathit{false}$
+		\item $λn.n$
+		\item $λn.~(λb.~\mathit{if}~b~\mathit{then}~n~\mathit{else}~n+n)$
+	\end{itemize}
+
+	\pause
+
+	\item Types
+	\begin{itemize}
+		\item $\mathit{Int}$
+		\item $\mathit{Bool}$
+		\item $\mathit{Int}→\mathit{Int}$
+		\item $\mathit{Int} → (\mathit{Bool} → \mathit{Int})$
+	\end{itemize}
+
+	\pause
+
+	\item We write $⊢ t: T$ if term $t$ has type $T$
+\pause
+
+\item \textit{Side note}: A type system is sound if $⊢ t: T$ implies that $t$ won't \say{crash} on execution. E.g., \lstinline|true| + 4 crashes
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Proof Trees in Type Systems, 2}
+\begin{itemize}
+
+\item To check whether $t := λx. (λy. x)$ is of type $T := \mathit{Int} → (\mathit{Bool} → \mathit{Int})$, we check whether there is a proof tree for $⊢ t: T$
+
+\pause
+
+\item For our example, there is:
+$$
+\footnotesize
+\inferrule*[Right={\footnotesize Abs}]
+{
+	\inferrule*[Right={\footnotesize Abs}]
+	{
+		\inferrule*[left={\footnotesize$(x: \mathit{Int}) ∈ \{x: \mathit{Int}, y: \mathit{Bool}\}$},right={\footnotesize Env}]
+		{ }
+		{x: \mathit{Int}, y: \mathit{Bool} ⊢ x: \mathit{Int}}
+	}
+	{x: \mathit{Int} ⊢ λy. x : \mathit{Bool} → \mathit{Int}}
+}
+{⊢ λx. (λy. x): \mathit{Int} → (\mathit{Bool} → \mathit{Int})}
+$$
+
+\pause
+
+\item In a type system, the inference rules are designed s.t. for every pair $⊢ t: T$, there exists \textbf{at most one} proof tree
+
+\pause
+
+\item $t$ itself witnesses its own proof tree of $⊢ t: T$
+
+\pause
+
+\item \textit{Intuition}: A term itself represents a syntax tree. Put this tree upside down. Traverse the tree, thereby annotating types according to the inference rules. If this works out, you have \textbf{the} proof tree. Otherwise, there is none.
+
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Preview: Type System as a Proof System}
+\begin{itemize}
+\item You noticed the similarity between the two proof trees?
+\item Is it be possible to encode a proof tree for a logic as a proof tree for a type system?
+
+\pause
+
+\item It is possible. It has been discovered in 1980 by Howard (Curry-Howard-Correspondence)
+
+\pause
+
+\item What do we need?
+  \begin{enumerate}
+		\item Goal: Find a way of \textit{proving} a specification $\phi$
+		\item We encode $\phi$ as a type $T$
+		\item We find a term $t$ that is well-typed, i.e. $⊢ t: T$
+		\item But this means that $t$ witnesses a proof tree for $T$
+		\item Thus we interpret $t$ as a proof of $T$ and therefore of $φ$!
+  \end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Interactive Theorem Provers}
+\begin{itemize}
+	\item Proofs are \textbf{manually written}, potentially with some automatic proof-search aid
+	\item Proofs are \textbf{completely formal}
+	\item Proofs can be \textbf{automatically checked}
+	\item You have to trust in the soundness of the proof checker
+		\begin{itemize}
+			\item Trust is usually established by providing a minimal base of the proof checker
+		\end{itemize}
+
+	\pause
+
+	\item Examples: Coq, Isabelle, Agda
+	\item May be based on type theory, but not necessarily
+	\item Applications
+	\begin{enumerate}
+		\item Formalized Mathematics, e.g. Four-color theorem in 1976
+		\item Correctness Properties
+		  \begin{itemize}
+			\item Certified C compiler CompCert, started in 2005
+			\item Soundness of type systems
+			\item Correctness of protocols
+			\item Further theorems about formalisms
+		  \end{itemize}
+		\item Generally: Verification where the system model or the property is \say{too complex} for automatic methods
+	\end{enumerate}
+\end{itemize}
+\end{frame}

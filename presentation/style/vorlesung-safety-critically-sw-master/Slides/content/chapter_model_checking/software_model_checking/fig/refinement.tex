@@ -1,0 +1,118 @@
+\begin{tikzpicture}[scale=0.75]
+
+\tikzset{trans/.style={%
+  ->,
+  onslide=<2->{opacity=.1}
+}}
+
+\tikzset{atrans/.style={%
+  ->,
+  onslide=<3>{opacity=.1}
+}}
+
+
+\tikzset{cetrans/.style={%
+  ->, 
+  onslide=<3>{opacity=1}
+}}
+
+
+\tikzset{loc/.style={%
+  state,
+    minimum width=0.2cm,
+    minimum height=0.2cm,
+    onslide=<2->{opacity=.1}      
+}}
+
+
+\tikzset{celoc/.style={%
+  state,
+    minimum width=0.2cm,
+    minimum height=0.2cm,
+  onslide=<2>{opacity=.1}      
+}}
+
+
+\onslide<2->{
+\fill[green!30]  plot[smooth cycle, tension=.7] coordinates 
+  {(-14.5,2.5) (-13,1) (-11.5,1.5) (-13.5,3)};
+
+\fill[pink]  plot[smooth cycle, tension=.7] coordinates 
+  {(-4.5,6.5) (-1,5) (-1,6) (-4,7)};
+ 
+\fill[blue!30]  plot[smooth cycle, tension=.7] coordinates {
+  (-10.5,3) (-9.5,1) (-5,0.5) (-5,3) (-7,3.5)};
+}
+
+
+\onslide<2-3>{
+\fill[yellow!50]  plot[smooth cycle,tension=.7] coordinates 
+  {(-13,5) (-11.5,3.5) (-7.5,4.5) (-8.5,6.5) (-11.5,6)};
+
+\fill[gray!50]  plot[smooth cycle, tension=.7] coordinates 
+  {(-6.5,6) (-5.5,4) (-4,2.5) (-2.5,2) (-2,3.5) (-4,5) (-5,6.5)};
+}
+
+% Refined
+\onslide<4->{
+\fill[gray!50]  plot[smooth cycle, tension=.7] coordinates 
+{(-5.5,5) (-5.5,4) (-4,2.5)(-2.5,2) (-2,3.5) (-3.5,4.5) (-4.5,5)};
+
+\fill[yellow!50] plot[smooth cycle, tension=.7] coordinates 
+{(-12.5,4) (-11.5,3.5) (-8.5,4) (-8.5,5) (-11.5,4.5)};
+
+\fill[cyan!50]  plot[smooth cycle, tension=.7] coordinates 
+{(-12,6) (-12,5) (-5,5.5) (-5,6.5) (-8.5,6.5)};
+}
+
+
+
+\node[loc, fill=green] (v13) at (-13.5,2.5) {};
+\node[loc, fill=green] (v14) at (-12.5,1.5) {};
+\node[loc, fill=red] (v9) at (-1.5,5.5) {};
+\node[loc] (v6) at (-4.5,4) {};
+\node[loc] (v11) at (-8.5,1.5) {};
+\node[loc] (v12) at (-11.5,4) {};
+
+\node[loc] (v3) at (-8.5,4.5) {};
+
+\node[loc] (v10) at (-5.5,1.5) {};
+\node[loc] (v7) at (-2.5,2.5) {};
+\node[loc] (v8) at (-7,3) {};
+\node[loc] (v15) at (-10,2.5) {};
+
+% Counter-example
+\node[celoc] (v1) at ((-11.5,5.5) {};
+\node[celoc] (v2) at (-9,6) {};
+\node[celoc] (v4) at (-5.5,6) {};
+\node[celoc, fill=red] (v5) at (-3.5,6.5) {};
+
+\draw[trans, cetrans]  (v1) edge (v2);
+
+
+% Abstract transitions
+% (yellow -> gray)
+\draw[atrans, cetrans, onslide=<4->{opacity=.1}]  (v2) edge (v4); 
+% (gray -> red)
+\draw[atrans, cetrans]  (v4) edge (v5);
+% (blue -> gray)
+\draw[atrans]  (v10) edge (v7);
+% (green -> yellow)
+\draw[atrans]  (v13) edge (v12);
+% (green -> blue)
+\draw[atrans]  (v14) edge (v15);
+% (yellow -> blue)
+\draw[atrans]  (v3) edge (v8);
+
+
+\draw[trans]  (v4) edge (v6);
+\draw[trans]  (v6) edge (v7);
+\draw[trans]  (v8) edge (v10);
+\draw[trans]  (v11) edge (v10);
+\draw[trans]  (v12) edge (v3);
+\draw[trans]  (v15) edge (v8);
+\draw[trans]  (v15) edge (v11);
+
+%\draw[->]  (v12) edge (v1);
+
+\end{tikzpicture}

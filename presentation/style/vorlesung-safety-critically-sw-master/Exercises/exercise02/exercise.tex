@@ -1,0 +1,133 @@
+\documentclass[language=en,sheet=2,prefix]{exercise}
+
+\exerciseCourse{Development of Safety Critical Systems(Sichere Software)}
+\exerciseAuthors{Martin Leucker, Karam Kharraz, Felix Lange}
+\exerciseTerm{Winter term 18}
+\exerciseDeadline{15th/19th of November 2018}
+
+\begin{document}
+
+\task[Mutation-based Testing]
+
+The idea of mutation-based testing is to evaluate the quality of your test suite by inserting small changes in the code (mutations) and see if there is a test case that is able to detect this change as an error. We use the java mutation testing system pitest\footnote{\url{pitest.org}} which is working with JUnit.
+
+Use the maven project in the Moodle course. It includes the code under test \lstinline-triangleType-, which expects the three lengths of a triangle and returns the type of the triangle (1,2,3) or that the triangle is invalid (0). Also a JUnit test suite is provided.  
+
+\begin{lstlisting}[language=Java,gobble=2]
+  public Type triangleType(int a, int b, int c) {
+    if (a<1 || b<1 || c<1){
+      return Type.INVALID;
+    }
+    if ((a+b<=c) || (a+c<=b) || (b+c<a)) {
+      return Type.INVALID;
+    }
+    if (a==b && b==c) {
+      return Type.ISOSCELES;
+    }
+    if (a==b || a==c || b==c) {
+      return Type.EQUILITERAL;
+    }
+    return Type.SCALENE;
+  }
+\end{lstlisting}
+
+
+Your task is to find the bug in code by using mutation-based testing:
+
+\begin{compactenum}
+	\item Run the JUnit tests. Notice that there the coverage shown by EclEmma is not 100\%.
+	\item Add some new test cases to reach full coverage.
+	\item Run pitest by executing \texttt{mvn org.pitest:pitest-maven:mutationCoverage} in path of the maven project.
+	\item Pitest should report, that at least one mutation has not been killed by the test cases. Try to figure out why this is the case and add new test cases that are able to detect the mutation.
+	\item Fix the bug in the code that should be noticed by the new test cases.
+	\item Run pitest again until there are no undetected mutations left.
+\end{compactenum}
+
+
+\begin{solution}
+	
+\begin{enumerate}
+	\item Add some new test cases for coverage:
+\begin{lstlisting}[language=Java,gobble=2]
+  assertEquals(Type.EQUILITERAL,codeUnderTest.triangleType(2,2,3));
+  assertEquals(Type.EQUILITERAL,codeUnderTest.triangleType(2,3,2));
+  assertEquals(Type.EQUILITERAL,codeUnderTest.triangleType(3,2,2));
+\end{lstlisting}
+	
+\item Fix Mutations:
+\begin{lstlisting}[language=Java,gobble=2]
+  assertEquals(Type.INVALID,codeUnderTest.triangleType(2,1,1));  
+  assertEquals(Type.INVALID,codeUnderTest.triangleType(1,2,1));  
+  assertEquals(Type.INVALID,codeUnderTest.triangleType(1,1,2)); 
+\end{lstlisting}
+\end{enumerate}
+
+\end{solution}
+
+
+\task[Property-based Testing]
+
+Property-based Testing can be used to automatically generate big amounts of test cases and verify their output by checking their properties. In the Moodle course you can find a maven project which includes junit-quickcheck\footnote{\url{https://github.com/pholser/junit-quickcheck}}.\\
+
+\begin{lstlisting}[language=Java,gobble=2]
+  List<Long> PrimeFactorization(Long i) {
+    List<Long> primeFactors = new ArrayList<>();
+    long divisor = 1;
+    double squareRoot = Math.sqrt(i);
+    while (i > 1) {
+      divisor++;
+      while (i % divisor == 0) {
+        primeFactors.add(divisor);
+        i /= divisor;
+      }
+      if (divisor > squareRoot) {
+        divisor = i - 1;
+      }
+    }
+    return primeFactors;
+  }
+\end{lstlisting}
+
+Your task is to verify the implementation of a function that returns the prime factors of the input number. One obvious property of this function is that all factors in the returned list are indeed prime numbers.
+\begin{compactenum}
+	\item Create property-based test cases with junit-quickcheck that check if the returned list contains prime numbers only.
+	\item Think of two other properties that must be fulfilled for every input number.
+\end{compactenum}
+
+\begin{solution}
+\begin{lstlisting}[language=Java,gobble=2]
+  @Property
+  public void primeFactorsShouldBePrimeNumbers(
+  @InRange(min = "2", max = "999999999") Long a) {
+    List<Long> factorsA = CodeUnderTest.PrimeFactorization(a);    	
+    for(int i=0; i<factorsA.size(); i++) {
+      assertTrue("All prime factors should be primes!", 
+      CodeUnderTest.isPrime(factorsA.get(i)));
+    }
+  }
+
+  @Property 
+  public void productOfPrimeFactorsShouldBeTheOriginalNumber(
+  @InRange(min = "1", max = "9999999999999") Long a) {
+    List<Long> factorsA = CodeUnderTest.PrimeFactorization(a);
+    Long expectedResult = (long) 1;
+    for (int i = 0; i < factorsA.size(); i++) {
+      expectedResult *= factorsA.get(i);
+    }
+    assertEquals("The product of the prime factors ...!" ,expectedResult, a);
+  }
+
+  @Property
+  public void factorizationsAreUnique(@InRange(min = "2", max = "1000") 
+  Long a, @InRange(min = "2", max = "1000") Long b) {
+    assumeThat(a, not(equalTo(b)));
+    List<Long> factorsA = CodeUnderTest.PrimeFactorization(a);    	
+    List<Long> factorsB = CodeUnderTest.PrimeFactorization(b);    	
+
+    assertThat(factorsA, not(equalTo(factorsB)));
+  }
+
+\end{lstlisting}
+\end{solution}
+
+\end{document}

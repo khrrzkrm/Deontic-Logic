@@ -1,0 +1,24 @@
+
+\tikzfading[name=arrowfading, top color=transparent!0, bottom color=transparent!95]
+\tikzset{arrowfill/.style={top color=#1!30, bottom color=#1, general shadow={fill=black, shadow yshift=-0.4ex, path fading=arrowfading}}}
+\tikzset{arrowstyle/.style n args={3}{single arrow, draw, arrowfill={#3}, minimum width=#1, minimum height=#2}}
+\tikzset{%
+  every node/.style={align=left, font=\small},
+  tikzcpabar/.pic={
+    % blue arrow
+    \node[arrowstyle={0cm}{10cm}{sosyblue}, single arrow head extend=0.1cm, inner sep=1pt, rotate={#1}] at (0,0) (blueArrow) {};
+
+    % left orange bar
+    \node[arrowstyle={0.4cm}{0.6cm}{orange}, single arrow head extend=0cm, rotate={#1+90}] at ($(blueArrow.west) + (0.75,-0.4)$) {};
+
+    % right orange bar
+    \node[arrowstyle={0.4cm}{0.6cm}{orange}, single arrow head extend=0cm, rotate={#1+90}] at ($(blueArrow.east) + (-0.75,-0.4)$) {};
+
+    % right lime-green arrow
+    \node[arrowstyle={0cm}{2.5cm}{lime}, single arrow head extend=0.1cm, inner sep=3pt, rotate={#1}] at ($(blueArrow.center) + (1.25,-0.3)$) {};
+    % left lime-green arrow
+    \node[arrowstyle={0cm}{2.5cm}{lime}, single arrow head extend=0.1cm, inner sep=3pt, rotate={#1+180}] at ($(blueArrow.center) + (-1.25,-0.3)$) {};
+    % green center bar
+    \node[arrowstyle={0.4cm}{0.6cm}{green}, single arrow head extend=0cm, rotate={#1+90}] at ($(blueArrow.center) + (0,-0.4)$) {};
+    }
+  }

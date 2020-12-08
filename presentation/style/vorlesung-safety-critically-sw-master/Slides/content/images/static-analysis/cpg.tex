@@ -1,0 +1,36 @@
+  \tiny
+  \usetikzlibrary{trees,shapes,decorations}
+ \begin{tikzpicture}[%
+ ->,
+ shorten >=0pt,
+ >=stealth,
+ node distance=0.3cm,
+ noname/.style={%
+ 	rectangle,
+ 	minimum width=3em,
+ 	minimum height=2em,
+ 	draw
+ }
+ ]
+ \node[noname] (1) []                                  {[z=x+y]$l_8$};
+  \node[noname] (2)[above right= 0.6cm of 1]           {[y=y+1]$l_7$}; 
+  \node[noname] (3)[above left= 0.6cm of 1]            {[y=0]$l_6$}; 
+  \node[noname] (4)[above = of 3]                      {[x=y+2]$l_5$};
+  \node[noname] (5)[above = of 2]                      {[x=x-2]$l_4$};  
+  \node[noname] (6)[above right = of 4]                 {[if(??)]$l_3$};
+  \node[noname] (7)[above = of 6]                      {[y=2]$l_2$};
+   \node[noname] (8)[above = of 7]                     {[x=3]$l_1$};
+
+  
+ \path 
+ (2.south) edge                   node {} (1.north)
+ (3.south) edge                   node {} (1.north)
+ (4.south) edge                   node {} (3.north)
+ (5.south) edge                   node {} (2.north)
+ (8.south) edge                   node {} (7.north)
+ (7.south) edge                   node {} (6.north)
+ (6.south) edge                   node {} (5.north)
+ (6.south) edge                   node {} (4.north)
+ ;
+          
+  \end{tikzpicture}

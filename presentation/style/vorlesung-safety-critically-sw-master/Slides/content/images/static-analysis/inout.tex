@@ -1,0 +1,25 @@
+  \scriptsize
+  \usetikzlibrary{trees,shapes,decorations}
+ \begin{tikzpicture}[%
+ ->,
+ shorten >=0pt,
+ >=stealth,
+ node distance=0.3cm,
+ noname/.style={%
+ 	rectangle,
+ 	minimum width=3em,
+ 	minimum height=2em,
+ 	draw
+ }
+ ]
+ \node[noname] (1) [label=right:$Tf_{l_i}$,label=above:$in_{l_i}$]                                 {$l_i$};
+  \node[noname] (2)[above right= 0.6cm of 1]               {$l_y$}; 
+  \node[noname] (3)[above left= 0.6cm of 1]                {$l_x$}; 
+\node[noname] (4)[below=of 1]                       {$l_z$};
+  
+ \path 
+ (2.south) edge                   node {} (1.north)
+ (3.south) edge                   node {} (1.north)
+ (1) edge                   node [right]{$out_{l_i}$} (4);
+          
+  \end{tikzpicture}

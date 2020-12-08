@@ -1,0 +1,77 @@
+\subsection{Testing Summary}
+
+\begin{Frame}{Testing Summary}{The Definition}
+  \begin{definition}[Testing]
+    \Def{Testing} is the examination of \alert{a subset} of the behaviors of a program or system.
+  \end{definition}
+
+  \xxx
+
+  Testing can detect the presence of errors, but cannot prove their absence.
+\end{Frame}
+
+
+
+\begin{Frame}[fragile]{Testing in the V Model}
+  \newcommand{\define}[1]{\inhead{#1} \\ \scriptsize define test cases}
+  \newcommand{\code}{\inhead{Coding} \\ \scriptsize write code}
+  \newcommand{\run}[1]{\inhead{#1} \\ \scriptsize run test cases}
+
+  \begin{tikzpicture}[
+    state/.style={
+      draw=maincolor,
+      thick,
+      fill=maincolor!18,
+      text width=2.5cm,
+      align=center,
+      font=\linespread{0.7}\selectfont,
+      minimum height=8mm
+    },
+    heigh state/.style={
+      state,
+      minimum height=12mm
+    },
+    node distance=5mm and -2.2cm
+  ]
+    \node[heigh state] (define requirements) {\define{Requirements\\ Engineering}};
+    \node[heigh state, below right=of define requirements] (define specification) {\define{Functional\\ Specification}};
+    \node[state, below right=of define specification] (define system) {\define{System Design}};
+    \node[state, below right=of define system] (define modules) {\define{Module Design}};
+    \node[state, below right=5mm and -1cm of define modules] (code) {\code};
+    \node[state, above right=5mm and -1cm of code] (test modules) {\run{Unit Test}};
+    \node[state, above right=of test modules] (test system) {\run{Integration Test}};
+    \node[heigh state, above right=of test system] (test specification) {\run{System Test}};
+    \node[heigh state, above right=of test specification] (test requirements) {\run{Acceptance Test}};
+    \path[very thick,maincolor,->]
+      (define requirements) edge (define specification)
+      (define specification) edge (define system)
+      (define system) edge (define modules)
+      (define modules) edge[shorten >=3pt] (code)
+      (code) edge[shorten >=3pt] (test modules)
+      (test modules) edge (test system)
+      (test system) edge (test specification)
+      (test specification) edge (test requirements);
+    \path[dashed, thick,->,shorten <=3pt, shorten >=3pt,transform canvas={yshift=-2mm}]
+      (define requirements) edge (test requirements)
+      (define specification) edge (test specification)
+      (define system) edge (test system)
+      (define modules) edge (test modules);
+  \end{tikzpicture}
+\end{Frame}
+
+\begin{Frame}{Levels of Automatization}
+  \inhead{Code inspections} \\
+    Manual testing based on knowledge and check lists. \hfill\vspace{1ex}\linebreak
+  \inhead{Walkthroughs} \\
+    Humans play computer. \hfill\vspace{1ex}\linebreak
+  \inhead{Equivalence partitioning} \\
+    Design test cases using equivalence classes.\hfill\vspace{1ex}\linebreak
+  \inhead{Boundary values} \\
+    Design test cases using boundaries of equivalence classes.\hfill\vspace{1ex}\linebreak
+  \inhead{Path coverage} \\
+    Design test cases by analyzing control-flow and data-flow.\hfill\vspace{1ex}\linebreak
+  \inhead{Unit testing frameworks} \\
+    Automatic test running, e.g. with JUnit\hfill\vspace{1ex}\linebreak
+  \inhead{Weakest preconditions} \\
+    (Semi-)Automatic test case design.
+\end{Frame}

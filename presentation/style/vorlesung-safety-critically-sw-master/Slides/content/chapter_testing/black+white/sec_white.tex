@@ -1,0 +1,879 @@
+\section{White-Box Testing}
+
+\begin{Frame}{Path Coverage}
+  \begin{itemize}
+    \item Hope: reveal errors by executing paths of the program\\
+    (independently of the values that variables take along the path).
+    \item Ultimate white-box test is execution of every path in the program.\\
+    (Unfeasible for general programs with loops.)
+    \item Paths are partitioned into \alert{equivalence classes}, and test cases are designed trying to execute an element of each class.
+  \end{itemize}
+
+  \xxx
+
+  \begin{definition}[Coverage]
+    The \alert{(degree of) coverage} is the fraction of equivalence classes covered by the tests.
+  \end{definition}
+\end{Frame}
+
+\input{content/chapter_testing/black+white/flowchart}
+
+\begin{Frame}{Running Example}
+  \begin{center}
+    \alertpath<1>{foo}{bar}{baz}
+  \end{center}
+\end{Frame}
+
+\subsection{Control-flow-based Coverage}
+
+\begin{Frame}{Statement Coverage}
+  \begin{itemize}
+    \item Choose test cases so that every \alert{statement} of the program is executed at least once.
+    \item (Partitioning: all paths that visit an statement build an equivalence class.)
+    \item Rationale: statement coverage catches all errors due to \enquote{catastrophic} statements
+    \item \alert{Poor criterion}: we may never exercise one of the outcomes of a guard in if-then-else or loop constructs.
+  \end{itemize}
+\end{Frame}
+
+\begin{Frame}{Statement Coverage}{Running Example}
+  \begin{columns}
+    \column{.6\textwidth}
+      \alertpath<1>{alpha}{gamma}{epsilon}
+    \column{.33\textwidth}
+		\begin{center}
+	     \begin{zebratabular}{ll}
+	       \headerrow $(a,b,x)$ & path \\
+	       \alert<1>{$(2, 0, 3)$} & \alert<1>{$\alpha\gamma\epsilon$} \\
+	    \end{zebratabular}
+		\end{center}
+  \end{columns}
+\end{Frame}
+
+\begin{Frame}{Decision or Branch Coverage}
+  \begin{itemize} 
+    \item Choose test cases so that every possible outcome of each decision in the flow-graph occurs at least once.
+    \item \alert{Observe:} this does not imply statement coverage (no decisions).
+    \item Better formulation would be: every edge of the flow-graph is covered.
+    \item \alert{Problem}: in a composite guard we may be setting an atom to the same truth value in all test cases.
+  \end{itemize}
+\end{Frame}
+
+\begin{Frame}[fragile]{Decision or Branch Coverage}{Running Example}
+  \begin{columns}
+    \column{.6\textwidth}
+      \alertpath<1>{alpha}{gamma}{delta}%
+      \only<article>{\hfil\penalty0\hfilneg\quad}%
+      \alertpath<2>{alpha}{beta}{epsilon}%
+      \only<article>{\par\vskip3ex\par}%
+      \alertpath<3>{alpha}{gamma}{epsilon}%
+      \only<article>{\hfil\penalty0\hfilneg\quad}%
+      \alertpath<4>{alpha}{beta}{delta}%
+      \only<article>{\par\vskip3ex\par}%
+    \column{.33\textwidth}
+      \begin{center}
+        \begin{zebratabular}{ll}
+          \headerrow $(a,b,x)$ & path \\
+          \alert<1>{$(3, 0, 3)$} & \alert<1>{$\alpha\gamma\delta$} \setrownumber1 \\
+          \alert<2>{$(2, 1, 1)$} & \alert<2>{$\alpha\beta\epsilon$} \\
+        \end{zebratabular}
+        \mbox{}\vspace*{2ex}
+        \begin{tabular}{l}
+            Alternatively:
+        \end{tabular}
+        \begin{zebratabular}{ll}
+          \headerrow $(a,b,x)$ & path \\
+          \alert<3>{$(2, 0, 3)$} & \alert<3>{$\alpha\gamma\epsilon$} \setrownumber1 \\
+          \alert<4>{$(3, 1, 1)$} & \alert<4>{$\alpha\beta\delta$} \\
+        \end{zebratabular}
+      \end{center}
+  \end{columns}
+\end{Frame}
+
+\begin{Frame}{Condition coverage}
+  \begin{itemize}
+    \item Choose test cases so that every atom of each guard of the program is set to both \alert{true} and \alert{false} at least once (if at all possible)
+    \item \alert{Observe}: condition coverage \alert{does not imply} decision
+    coverage
+    \item \alert{Observe}: can still be considered as path partitioning if 
+    the evaluation of atoms is assumed to follow some order (refined flow-graph)
+  \end{itemize}
+\end{Frame}
+
+\begin{Frame}{Condition coverage}{Running Example}
+    \only<article>{
+	    \begin{minipage}{.6\textwidth}
+	      \alertpath<1>{alpha}{gamma}{epsilon}%
+	    \end{minipage}\hfill
+	    \begin{minipage}{.4\textwidth}
+		    four conditions:\\
+	        \ \ -- $a>1$, \goodmark\\
+	        \ \ -- $b=0$, \goodmark\\
+	        \ \ -- $a=2$, \goodmark\\
+	        \ \ -- $x>1$\hphantom{,} \goodmark
+	     
+	     \vspace{2ex} 
+       \begin{zebratabular}{ll}
+         \headerrow $(a,b,x)$ & path \\
+         \textcolor{alertedcolor}{$(2, 0, 3)$} & \textcolor{alertedcolor}{$\alpha\gamma\epsilon$} \setrownumber1 \\
+         $(1, 1, 1)$ & $\alpha\beta\delta$ \\
+       \end{zebratabular}  
+	    \end{minipage}
+	    
+		  \vspace{3ex}
+	    \begin{minipage}{.6\textwidth}
+	      \alertpath<1>{alpha}{beta}{delta}%
+	    \end{minipage}\hfill
+	    \begin{minipage}{.4\textwidth}
+		    four conditions:\\
+	        \ \ -- $a>1$, \badmark\\
+	        \ \ -- $b=0$, \badmark\\
+	        \ \ -- $a=2$, \badmark\\
+	        \ \ -- $x>1$\hphantom{,} \badmark
+	        	     
+ 	     \vspace{2ex} 
+        \begin{zebratabular}{ll}
+          \headerrow $(a,b,x)$ & path \\
+          $(2, 0, 3)$ & $\alpha\gamma\epsilon$ \setrownumber1 \\
+          \textcolor{alertedcolor}{$(1, 1, 1)$} & \textcolor{alertedcolor}{$\alpha\beta\delta$} \\
+        \end{zebratabular}
+	    \end{minipage}
+	    
+	  \vspace{3ex}
+ 	    \begin{minipage}{.6\textwidth}
+ 	      \alertpath<1>{alpha}{beta}{epsilon}%
+ 	    \end{minipage}\hfill
+ 	    \begin{minipage}{.4\textwidth}
+	 	    Alternatively:\\
+ 		    four conditions:\\
+ 	        \ \ -- $a>1$, \badmark\\
+ 	        \ \ -- $b=0$, \goodmark\\
+ 	        \ \ -- $a=2$, \badmark\\
+ 	        \ \ -- $x>1$\hphantom{,} \goodmark
+ 	        
+ 	      \vspace{2ex} 
+        \begin{zebratabular}{ll}
+          \headerrow $(a,b,x)$ & path \\
+          \textcolor{alertedcolor}{$(1, 0, 3)$} & \textcolor{alertedcolor}{$\alpha\beta\epsilon$} \setrownumber2 \\
+          $(2, 1, 1)$ & $\alpha\beta\epsilon$ \\
+        \end{zebratabular} 	        
+ 	    \end{minipage}
+ 	    
+	  \vspace{3ex}
+ 	    \begin{minipage}{.6\textwidth}
+ 	      \alertpath<1>{alpha}{beta}{epsilon}%
+ 	    \end{minipage}\hfill
+ 	    \begin{minipage}{.4\textwidth}
+	 	    Alternatively:\\
+ 		    four conditions:\\
+ 	        \ \ -- $a>1$, \goodmark\\
+ 	        \ \ -- $b=0$, \badmark\\
+ 	        \ \ -- $a=2$, \goodmark\\
+ 	        \ \ -- $x>1$\hphantom{,} \badmark
+ 	     
+ 	      \vspace{2ex} 
+        \begin{zebratabular}{ll}
+          \headerrow $(a,b,x)$ & path \\
+          $(1, 0, 3)$ & $\alpha\beta\epsilon$ \setrownumber2 \\
+          \textcolor{alertedcolor}{$(2, 1, 1)$} & \textcolor{alertedcolor}{$\alpha\beta\epsilon$} \\
+        \end{zebratabular}
+ 	    \end{minipage}
+ 	  }
+	  \only<presentation>{
+	  \begin{columns}
+     \column{.6\textwidth}
+     \alertpath<1>{alpha}{gamma}{epsilon}%
+	   \alertpath<2>{alpha}{beta}{delta}%
+     \alertpath<3-4>{alpha}{beta}{epsilon}%
+     
+     \column{.33\textwidth}
+    
+    \only<3,4>{Alternatively:\\}
+    four conditions:\\
+      \ \ -- $a>1$, \only<1,4>{\goodmark}\only<2,3>{\badmark}\\
+      \ \ -- $b=0$, \only<1,3>{\goodmark}\only<2,4>{\badmark}\\
+      \ \ -- $a=2$, \only<1,4>{\goodmark}\only<2,3>{\badmark}\\
+      \ \ -- $x>1$\hphantom{,} \only<1,3>{\goodmark}\only<2,4>{\badmark}
+		
+		\xxx
+		\only<1,2>{
+	  \begin{zebratabular}{ll}
+      \headerrow $(a,b,x)$ & path \\
+      \alert<1>{$(2, 0, 3)$} & \alert<1>{$\alpha\gamma\epsilon$} \setrownumber1 \\
+      \alert<2>{$(1, 1, 1)$} & \alert<2>{$\alpha\beta\delta$} \\
+    \end{zebratabular}
+    }
+    \only<3,4>{
+	  \begin{zebratabular}{ll}
+      \headerrow $(a,b,x)$ & path \\
+      \alert<3>{$(1, 0, 3)$} & \alert<3>{$\alpha\beta\epsilon$} \setrownumber1 \\
+      \alert<4>{$(2, 1, 1)$} & \alert<4>{$\alpha\beta\epsilon$} \\
+    \end{zebratabular}
+    }
+   \end{columns}
+   }%
+\end{Frame}
+
+\begin{Frame}{Condition/Decision Coverage}
+  \begin{itemize}
+    \item Choose test cases so that every edge of the flow graph is executed at least once, and every atom of each guard of the program is set to both \alert{true} and \alert{false} at least once (if at all possible).
+    \item \alert{Problem:} Some combinations of truth values for the atoms of a
+    condition may not be tested $\rightarrow$ some edges of the refined flow-graph may not be covered.
+  \end{itemize}
+\end{Frame}
+
+\begin{Frame}{Condition/Decision Coverage}{Running Example}
+	\only<article>{
+		\begin{minipage}{.6\textwidth}	
+	    \alertpath<1>{alpha}{gamma}{epsilon}%
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+			four conditions:\\
+      \ \ -- $a>1$, \goodmark\\
+      \ \ -- $b=0$, \goodmark\\
+      \ \ -- $a=2$, \goodmark\\
+      \ \ -- $x>1$\hphantom{,} \goodmark
+		
+      \vspace{2ex}
+		
+      \begin{zebratabular}{ll}
+        \headerrow $(a,b,x)$ & path \\
+        \textcolor{alertedcolor}{$(2, 0, 3)$} & \textcolor{alertedcolor}{$\alpha\gamma\epsilon$} \setrownumber1 \\
+        $(1, 1, 1)$ & $\alpha\beta\delta$ \\
+      \end{zebratabular}
+		\end{minipage}
+		
+		\vspace{3ex}
+		
+		\begin{minipage}{.6\textwidth}
+			\alertpath<2>{alpha}{beta}{delta}%
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+			four conditions:\\
+      \ \ -- $a>1$, \badmark\\
+      \ \ -- $b=0$, \badmark\\
+      \ \ -- $a=2$, \badmark\\
+      \ \ -- $x>1$\hphantom{,} \badmark
+		
+      \vspace{2ex}
+		
+      \begin{zebratabular}{ll}
+        \headerrow $(a,b,x)$ & path \\
+        $(2, 0, 3)$ & $\alpha\gamma\epsilon$ \setrownumber1 \\
+        \textcolor{alertedcolor}{$(1, 1, 1)$} & \textcolor{alertedcolor}{$\alpha\beta\delta$} \\
+      \end{zebratabular}
+		\end{minipage}	
+	}
+
+
+	\only<presentation>{
+	  \begin{columns}
+	    \column{.6\textwidth}
+	      \alertpath<1>{alpha}{gamma}{epsilon}%
+	      \alertpath<2>{alpha}{beta}{delta}%
+	    \column{.33\textwidth}
+	      four conditions:\\
+	      \ \ -- $a>1$, \only<1>{\goodmark}\only<2>{\badmark}\\
+	      \ \ -- $b=0$, \only<1>{\goodmark}\only<2>{\badmark}\\
+	      \ \ -- $a=2$, \only<1>{\goodmark}\only<2>{\badmark}\\
+	      \ \ -- $x>1$\hphantom{,} \only<1>{\goodmark}\only<2>{\badmark}
+	
+	      \xxx
+	
+	      \begin{zebratabular}{ll}
+	        \headerrow $(a,b,x)$ & path \\
+	        \alert<1>{$(2, 0, 3)$} & \alert<1>{$\alpha\gamma\epsilon$} \setrownumber1 \\
+	        \alert<2>{$(1, 1, 1)$} & \alert<2>{$\alpha\beta\delta$} \\
+	      \end{zebratabular}
+	  \end{columns}
+  }
+\end{Frame}
+
+\begin{Frame}{Multiple Condition Coverage}
+  \begin{itemize}
+    \item Choose test cases so that for each guard every possible combination of truth values of the atoms occurs at least once.
+    \item \alert{Problem}: for a boolean guard with $n$ atoms there are $2^n$
+    possible combinations.
+    \item Multiple condition coverage implies decision/condition coverage.
+    \item \alert{Observe}: multiple condition coverage \alert{does not} imply coverage of all possible paths. ($\alpha\gamma\delta$ is not covered in next example.)
+  \end{itemize}
+\end{Frame}
+
+\begin{Frame}{Multiple Condition Coverage}{Running Example}
+
+	\only<article>{
+		\begin{minipage}{.6\textwidth}
+	     \alertpath<1>{alpha}{gamma}{epsilon}%
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+		   four conditions:\\
+		   \ \ -- $a>1$, \goodmark\\
+		   \ \ -- $b=0$, \goodmark\\
+		   \ \ -- $a=2$, \goodmark\\
+		   \ \ -- $x>1$\hphantom{,} \goodmark
+		
+		   \vspace{2ex}
+		
+		   \begin{zebratabular}{ll}
+		     \headerrow $(a,b,x)$ & path \\
+		     \textcolor{alertedcolor}{$(2, 0, 4)$} & \textcolor{alertedcolor}{$\alpha\gamma\epsilon$} \setrownumber1 \\
+		     $(2, 1, 1)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		     $(1, 0, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		     $(1, 1, 1)$ & $\alpha\beta\delta$ \setrownumber1 \\
+		   \end{zebratabular}	
+		\end{minipage}
+		
+		\vspace{3ex}
+
+		\begin{minipage}{.6\textwidth}
+			\alertpath<2>{alpha}{beta}{epsilon}%
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+		   four conditions:\\
+		   \ \ -- $a>1$, \goodmark\\
+		   \ \ -- $b=0$, \badmark\\
+		   \ \ -- $a=2$, \goodmark\\
+		   \ \ -- $x>1$\hphantom{,} \badmark
+				
+		   \vspace{2ex}
+				
+		   \begin{zebratabular}{ll}
+		     \headerrow $(a,b,x)$ & path \\
+		     $(2, 0, 4)$ & $\alpha\gamma\epsilon$ \setrownumber1 \\
+		     \textcolor{alertedcolor}{$(2, 1, 1)$} & \textcolor{alertedcolor}{$\alpha\beta\epsilon$} \setrownumber1 \\
+		     $(1, 0, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		     $(1, 1, 1)$ & $\alpha\beta\delta$ \setrownumber1 \\
+		   \end{zebratabular}		
+		\end{minipage}
+		
+		\vspace{3ex}
+
+		\begin{minipage}{.6\textwidth}
+	    \alertpath<3>{alpha}{beta}{epsilon}%
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+		  four conditions:\\
+		  \ \ -- $a>1$, \badmark\\
+		  \ \ -- $b=0$, \goodmark\\
+		  \ \ -- $a=2$, \badmark\\
+		  \ \ -- $x>1$\hphantom{,} \goodmark
+						
+		  \vspace{2ex}
+						
+		  \begin{zebratabular}{ll}
+		    \headerrow $(a,b,x)$ & path \\
+		    $(2, 0, 4)$ & $\alpha\gamma\epsilon$ \setrownumber1 \\
+		    $(2, 1, 1)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		    \textcolor{alertedcolor}{$(1, 0, 2)$} & \textcolor{alertedcolor}{$\alpha\beta\epsilon$} \setrownumber1 \\
+		    $(1, 1, 1)$ & $\alpha\beta\delta$ \setrownumber1 \\
+		  \end{zebratabular}		
+		\end{minipage}
+		
+		\vspace{3ex}
+
+		\begin{minipage}{.6\textwidth}
+	    \alertpath<4>{alpha}{beta}{delta}%				
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+		  four conditions:\\
+		  \ \ -- $a>1$, \badmark\\
+		  \ \ -- $b=0$, \badmark\\
+		  \ \ -- $a=2$, \badmark\\
+		  \ \ -- $x>1$\hphantom{,} \badmark
+								
+		  \vspace{2ex}
+								
+		  \begin{zebratabular}{ll}
+		    \headerrow $(a,b,x)$ & path \\
+		    $(2, 0, 4)$ & $\alpha\gamma\epsilon$ \setrownumber1 \\
+		    $(2, 1, 1)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		    $(1, 0, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		    \textcolor{alertedcolor}{$(1, 1, 1)$} & \textcolor{alertedcolor}{$\alpha\beta\delta$} \setrownumber1 \\
+		  \end{zebratabular}			
+		\end{minipage}		
+	}
+
+	\only<presentation>{
+	  \begin{columns}
+	    \column{.6\textwidth}
+	      \alertpath<1>{alpha}{gamma}{epsilon}%
+	      \alertpath<2>{alpha}{beta}{epsilon}%
+	      \alertpath<3>{alpha}{beta}{epsilon}%
+	      \alertpath<4>{alpha}{beta}{delta}%
+	    \column{.33\textwidth}
+	      four conditions:\\
+	      \ \ -- $a>1$, \only<1,2>{\goodmark}\only<3,4>{\badmark}\\
+	      \ \ -- $b=0$, \only<1,3>{\goodmark}\only<2,4>{\badmark}\\
+	      \ \ -- $a=2$, \only<1,2>{\goodmark}\only<3,4>{\badmark}\\
+	      \ \ -- $x>1$\hphantom{,} \only<1,3>{\goodmark}\only<2,4>{\badmark}
+	
+	      \xxx
+	
+	      \begin{zebratabular}{ll}
+	        \headerrow $(a,b,x)$ & path \\
+	        \alert<1>{$(2, 0, 4)$} & \alert<1>{$\alpha\gamma\epsilon$} \setrownumber1 \\
+	        \alert<2>{$(2, 1, 1)$} & \alert<2>{$\alpha\beta\epsilon$} \setrownumber1 \\
+	        \alert<3>{$(1, 0, 2)$} & \alert<3>{$\alpha\beta\epsilon$} \setrownumber1 \\
+	        \alert<4>{$(1, 1, 1)$} & \alert<4>{$\alpha\beta\delta$} \setrownumber1 \\
+	      \end{zebratabular}
+	  \end{columns}
+  }
+\end{Frame}
+
+
+\begin{Frame}{Modified Condition/Decision Coverage}
+  \begin{itemize}
+  	\item MC/DC is the most complex criterion used in the industry (mainly avionics).
+  	\item More feasible than MCC because $n+1$ minimum test cases, not $2^n$.
+
+    \item Every atom of each guard of the program is set to both true and false at least once, such that
+    \begin{itemize}
+      \item each atom independently affects the outcome of the guard (if possible).
+    \end{itemize}
+  \end{itemize}
+	
+  
+\end{Frame}
+
+
+\begin{Frame}{Modified Condition/Decision Coverage}
+
+How to show the independent effect:
+	\begin{itemize}
+		\item Find two test cases where only one condition and the outcome of the decision changes.
+		\item Hold all other conditions fixed (if possible).
+	\end{itemize}
+\end{Frame}
+
+
+
+\begin{Frame}{Modified Condition/Decision Coverage}{Running Example: Influences on the first guard}
+  \only<article>{
+    \begin{minipage}{.6\textwidth}
+      \alertpath<1>{foo}{bar}{baz}%
+      \alertpath<2>{foo}{bar}{baz}%
+      \alertpath<3>{foo}{bar}{baz}%
+      \alertpath<4>{foo}{bar}{baz}%
+    \end{minipage}\hfill
+    \begin{minipage}{.4\textwidth}
+      Influence of $a$ on the first guard\\[1ex]
+      \begin{zebratabular}{ll}
+        \headerrow $(a,b)$ & guard \\
+        \alert<1>{$(2, 0)$} & true \\
+        \alert<2>{$(0, 0)$} & false\\
+      \end{zebratabular}
+      \par\vspace{2ex}
+      Influence of $b$ on the first guard\\[1ex]
+      \begin{zebratabular}{ll}
+        \headerrow $(a,b)$ & guard \\
+        \alert<3>{$(2, 0)$} & true \\
+        \alert<4>{$(2, 1)$} & false\\
+      \end{zebratabular}
+    \end{minipage}
+  }
+  \only<presentation>{  
+    \begin{columns}
+      \column{.6\textwidth}
+        \alertpath<1>{gamma}{none}{none}
+        \alertpath<2>{beta}{none}{none}
+        \alertpath<3>{gamma}{none}{none}
+        \alertpath<4>{beta}{none}{none}
+      \column{.33\textwidth}
+        Influence of $a$ on the first guard\\[1ex]
+        \begin{zebratabular}{ll}
+          \headerrow $(a,b,x)$ & guard \\
+          \alert<1>{$(2, 0, -)$} & true \\
+          \alert<2>{$(1, 0, -)$} & false\\
+        \end{zebratabular}
+        \par\vspace{2ex}
+        Influence of $b$ on the first guard\\[1ex]
+        \begin{zebratabular}{ll}
+          \headerrow $(a,b,x)$ & guard \\
+          \alert<3>{$(2, 0, -)$} & true \\
+          \alert<4>{$(2, 1, -)$} & false\\
+        \end{zebratabular}
+    \end{columns}}
+\end{Frame}
+
+
+\begin{frame}{Modified Condition/Decision Coverage}{Running Example: Influences on the second guard}
+  \only<article>{
+    \begin{minipage}{.6\textwidth}
+       \alertpath<1>{epsilon}{none}{none}%
+       \alertpath<2>{delta}{none}{none}%
+       \alertpath<3>{epsilon}{none}{none}%
+       \alertpath<4>{delta}{none}{none}%
+    \end{minipage}\hfill
+    \begin{minipage}{.4\textwidth}
+      Influence of $a$ on the second guard\\[1ex]
+      \begin{zebratabular}{ll}
+        \headerrow $(a,b,x)$ & guard \\
+        \alert<1>{$(2, -, 2)$} & true \\
+        \alert<2>{$(1, -, 2)$} & false\\
+      \end{zebratabular}
+      \par\vspace{2ex}
+      Influence of $x$ on the second guard\\[1ex]
+      \begin{zebratabular}{ll}
+        \headerrow $(a,b,x)$ & guard \\
+        \alert<3>{$(1, -, 2)$} & true \\
+        \alert<4>{$(1, -, 0)$} & false\\
+      \end{zebratabular}
+    \end{minipage}
+  }
+  \only<presentation>{  
+    \begin{columns}
+      \column{.6\textwidth}
+        \alertpath<1>{epsilon}{none}{none}
+        \alertpath<2>{delta}{none}{none}
+        \alertpath<3>{epsilon}{none}{none}
+        \alertpath<4>{delta}{none}{none}
+      \column{.33\textwidth} 
+        Influence of $a$ on the second guard\\[1ex]
+        \begin{zebratabular}{ll}
+          \headerrow $(a,b,x)$ & guard \\
+          \alert<1>{$(2, -, 2)$} & true \\
+          \alert<2>{$(1, -, 2)$} & false\\
+        \end{zebratabular}
+        \par\vspace{2ex}
+        Influence of $x$ on the second guard\\[1ex]
+        \begin{zebratabular}{ll}
+          \headerrow $(a,b,x)$ & guard \\
+          \alert<3>{$(1, -, 2)$} & true \\
+          \alert<4>{$(1, -, 0)$} & false\\
+        \end{zebratabular}
+    \end{columns}}
+\end{frame}
+
+
+\begin{frame}{Modified Condition/Decision Coverage}{Running Example: Final Test Suite}
+
+	\only<article>{
+		\begin{minipage}{.6\textwidth}
+	     \alertpath<1>{alpha}{gamma}{epsilon}%
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+		     Final Test Suite\\
+		   		  \begin{zebratabular}{ll}
+		          \headerrow $(a,b,x)$ & path \\
+		          \textcolor{alertedcolor}{$(2, 0, 1)$} & \textcolor{alertedcolor}{$\alpha\gamma\epsilon$} \setrownumber1 \\
+		          $(1, 0, 1)$ & $\alpha\beta\delta$ \setrownumber1 \\
+		          $(2, 1, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		          $(1, 1, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		          $(1, 1, 0)$ & $\alpha\beta\delta$ \setrownumber1 \\
+		        \end{zebratabular}
+		\end{minipage}
+		
+		\vspace{3ex}
+
+		\begin{minipage}{.6\textwidth}
+			\alertpath<2>{alpha}{beta}{delta}%
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+		  Final Test Suite\\
+				  \begin{zebratabular}{ll}
+		       \headerrow $(a,b,x)$ & path \\
+		       $(2, 0, 1)$ & $\alpha\gamma\epsilon$ \setrownumber1 \\
+		       \textcolor{alertedcolor}{$(1, 0, 1)$} & \textcolor{alertedcolor}{$\alpha\beta\delta$} \setrownumber1 \\
+		       $(2, 1, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		       $(1, 1, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		       $(1, 1, 0)$ & $\alpha\beta\delta$ \setrownumber1 \\
+		     \end{zebratabular}
+		\end{minipage}
+		
+		\vspace{3ex}
+
+		\begin{minipage}{.6\textwidth}
+	    \alertpath<3>{alpha}{beta}{epsilon}%
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+	  Final Test Suite\\
+			  \begin{zebratabular}{ll}
+	       \headerrow $(a,b,x)$ & path \\
+	       $(2, 0, 1)$ & $\alpha\gamma\epsilon$ \setrownumber1 \\
+	       $(1, 0, 1)$ & $\alpha\beta\delta$ \setrownumber1 \\
+	       \textcolor{alertedcolor}{$(2, 1, 2)$} & \textcolor{alertedcolor}{$\alpha\beta\epsilon$} \setrownumber1 \\
+	       $(1, 1, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+	       $(1, 1, 0)$ & $\alpha\beta\delta$ \setrownumber1 \\
+	     \end{zebratabular}
+		\end{minipage}
+		
+		\vspace{3ex}
+
+		\begin{minipage}{.6\textwidth}
+	    \alertpath<4>{alpha}{beta}{epsilon}%				
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+		   Final Test Suite\\
+				  \begin{zebratabular}{ll}
+		       \headerrow $(a,b,x)$ & path \\
+		       $(2, 0, 1)$ & $\alpha\gamma\epsilon$ \setrownumber1 \\
+		       $(1, 0, 1)$ & $\alpha\beta\delta$ \setrownumber1 \\
+		       $(2, 1, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		       \textcolor{alertedcolor}{$(1, 1, 2)$} & \textcolor{alertedcolor}{$\alpha\beta\epsilon$} \setrownumber1 \\
+		       $(1, 1, 0)$ & $\alpha\beta\delta$ \setrownumber1 \\
+		     \end{zebratabular}
+		\end{minipage}		
+		
+		\vspace{3ex}
+
+		\begin{minipage}{.6\textwidth}
+		  \alertpath<5>{alpha}{beta}{delta}%		
+		\end{minipage}\hfill
+		\begin{minipage}{.4\textwidth}
+		   Final Test Suite\\
+				  \begin{zebratabular}{ll}
+		       \headerrow $(a,b,x)$ & path \\
+		       $(2, 0, 1)$ & $\alpha\gamma\epsilon$ \setrownumber1 \\
+		       $(1, 0, 1)$ & $\alpha\beta\delta$ \setrownumber1 \\
+		       $(2, 1, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		       $(1, 1, 2)$ & $\alpha\beta\epsilon$ \setrownumber1 \\
+		       \textcolor{alertedcolor}{$(1, 1, 0)$} & \textcolor{alertedcolor}{$\alpha\beta\delta$} \setrownumber1 \\
+		     \end{zebratabular}
+		\end{minipage}
+		\mbox{}	
+}%
+
+	\only<presentation>{
+	  \begin{columns}
+	    \column{.6\textwidth}
+	      \alertpath<1>{alpha}{gamma}{epsilon}%
+   			\alertpath<2>{alpha}{beta}{delta}%
+		    \alertpath<3>{alpha}{beta}{epsilon}%
+   	    \alertpath<4>{alpha}{beta}{epsilon}%	
+    	  \alertpath<5>{alpha}{beta}{delta}%				
+	    \column{.33\textwidth}
+	      Final Test Suite\\[1ex]
+	      \begin{zebratabular}{ll}
+		       \headerrow $(a,b,x)$ & path \\
+		       \alert<1>{$(2, 0, 1)$} & \alert<1>{$\alpha\gamma\epsilon$} \setrownumber1 \\
+		       \alert<2>{$(1, 0, 1)$} & \alert<2>{$\alpha\beta\delta$} \setrownumber1 \\
+		       \alert<3>{$(2, 1, 2)$} & \alert<3>{$\alpha\beta\epsilon$} \setrownumber1 \\
+		       \alert<4>{$(1, 1, 2)$} & \alert<4>{$\alpha\beta\epsilon$} \setrownumber1 \\
+		       \alert<5>{$(1, 1, 0)$} & \alert<5>{$\alpha\beta\delta$} \setrownumber1 \\
+	      \end{zebratabular}
+	  \end{columns}
+  }
+\end{frame}
+
+
+
+\subsection{Data-flow-based Coverage}
+
+\begin{frame}{Data-flow-based Coverage}
+  $\forall x$ we define \alert{sets of nodes} of the flowchart:
+  \begin{description}
+    \item[def($x$)] nodes where some value is assigned to $x$ ($x$ is {\textit defined})
+    \item[p-use($x$)] nodes where $x$ is used in a guard (also called a {\em predicate})
+    \item[c-use($x$)] nodes where $x$ is used in some expression other than a predicate (also called a \alert{command}, typically the right-hand-side of an assignment).\hfill\vspace{3ex}\linebreak
+    \item[def-clear($x$)] is the \alert{set of paths} of the flowchart that:
+  \end{description}
+  \vskip-1ex
+  \begin{itemize}\setbeamertemplate{itemize item}{--}
+    \item contain each node at most once, except for the first and last nodes,
+    which may be the same;\\
+    \item do not contain any node of def($x$), except for possibly the first node (and the last node, if it coincides with the first).
+  \end{itemize}
+\end{frame}
+
+\input{content/chapter_testing/black+white/dataflowchart}
+
+\begin{Frame}{Data-flow-based Coverage}{Running Example}
+  \begin{columns}
+    \column{.6\textwidth}
+	    \alertlabeledpath<1>{alpha}{beta}{delta}{betatwo}{deltatwo}{foo}{bar}%
+    \column{.33\textwidth}
+	    \only<presentation>{
+      \textcolor{maincolor}{\bfseries def-clear($x$)} $=$ \\
+      \ \ $\{ \alpha, \alpha\beta, \alert{\alpha\beta\delta} \}$
+      }
+      \only<article>{
+	      \begin{center}
+		      \textcolor{maincolor}{\bfseries def-clear($x$)} $= \{ \alpha, \alpha\beta, \alert{\alpha\beta\delta} \}$
+	      \end{center}
+      }
+  \end{columns}
+\end{Frame}
+
+
+\begin{Frame}{Data-flow-based Coverage: dpu and dcu}
+  For each node $s$ and every variable $x$ we define the following sets of nodes:
+  \begin{description}
+    \item[dcu($s,x$)] the set of nodes $s' \in$ c-use($x$) such that there is a def-clear($x$) path from $s$ to $s'$
+    \item[dpu($s,x$)] the set of nodes $s' \in$ p-use($x$) such that there is a def-clear($x$) path from $s$ to $s'$.
+  \end{description}
+\end{Frame}
+
+\begin{Frame}{Data-flow-based Coverage: dpu and dcu}{Running Example}
+	\only<presentation>{
+	  \begin{columns}
+	    \column{.6\textwidth}
+	      \alertlabeledpath<1>{alpha}{gamma}{foo}{foo}{bar}{baz}{foo}%
+	      \alertlabeledpath<2>{alpha}{beta}{betatwo}{epsilon}{bar}{baz}{foo}%
+	      \alertlabeledpath<3>{alpha}{beta}{betatwo}{foo}{bar}{baz}{foo}%
+	    \column{.33\textwidth}
+	      \textcolor{maincolor}{\bfseries dcu($A$, $x$)} $=$ \\
+	      \ \ $\{ \alert<1>{C}, \alert<2>{E} \}$\hfill\vspace{3ex}\linebreak
+	
+	      \textcolor{maincolor}{\bfseries dpu($A$, $x$)} $=$ \\
+	      \ \ $\{ \alert<3>{D} \}$
+	  \end{columns}
+  }
+  \only<article>{
+	  \begin{minipage}{.6\textwidth}
+		  \alertlabeledpath<1>{alpha}{gamma}{foo}{foo}{bar}{baz}{foo}%	
+	  \end{minipage}\hfill
+	  \begin{minipage}{.4\textwidth}
+		  \textcolor{maincolor}{\bfseries dcu($A$, $x$)} $=\{ \textcolor{alertedcolor}{C}, E \}$\hfill\vspace{3ex}\linebreak
+		  
+			\textcolor{maincolor}{\bfseries dpu($A$, $x$)} $= \{ D \}$
+	  \end{minipage}
+	  
+	  \vspace{3ex}
+	  
+	  \begin{minipage}{.6\textwidth}
+	    \alertlabeledpath<1>{alpha}{beta}{betatwo}{epsilon}{bar}{baz}{foo}%	
+	  \end{minipage}\hfill
+	  \begin{minipage}{.4\textwidth}
+		  \textcolor{maincolor}{\bfseries dcu($A$, $x$)} $=\{ C, \textcolor{alertedcolor}{E} \}$\hfill\vspace{3ex}\linebreak
+		  
+			\textcolor{maincolor}{\bfseries dpu($A$, $x$)} $= \{ D \}$
+	  \end{minipage}
+	  
+	  \vspace{3ex}
+	  
+	  \begin{minipage}{.6\textwidth}
+	    \alertlabeledpath<1>{alpha}{beta}{betatwo}{foo}{bar}{baz}{foo}%	
+	  \end{minipage}\hfill
+	  \begin{minipage}{.4\textwidth}
+		  \textcolor{maincolor}{\bfseries dcu($A$, $x$)} $=\{ C, E \}$\hfill\vspace{3ex}\linebreak
+		  
+			\textcolor{maincolor}{\bfseries dpu($A$, $x$)} $= \{ \textcolor{alertedcolor}{D} \}$
+	  \end{minipage}  
+  }
+\end{Frame}
+
+\begin{Frame}{Data-flow Coverage Criteria}
+  $\forall x$ and $\forall s \in$ def($x$), the set $R$ of paths realized by the suite contains \ldots\\
+  \xxx
+  \begin{description}
+    \item[all-defs] one path to some node in dpu($s,x$) or dcu($s,x$).\\
+    $\Rightarrow$ \textit{All defs are used somewhere.}
+    \item[all-p-uses] one path to each node in dpu($s,x$).\\
+    $\Rightarrow$ \textit{All branches affected by each definition are exercised.}
+    %\item[all-p-uses/some-c-uses] one path to each node in dpu($s,x$), but if dpu($s,x$) is empty, then at least one path to some node in dcu($s,x$).\\
+    %$\Rightarrow$ \textit{All definitions are used and if they affect control flow then all affected branches are exercised.}
+      \end{description}
+\end{Frame}
+
+\begin{Frame}{Data-flow Coverage Criteria}
+  \begin{description}
+    %\item[all-c-uses/some-p-uses] one path to each node in dcu($s,x$), but if dcu($s,x$) is empty, then at least one path to some node in dpu($s,x$).\\
+    %$\Rightarrow$ \textit{All definition are used and if they affect computations then all affected computation are exercised.}
+    \item[all uses] one path to each node in dpu($s,x$) and to each node in dcu($s,x$).\\
+	$\Rightarrow$ \textit{Every computation and branch directly affected by a definition is exercised.}
+    \item[all-du-paths] all paths to each node in dpu($s,x$) and to each node in dcu($s,x$).\\
+    $\Rightarrow$ \textit{Every computation and branch directly affected by a definition is exercised and all def-use paths are exercised.}
+  \end{description}
+\end{Frame}
+
+\begin{Frame}{Data-flow Coverage Criteria}
+
+	Data-flow Analysis can be useful to discover potential faults in the program.\\
+	\xxx
+	Examples:
+	\begin{itemize}
+		\item Is the definition of a variable that is not used in the program useful?
+		\item Are we using a variable before it is defined? 
+		\item Are some variables only used in certain parts of the program?
+	\end{itemize}
+
+\end{Frame}
+
+
+\subsection{Mutation Testing}
+
+\begin{frame}{Mutation Testing}
+	Test Suite Evaluation: How good is my test-suite?
+	\begin{beameritemize}
+		\item (How) is every statement executed? ($\Rightarrow$ Coverage)
+		\item Can my test cases detect faulty changes in the code?
+	\end{beameritemize}	
+	\xxx
+	\begin{block}{Idea}
+		Introduce small changes (mutations) to the code and see if a test case can detect it.
+	\end{block}	
+\end{frame}
+
+
+\begin{frame}{Mutation Testing}
+	
+	
+	Examples (Conditionals Boundary Mutations):\\
+	\texttt{if(a<b)~} $\Rightarrow$ \texttt{if(a<=b)}\\
+	\texttt{if(a==b)} $\Rightarrow$ \texttt{if(a!=b)}\\
+	\texttt{if(a\&\&b)} $\Rightarrow$ \texttt{if(a||b)}\\
+	\texttt{if(a\&\&b)} $\Rightarrow$ \texttt{if(a\&\&true)}\\	
+	\xxx
+	Examples (Math Mutations):\\
+	\texttt{a+b} $\Rightarrow$ \texttt{a-b}\\
+	\texttt{a*b} $\Rightarrow$ \texttt{a/b}\\
+	\texttt{a\&b} $\Rightarrow$ \texttt{a|b}\\
+	\texttt{a<<b} $\Rightarrow$ \texttt{a>>b}\\	
+\end{frame}
+
+\begin{frame}{Mutation Testing}
+	\begin{block}{Mutation Detection}
+		\begin{beameritemize}
+			\item Compare the results of original an mutant program. 
+			\item A mutation is considered detected or "killed", if at least one test case reaches the mutation and at least one test case recognized the change in the program.
+			\item If all test cases produce the same result for the original and mutant program, a mutation is kept alive and a more effective test case has to be created.
+			\item Typical metric: Mutation Score $=($Killed Mutants $/$ Total number of Mutants$)*100$
+		\end{beameritemize}	
+		
+	\end{block}
+	
+\end{frame}
+
+
+\begin{frame}{Mutation Testing}		
+	
+	\begin{tikzpicture}[scale=0.40]
+	\node[state, initial, field] (source) {Source Code};
+	\node[state, field, right=0.5cm of source] (mutation) {Mutation};
+	\node[state, field, right=0.5cm of mutation] (mutated) {Mutated Source Code}; 
+	\node[state, field, below=of mutated] (suite) {Test Suite};   
+	\node[state, field, error , below =1cm of suite] (error) {All Tests Passed};
+	\node[state, field, success, below left=1cm and 1cm of suite] (success) {Test Failed/Mutation killed};
+	\node[state, field, error, below=of error] (bug) {Unsufficient Test Suite!};     
+	
+	
+	\draw[->] (success.north) -| (source.south);
+	
+	
+	\path[->]
+	(source) edge node {} (mutation)
+	(mutation) edge node {} (mutated)
+	(mutated.south) edge node {} (suite.north)
+	(suite.south) edge node {} (success.north)
+	(suite.south) edge node {} (error.north)
+	(error) edge node {} (bug)
+	
+	;
+	
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Mutation Testing}
+	Advantages:
+	\begin{beameritemize}
+		\item Can help to improve and validate the test suite.
+		\item Better tests can find unknown bugs.
+	\end{beameritemize}	
+	\xxx
+	Disadvantages:
+	\begin{beameritemize}
+		\item Each generated mutant has to be executed by the entire test suite.
+		\item Extremely costly and time consuming.
+	\end{beameritemize}
+	\xxx
+	$\Rightarrow$ Hands-on example in the exercises!	
+\end{frame}

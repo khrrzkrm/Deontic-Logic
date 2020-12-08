@@ -1,0 +1,385 @@
+\RequirePackage{etoolbox}
+\providetoggle{isSolution}
+
+% Show or hide solutions, according to `isSolution` flag set before \documentclass
+\iftoggle{isSolution} {\PassOptionsToClass{solution}{exercise}} {}
+% You can also use \exerciseHideSolutions to explicitely hide them.
+
+\documentclass[language=en,sheet=6,prefix]{exercise}
+
+\exerciseCourse{Development of Safety-Critical Systems (Sichere Software)}
+\exerciseAuthors{Martin Leucker, Karam Kharraz, Felix Lange}
+\exerciseTerm{Winter Term 2018}
+\exerciseDeadline{}
+\exerciseDate{December 8, 2018}
+
+% Show or hide solutions, according to `isSolution` flag set before \documentclass
+% \exerciseShowSolutions
+% You can also use \exerciseHideSolutions to explicitely hide them.
+
+\lstdefinelanguage[]{Coq}[]{}{literate=%
+{>}{{$>$}}{1}
+{<}{{$<$}}{1}
+{=}{{$=$}}{1}
+{-}{{$-$}}{1}
+{+}{{$+$ }}{1}
+{~}{{$\sim$}}{1}
+{===}{$\equiv$ }{1}
+{...}{$\ldots$ }{2}
+{<--}{\reflectbox{$\leadsto$}}{3}
+{->}{$\rightarrow$ }{1}
+{=>}{$\Rightarrow$ }{1}
+{>=}{$\ge$}{1}
+{<=}{$\le$}{1}
+{:=}{$\coloneqq$}{2}
+{/\\}{{$\wedge$}}{1}
+{\\/}{{$\vee$}}{1}
+{forall}{$\forall$}{1}
+{TTrue}{{True}}{4}
+{FFalse}{{False}}{5}
+{True}{{$\top$}}{1}
+{False}{{$\bot$}}{1}
+%{'a}{{$\alpha$}}{1}
+%{'b}{{$\beta$}}{1}
+%{'c}{{$\gamma$}}{1}
+%{'d}{{$\delta$}}{1}
+%{'e}{{$\varepsilon$}}{1}}
+,
+morekeywords={Inductive,Definition,Fixpoint,Lemma,Theorem,Proof,Qed,Require,Import,Set,Type,Prop,match,fun,apply,intros,exact,destruct,split,simpl,reflexivity,exfalso,induction,rewrite,left,right}
+}
+\lstdefinestyle{Coq}{language=Coq}
+\lstset{style=Coq}
+
+\usepackage{utf8-math}
+\usepackage{xspace}
+\usepackage{tikz}
+\usepackage{dirtytalk} % \say command
+\usepackage{enumitem} % customize \enumerate
+\usepackage{mathpartir} % Inference rules
+\usepackage{lscape} % allow landscape
+\usetikzlibrary{arrows,automata}
+
+
+\newcommand{\ltl}{LTL}
+\renewcommand{\phi}{\varphi}
+
+% Temporal operators
+\newcommand{\U}{\ensuremath{\operatorname{U}}\xspace}
+\newcommand{\XU}{\ensuremath{\operatorname{XU}}\xspace}
+%\newcommand{\R}{\ensuremath{\operatorname{R}}\xspace}
+\newcommand{\X}{\ensuremath{\operatorname{X}}\xspace}
+\newcommand{\WX}{\ensuremath{\operatorname{\bar{X}}}\xspace}
+\newcommand{\G}{\ensuremath{\operatorname{G}}\xspace}
+\newcommand{\F}{\ensuremath{\operatorname{F}}\xspace}
+\newcommand{\W}{\ensuremath{\operatorname{W}}\xspace}
+
+\begin{document}
+
+\task[Propositional Logic]
+
+Recall the proof system of natural deduction defined by the four inference rules. Here is a proof that inconsistent assumptions $p$ and $¬p$ imply any $q$.
+%
+$$
+\inferrule*[Right=ImpIntro]
+{
+	\inferrule*[Right=ImpIntro]
+	{
+		\inferrule*[Right=DoubleNeg]
+		{
+      \inferrule*[Right=ImpElim]
+  		{
+        \inferrule*[left={\footnotesize$p → ⊥ ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-3em]
+        { }
+        {p, p → ⊥, q → ⊥ ⊢ p → ⊥}\\
+				\inferrule*[left={\footnotesize$p ∈ \{ ... \}$},Right=Assump,vcenter=true]
+        { }
+        {p, p → ⊥, q → ⊥ ⊢ p}\\
+      }
+  		{p, p → ⊥, q → ⊥ ⊢ ⊥}
+    }
+		{p, p → ⊥ ⊢ q}
+	}
+	{p ⊢ (p → ⊥) → q}
+}
+{⊢ p → (p → ⊥) → q}
+$$
+
+\begin{enumerate}
+\item
+Use the rules to construct proof trees for the following formulas. Prove them, and also $p → (p → ⊥) → q$, in Coq using tactics. Finally, prove them by giving explicit proof terms. Use the given template file for the Coq proofs.
+%
+\begin{enumerate}[label=(\roman*)]
+	\item $p → (p → ⊥) → ⊥$
+  \item $(p → q) → (q → r) → (p → r)$
+\end{enumerate}
+
+\item
+Extend the syntax of propositional logic by conjunction and disjunction. Extend the semantics (evaluation function). Extend the inference rules of the proof system. \textit{Hint:} For both operators, you will need introduction and elimination rule(s), analogously to the two rules \textsc{ImpIntro}, \textsc{ImpElim}. If you get stuck, you may get inspiration from the internet.
+
+\item
+Prove the following formulas in your extended proof system. Then prove them in Coq both by using tactics and by giving a proof term (use again the template file).\\[-2em]
+
+\begin{minipage}[t]{17em}
+  \begin{enumerate}[label=(\roman*)]
+    \item $(p ∧ q) → (q ∧ p)$
+    \item $p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r)$
+  \end{enumerate}
+\end{minipage}
+\begin{minipage}[t]{20em}
+\begin{enumerate}[label={}]
+  \item \textit{\say{$∧$ is commutative}}
+  \item \textit{\say{$∧$ is distributive over $∨$}}
+\end{enumerate}
+\end{minipage}
+
+\end{enumerate}
+
+\begin{solution}
+\begin{landscape}
+\begin{enumerate}
+\item
+\begin{enumerate}[label=(\roman*)]
+\item
+$$
+\inferrule*[Right=ImpIntro]
+{
+	\inferrule*[Right=ImpIntro]
+	{
+    \inferrule*[Right=ImpElim]
+		{
+      \inferrule*[left={\footnotesize$p → ⊥ ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-3em]
+      { }
+      {p, p → ⊥ ⊢ p → ⊥}\\
+			\inferrule*[left={\footnotesize$p ∈ \{ ... \}$},Right=Assump,vcenter=true]
+      { }
+      {p, p → ⊥ ⊢ p}\\
+    }
+		{p, p → ⊥ ⊢ ⊥}
+	}
+	{p ⊢ (p → ⊥) → ⊥}
+}
+{⊢ p → (p → ⊥) → ⊥}
+$$
+
+\item
+$$
+\inferrule*[Right=ImpIntro]
+{
+	\inferrule*[Right=ImpIntro]
+	{
+		\inferrule*[Right=ImpIntro]
+		{
+			\inferrule*[Right=ImpElim]
+			{
+				\inferrule*[left={\footnotesize$q → r ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-3em]
+				{ }
+				{p → q, q → r, p ⊢ q → r}\\
+				\inferrule*[Right=ImpElim]
+				{
+					\inferrule*[left={\footnotesize$p → q ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-3em]
+					{ }
+					{p → q, q → r, p ⊢ p → q}\\
+					\inferrule*[left={\footnotesize$p ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-3em]
+					{ }
+					{p → q, q → r, p ⊢ p}
+				}
+				{p → q, q → r, p ⊢ q}
+			}
+			{p → q, q → r, p ⊢ r}
+		}
+		{p → q, q → r ⊢ p → r}
+	}
+	{p → q ⊢ (q → r) → (p → r)}
+}
+{⊢ (p → q) → (q → r) → (p → r)}
+$$
+\end{enumerate}
+
+\item
+Extension of the evaluation function:
+\begin{align*}
+\llbracket φ_1 ∧ φ_2 \rrbracket_v &:= \left\{\begin{aligned}
+	1 & \quad\text{if $\llbracket φ_1 \rrbracket_v = 1$ and $\llbracket φ_2 \rrbracket_v = 1$}\\
+	0 & \quad\text{otherwise}
+\end{aligned}\right.\\
+\llbracket φ_1 ∨ φ_2 \rrbracket_v &:= \left\{\begin{aligned}
+	1 & \quad\text{if $\llbracket φ_1 \rrbracket_v = 1$ or $\llbracket φ_2 \rrbracket_v = 1$}\\
+	0 & \quad\text{otherwise}
+\end{aligned}\right.
+\end{align*}
+
+Extension of the inference rules:
+$$
+\inferrule*[right=ConjIntro]
+{
+	Γ ⊢ φ_1\\
+	Γ ⊢ φ_2
+}
+{
+	Γ ⊢ φ_1 ∧ φ_2
+}
+%
+\qquad
+%
+\inferrule*[right=ConjElimL]
+{
+	Γ ⊢ φ_1 ∧ φ_2
+}
+{
+	Γ ⊢ φ_1
+}
+%
+\qquad
+%
+\inferrule*[right=ConjElimR]
+{
+	Γ ⊢ φ_1 ∧ φ_2
+}
+{
+	Γ ⊢ φ_2
+}
+$$
+%
+~\\[1em]
+%
+$$
+\inferrule*[right=DisjIntroL]
+{
+	Γ ⊢ φ_1
+}
+{
+	Γ ⊢ φ_1 ∨ φ_2
+}
+%
+\qquad
+%
+\inferrule*[right=DisjIntroR]
+{
+	Γ ⊢ φ_2
+}
+{
+	Γ ⊢ φ_1 ∨ φ_2
+}
+%
+\qquad
+%
+\inferrule*[right=DisjElim]
+{
+	Γ ⊢ φ_1 ∨ φ_2\\
+	Γ ⊢ φ_1 → ψ\\
+	Γ ⊢ φ_2 → ψ
+}
+{
+	Γ ⊢ ψ
+}
+$$
+
+\item
+$$
+\inferrule*[Right=ImpIntro]
+{
+	\inferrule*[Right=ConjIntro]
+	{
+		\inferrule*[Left=ConjElimR]
+		{
+			\inferrule*[left={\footnotesize$p ∧ q ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-6em]
+			{ }
+			{p ∧ q ⊢ p ∧ q}
+		}
+		{p ∧ q ⊢ q}\\
+		\inferrule*[Right=ConjElimL]
+		{
+			\inferrule*[left={\footnotesize$p ∧ q ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-6em]
+			{ }
+			{p ∧ q ⊢ p ∧ q}
+		}
+		{p ∧ q ⊢ p}
+	}
+	{p ∧ q ⊢ q ∧ p}
+}
+{⊢ (p ∧ q) → (q ∧ p)}
+$$
+%
+~\\[1em]
+%
+$$
+\inferrule*[Right=ImpIntro]
+{
+	\inferrule*[Right=DisjElim]
+	{
+		\inferrule*[Left=ConjElimR]
+		{
+			\inferrule*[left={\footnotesize$... ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-6em]
+			{ }
+			{p ∧ (q ∨ r) ⊢ p ∧ (q ∨ r)}
+		}
+		{p ∧ (q ∨ r) ⊢ q ∨ r}\\
+		\inferrule*[Right=ImpIntro]
+		{
+			\inferrule*[Right=DisjIntroL]
+			{
+				\inferrule*[Right=ConjIntro]
+				{
+					\inferrule*[Left=ConjElimL]
+					{
+						\inferrule*[left={\footnotesize$... ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-6em]
+						{ }
+						{p ∧ (q ∨ r), q ⊢ p ∧ (q ∨ r)}
+					}
+					{p ∧ (q ∨ r), q ⊢ p}\\
+					\inferrule*[left={\footnotesize$q ∈ \{ ... \}$},Right=Assump,vcenter=true,rightskip=-6em]
+					{ }
+					{p ∧ (q ∨ r), q ⊢ q}
+				}
+				{p ∧ (q ∨ r), q ⊢ p ∧ q}
+			}
+			{p ∧ (q ∨ r), q ⊢ (p ∧ q) ∨ (p ∧ r)}
+		}
+		{p ∧ (q ∨ r) ⊢ q → (p ∧ q) ∨ (p ∧ r)}
+		%
+	}
+	{p ∧ (q ∨ r) ⊢ (p ∧ q) ∨ (p ∧ r)}
+}
+{⊢ p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r)}
+$$
+There is another branch next to the derivation of $p ∧ (q ∨ r) ⊢ q → (p ∧ q) ∨ (p ∧ r)$, namely the analogous derivation of $p ∧ (q ∨ r) ⊢ p → (p ∧ q) ∨ (p ∧ r)$. It is not part of the tree due to a lack of space.
+\end{enumerate}
+\end{landscape}
+\end{solution}
+
+\task[Programming in Coq]
+
+   Consider the following \lstinline|option| data type that provides two kinds of values, either \lstinline|none| or \lstinline|some v| for some value \lstinline|v|. Like \lstinline|list|, it is parameterized over a type \lstinline|A|.
+\begin{lstlisting}[numbers=none,xleftmargin=0em]
+Inductive option (A: Type) : Type :=
+| some : A -> option A
+| none : option A.
+\end{lstlisting}
+Write the following programs, using the provided template file.
+  %
+  \begin{enumerate}[label=(\roman*)]
+    \item \lstinline|pred_opt: nat -> option nat|\\
+    This function returns the predecessor of a natural number, or \lstinline|none| if it does not exist.
+		\item \lstinline|pred: nat -> nat|\\
+    This function returns the predecessor of a natural number, or \lstinline|0| if it does not exist.
+    \item \lstinline|minus: nat -> nat -> option nat|\\
+    This function computes $x - y$ for two natural numbers. If the result is not a natural number, \lstinline|none| is returned.
+    \item \lstinline|is_none: forall (X: Type), option X -> bool|\\
+    This polymorphic function takes an optional value and returns \lstinline|true| if the value is \lstinline|none| and \lstinline|false| otherwise.
+    \item \lstinline|head: forall (X: Type), list X -> option X|\\
+    This function returns the first element of a list, or \lstinline|none| if the list is empty.
+  \end{enumerate}
+
+\task[Proving in Coq]
+  Prove the following propositions in Coq, using the provided template file.
+
+  \begin{enumerate}[label=(\roman*)]
+		\item \lstinline|forall (X: Type) (x: X) (xs: list X), head (cons x xs) =|~\lstinline|some x|
+		\item \lstinline|forall (n: nat), S (pred n) =|~\lstinline|n \/|~\lstinline|n|~\lstinline|= 0|
+		\item \lstinline|forall (x y z: nat), (x + y) + z =|~\lstinline|x + (y + z)|
+		\item \lstinline|forall (m n: nat), minus m n |~\lstinline|= none \/|~\lstinline|minus n m =|~\lstinline|none \/|~\lstinline|m =|~\lstinline|n|
+  \end{enumerate}
+
+
+
+\end{document}

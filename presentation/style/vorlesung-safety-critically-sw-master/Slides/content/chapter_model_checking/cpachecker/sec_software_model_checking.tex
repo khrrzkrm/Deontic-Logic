@@ -1,0 +1,444 @@
+%!TEX root = ../../../main.tex
+
+\section{Software Model Checking with CPAchecker}
+
+\begin{frame}{Software Model Checking with CPAchecker}
+\begin{itemize}
+\itemsep1em
+\item \cpachecker is a versatile software verification tool created by SoSy-Lab
+\item One of the world's most powerful and efficient verification tool
+\item Web: \cpacheckerurl
+\item Material of this section is based on the materials provided by developers of \cpachecker and is licensed under CC-BY-SA 4.0 
+\end{itemize}
+
+\end{frame}
+ 
+% -----------------------
+
+\begin{frame}{Software Verification}
+  \small  
+  \begin{minipage}{\textwidth}
+    \input{content/chapter_model_checking/cpachecker/images/C-program.tex}
+  \end{minipage}
+  
+  \bigskip
+  \begin{minipage}{0.45\textwidth}
+    General method:\\
+    Create an overapproximation of the program states / \\
+    compute program invariants
+  \end{minipage}
+    \hspace{0.2cm}
+  \begin{minipage}{0.5\textwidth}
+    \resizebox{\textwidth}{!}{
+      \input{content/chapter_model_checking/cpachecker/images/Overapprox-program-states.tex}
+    }
+  \end{minipage}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+% \begin{frame}{CPAchecker History}
+%   \begin{itemize}
+%     \item 2002: BLAST with lazy abstraction refinement
+%     \item 2003: Multi-threading support
+%     \item 2004: Test-case generation, interpolation, spec. lang.
+%     \item 2005: Memory safety, predicated lattices
+%     \item 2006: Lazy shape analysis
+%     \item Maintenance and extensions became extremely difficult\\
+%           because of design choices that were not easy to revert
+%     \item 2007: Configurable program analysis,\\
+%                 \cpachecker was started\\
+%                 as complete reimplementation from scratch
+%   \end{itemize}
+% \end{frame}
+
+% ---------------------------------------------------------------------
+
+% \begin{frame}{CPAchecker History (2)}
+%   \begin{itemize}
+%     \item 2009: Large-block encoding
+%     \item 2010: Adjustable-block encoding
+%     \item 2012: Conditional model checking, PredAbs vs. Impact
+%     \item 2013: Explicit-state MC, BDDs, precision reuse
+%     \item ...
+%   \end{itemize}
+% \end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Software Verification by Model Checking\\
+  \vspace{-0.25cm}\small{[Clarke/Emerson, Sifakis 1981]}}
+  \centering
+  Iterative fixpoint (forward) post computation
+
+  \medskip
+  \begin{minipage}[b]{0.8\textwidth}
+    \resizebox{\textwidth}{!}{
+      \input{content/chapter_model_checking/cpachecker/images/Iterative-fixpoint-post-computation.tex}
+    }
+  \end{minipage}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}<1>[label=algorithm]
+  \frametitle{
+    \only<1-2>{Software Model Checking}
+    \only<3>{Configurable Program Analysis}}
+  \begin{algorithmic}
+    \State \textit{Reached}, \textit{Frontier} := $\{\text{\textit{e}}_\text{\textit{0}}\}$
+    \While{\textit{Frontier} $\neq \emptyset$}
+      \State remove \textit{e} from \textit{Frontier}
+      \ForAll{\textit{e'} $\in$ \textbf{\underline{post}}(\textit{e})}
+      \uncover<3->{
+        \ForAll{\textit{e''} $\in$ \textit{Reached}}
+          \State $\text{\textit{e''}}_{\text{\textit{new}}}$ := \textbf{\underline{merge}}(\textit{e'}, \textit{e''})
+          \If{$\text{\textit{e''}}_{\text{\textit{new}}} \neq$ \textit{e''}}
+            \State replace \textit{e''} in \textit{Reached}, \textit{Frontier} by   $\text{\textit{e''}}_{\text{\textit{new}}}$
+          \EndIf
+        \EndFor
+      } %end uncover
+        \If{$\neg$\textbf{\underline{stop}}(\textit{e'}, \textit{Reached})}
+          \State add \textit{e'} to \textit{Reached}, \textit{Frontier}
+        \EndIf
+      \EndFor
+    \EndWhile
+  \State \Return \textit{Reached}
+  \end{algorithmic}
+
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Software Verification by Data-Flow Analysis}
+  \centering
+  Fixpoint computation on the CFG
+
+  \begin{minipage}[b]{0.5\textwidth}
+    \resizebox{\textwidth}{!}{
+      \input{content/chapter_model_checking/cpachecker/images/CFG-fixpoint-computation.tex}
+    }
+  \end{minipage}
+\end{frame}
+
+
+\againframe<2>{algorithm}
+
+
+\againframe<3>{algorithm}
+
+
+\begin{frame}{Configurable Program Analysis}
+  \begin{itemize}
+    \item Better combination of abstractions\\
+    \textbf{$\rightarrow$} Configurable Program Analysis  \hspace{0.1cm}\textcolor{sosyblue}{\tiny{[Beyer/Henzinger/Theoduloz CAV'07]}}
+  \end{itemize}
+
+  \medskip
+  \begin{minipage}[b]{\textwidth}{
+    \begin{tikzpicture}
+
+      \pic [local bounding box=A1] at (0,1.5) {tikzcpabar={0}} ;
+      \node [below = 0cm of A1] {CPA} ;
+
+      \node [below left = 0cm and -3cm of A1] {Data-flow analysis} ;
+      \node [below right = 0cm and -3cm of A1] {Model Checking} ;
+
+      \node [above left = 0cm and -1.5cm of A1] {\textcolor{red}{Imprecise}\\\textcolor{green}{Scalable}} ;
+      \node [above right = 0cm and -1.5cm of A1]  {\textcolor{green}{Precise}\\\textcolor{red}{Expensive}} ;
+
+    \end{tikzpicture}
+  }
+
+  \vspace{1.5cm}
+  Unified framework that enables intermediate algorithms
+\end{minipage}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Dynamic Precision Adjustment}
+Lazy abstraction refinement:\hspace{0.1cm}\textcolor{sosyblue}{\tiny{[Henzinger/Jhala/Majumdar/Sutre POPL'02]}}
+\begin{itemize}
+  \item Different predicates per location and per path
+  \item Incremental analysis instead of restart from scratch after refinement
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Dynamic Precision Adjustment}
+  \begin{minipage}{0.55\textwidth}
+    Better fine tuning of the precision of abstractions\\\vspace{-0.3em}
+    $\rightarrow$ Adjustable Precision\\
+    \textcolor{sosyblue}{\scriptsize{[Beyer/Henzinger/Theoduloz ASE'08]}}
+
+    \bigskip
+    Unified framework enables:
+    \begin{itemize}
+      \item switch on and off different analysis, and can
+      \item adjust each analysis separately
+    \end{itemize}
+
+  \bigskip
+  $\bullet$ Not only \textbf{refine}, also \textbf{abstract}!
+  \end{minipage}
+  \hspace{1cm}
+  \begin{minipage}{0.3\textwidth}{
+    \begin{tikzpicture}[scale=0.8, every node/.style={align=left, scale=0.8}]
+
+      \pic [local bounding box=A2, rotate=90] {tikzcpabar={90}} ;
+      \node [right of = A2] {CPA} ;
+
+      \node [above right = -1cm and 0.5cm of A2] {\textcolor{red}{Imprecise}\\\textcolor{green}{Scalable}} ;
+      \node [below right = -1cm and 0.5cm of A2]  {\textcolor{green}{Precise}\\\textcolor{red}{Expensive}} ;
+
+    \end{tikzpicture}
+    }
+  \end{minipage}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Adjustable Block-Encoding}
+  \begin{itemize}
+    \item Handle loop-free blocks of statements at once
+    \item Abstract only between blocks\\ (less abstractions, less refinements)\\
+              \textcolor{sosyblue}{\scriptsize{[Beyer/Cimatti/Griggio/Keremoglu/Sebastiani FMCAD'09]}}\\
+              \textcolor{sosyblue}{\scriptsize{[Beyer/Keremoglu/Wendler FMCAD'10]}}
+
+  \end{itemize}
+  %\hspace{9em}
+  \bigskip
+  \centering
+  \begin{minipage}[b]{0.6\textwidth}  
+    \resizebox{\textwidth}{!}{
+      \begin{tikzpicture}
+
+      \pic [local bounding box=A3, rotate=225] {tikzcpabar={225}} ;
+      \node [below right = 0cm and 0cm of A3.center] {Block size} ;
+
+      \node [above right = -1cm and 0cm of A3] {\textcolor{red}{SBE}} ;
+      \node [below left = -0.5cm and -4cm of A3] {\textcolor{blue}{Whole Program}} ;
+
+      \end{tikzpicture}
+    }
+  \end{minipage}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}<3->{\cpachecker}
+              \textcolor{sosyblue}{\scriptsize{[Beyer/Keremoglu CAV'11]}}
+%  \begin{tikzpicture}
+  
+  \bigskip
+  \centering
+  \begin{minipage}[b]{\textwidth}
+    \resizebox{\textwidth}{!}{
+      \begin{tikzpicture}
+      \pic [local bounding box=A1] {tikzcpabar={0}} ;
+      \node [below = 0cm of A1] {CPA} ;
+
+      \pause
+      \pic [local bounding box=A2, rotate=90, scale=0.8, every node/.style={scale=0.8}] at (1,0) {tikzcpabar={90}} ;
+
+      \pause
+      \pic [local bounding box=A3, rotate=225] at (2,0) {tikzcpabar={225}};
+    \end{tikzpicture}
+    }
+  \end{minipage}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{CPA -- Summary}
+  \begin{itemize}
+    \item Unification of several approaches\\
+    $\rightarrow$ reduced to their essential properties
+    \item Allow experimentation with new configurations\\ that we could never think of
+    \item Flexible implementation \cpachecker
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{\cpacheckertitle}
+  \begin{itemize}
+    \item Framework for Software Verification --- current status
+    \begin{itemize}
+      \item Written in Java
+      \item Open Source: Apache 2.0 License
+      \item \textasciitilde80 contributors so far from 15 universities/institutions
+      \item 430.000 lines of code\\
+      (275.000 without blank lines and comments)
+      \item Started 2007
+    \end{itemize}
+  \end{itemize}
+  \bigskip
+  \centering\url{\cpacheckerurl}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{\cpacheckertitle: Features}
+  \begin{itemize}
+    \item Input language C (experimental: Java)
+    \item Web frontend available:\\
+    \url{https://cpachecker.appspot.com}
+    \item Counterexample output with graphs
+    \item Benchmarking infrastructure available\\
+    (with large cluster of machines)
+    \item Cross-platform: Linux, Mac, Windows
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{\cpacheckertitle: Achievements}
+\begin{itemize}
+  \item Among world's best software verifiers:\\
+  \smaller\url{https://sv-comp.sosy-lab.org/2018/results/}\larger
+  \item Continuous success in competition since 2012\\
+    (52 medals: 16x gold, 18x silver, 18x bronze)
+  \item Awarded Gödel medal\\ by Kurt Gödel Society
+    \begin{textblock*}{3cm}(6cm,4.2cm)%
+      \includegraphics[width=3cm]{content/chapter_model_checking/cpachecker/images/goedel-medal}%
+    \end{textblock*}%
+    \bigskip
+    \bigskip
+    \bigskip
+    \bigskip
+  \item Used for Linux driver verification\\ with dozens of real bugs found and fixed in Linux
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{\cpacheckertitle: Concepts}
+  \begin{itemize}
+    \item Included Concepts:
+    \begin{itemize}
+      \item CEGAR
+      \item Interpolation
+      \item Adjustable-block encoding
+      \item Conditional model checking
+      \item Verification witnesses
+    \end{itemize}
+    \item Further available analyses:
+    \begin{itemize}
+      \item \impact algorithm
+      \item Bounded model checking
+      \item k-Induction
+      \item Property-directed reachability
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{\cpacheckertitle: Concepts}
+  \begin{itemize}
+    \item Completely modular, and thus flexible and easily extensible
+    \item Every abstract domain is implemented as a\\
+    "Configurable Program Analysis" (CPA)
+    \item E.g., predicate abstraction, explicit-value analysis, intervals, octagon, BDDs, memory graphs, and more
+    \item Algorithms are central and implemented only once
+    \item Separation of concerns
+    \item Combined with Composite pattern
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{\cpacheckertitle: Algorithms}
+  \begin{itemize}
+    \item CPAAlgorithm is the core algorithm\\ for reachability analysis / fixpoint iteration
+    \item Other algorithms can be added if desired, e.g.,
+    \begin{itemize}
+      \item CEGAR
+      \item Double-checking counterexamples
+      \item Sequential combination of analyses
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}[fragile]{\cpacheckertitle: Architecture}
+  \resizebox{\textwidth}{!}{
+    \input{content/chapter_model_checking/cpachecker/images/cpachecker}
+  }
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+% \begin{frame}{\resizebox{!}{7mm}{\input{content/chapter_model_checking/cpachecker/logos/cpa}}\enspace Try \cpachecker}
+\begin{frame}{\cpacheckertitle: Try \cpachecker}
+  \begin{itemize}
+    \item Online at Google AppEngine:\\
+    \url{https://cpachecker.appspot.com/}
+    \item Download for Linux/Windows:\\
+    \url{\cpacheckerurl}
+    \begin{itemize}
+      \item Run \texttt{scripts/cpa.sh} | \texttt{scripts$\backslash$cpa.bat}
+      \item \texttt{-predicateAnalysis <FILE>}
+      \item Windows/Mac need to disable bitprecise analysis:\\
+        \texttt{-predicateAnalysis-linear\\ -setprop solver.solver=smtinterpol\\ -setprop analysis.checkCounterexamples=false}
+    \end{itemize}
+    \item Look at \texttt{output/CPALog.txt} for problems
+    \item Open \texttt{.dot} files with dotty / xdot (\url{www.graphviz.org/})
+    \item Open graphical report in browser: \texttt{output/*.html}
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{\cpacheckertitle: Specification}
+  \begin{itemize}
+    \item Model Checkers check only what you specified
+    \item \cpachecker's default:
+    \begin{itemize}
+      \item Label \texttt{ERROR}
+      \item Calling function \_\texttt{assert\_fail()}
+      \item \texttt{assert(pred)} needs to be pre-processed
+    \end{itemize}
+    \item SV-COMP:
+    \begin{itemize}
+      \item Calling function \_\texttt{VERIFIER\_error()}
+      \item \texttt{-spec sv-comp-reachability}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{\cpacheckertitle for Developers}
+  Want to implement your own analysis?
+  \begin{itemize}
+    \item Easy, just write a CPA in Java
+    \item Implementations for 10 interfaces needed
+    \item But for 8, we have default implementations\\
+      \textbf{$\rightarrow$} Minimal configuration: \\
+      \qquad abstract state and\\
+      \qquad abstract post operator
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{\cpacheckertitle for Developers}
+  The CPA framework is flexible:
+  \begin{itemize}
+    \item Many components are provided as CPAs:
+      \begin{itemize}
+        \item Location / program counter tracking
+        \item Callstack tracking
+        \item Specification input (as automata)
+        \item Pointer-aliasing information
+      \end{itemize}
+    \item CPAs can be combined,\\
+      so your analysis doesn't need to care about these things
+  \end{itemize}
+\end{frame}

@@ -1,0 +1,116 @@
+\documentclass[language=en,sheet=5,prefix]{exercise}
+
+\exerciseCourse{Development of Safety Critical Systems(Sichere Software)}
+\exerciseAuthors{Martin Leucker, Grigory Markin, Felix Lange}
+\exerciseTerm{winter term 18}
+\exerciseDeadline{Sunday December 2, 2018 24:00}
+
+
+\usepackage{hyperref}
+\usepackage{utf8-math}
+\usepackage{xspace}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata}
+
+
+\begin{document}
+
+CPAchecker is a tool for configurable software verification. 
+The tool is available as a local installation, download from \url{https://cpachecker.sosy-lab.org}, 
+as well as a cloud service available at
+\url{https://cpachecker.appspot.com}. The cloud version of the tool has some limitations 
+and can not be used for e.g. bit precise predicate analysis. The list of unavailable features 
+can be found on the service page.
+
+
+\task[Getting started with CPAchecker]
+
+\begin{itemize}
+\item For local installation, please, follow the instruction at 
+\url{https://github.com/sosy-lab/cpachecker/blob/trunk/INSTALL.md}.
+\textbf{It is highly recommend to use Linux for bit precise predicate analysis. If you use other OS, consider to run the tool inside e.g. a Virtualbox with Linux OS.}
+
+\item Read a "Getting started" guide at \url{https://github.com/sosy-lab/cpachecker/blob/trunk/README.md}
+\end{itemize}
+
+%----------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------
+
+\task[Program 1]
+
+\begin{itemize}
+\item Consider the following C program:
+\begin{lstlisting}[language=C]
+int x, y, z, w;
+
+int main() {
+  do {
+    x = y;
+    if (w != 1) {
+      x++;
+    }      
+    z = w - 1;
+  } while (x != y);
+
+  if (z) {
+  ERROR:
+    return 1;
+  }
+
+  return 0;
+}
+\end{lstlisting}
+\item Try to find out whether the ERROR location is reachable ?
+\item Copy the file "exercise-non-precise.properties" and "program1.c" into the CPAchecker directory.
+\item Verify the program using CPAchecker by executing the following command from the CPAchecker directory:
+  \begin{lstlisting}[language=bash,numbers=none]
+$ scripts/cpa.sh -config exercise-non-precise.properties program1.c
+  \end{lstlisting}
+\item Exemine the output located in the "CPAchecker/output" directory.
+\item Change the condition at line $6$ to $w == 1$, run the tool again and check the report.
+\end{itemize}
+
+
+%----------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------
+
+\task[Program 2]
+\begin{itemize}
+\item Consider the following C program:
+\begin{lstlisting}[language=C]
+int __VERIFIER_assert(int cond) {
+  if (!(cond)) {
+  ERROR:
+    return 1;
+  }
+  return 0;
+}
+
+int glob_arr[] = {1, 2, 3, 4, 5};
+
+int sum_arr(int *from, int *to) {
+  int result = 0;
+  while (from < to) {
+    result += *(from++);
+  }
+  return result;
+}
+
+int main() {
+  int sum = sum_arr(glob_arr, glob_arr + 5);
+  return __VERIFIER_assert(sum == 15);
+}
+\end{lstlisting}
+\item Copy the file "program2.c" into the CPAchecker directory.
+\item Verify the program using the same configuration file as before.
+\item Is the ERROR location rechable ? Are the results of the verification correct ?  
+% \item Copy the file "exercise-precise.properties" into the CPAchecker directory.
+% \item Verify the program using CPAchecker by executing the following command from the CPAchecker directory:
+%   \begin{lstlisting}[language=bash,numbers=none]
+% $ scripts/cpa.sh -config exercise-precise.properties program2.c
+%   \end{lstlisting}
+%   \textbf{Note: this configuration needs local installation in Linux.}
+% \item Compare new and old results.
+\end{itemize}
+
+\end{document}

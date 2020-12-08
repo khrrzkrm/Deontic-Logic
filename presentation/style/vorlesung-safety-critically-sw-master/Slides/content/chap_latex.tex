@@ -1,0 +1,97 @@
+\chapter{\LaTeX-Demo}
+
+\targets{
+    \item frames with and without title in the script version
+    \item blocks with and without title in the script version
+    \item lists and enumerations becoming sentences in the script version
+    \item colored blocks and tables
+}
+
+\section{frames}
+
+\begin{frame}{I'm a frame}{with subtitle}
+  Title and subtitle of this frame are not displayed in the script version.
+\end{frame}
+
+\begin{Frame}{Important frame title}{with subtitle}
+  This frame will be displayed with title and subtitle in the script version.
+\end{Frame}
+
+\subsection{fragile content}
+
+\begin{Frame}[fragile]{fragile frame}{with title in the script version}
+  This frame will be displayed with title and subtitle in the script version.
+  
+  \begin{verbatim}
+    And it contains fragile content.
+  \end{verbatim}
+\end{Frame}
+
+\section{blocks}
+
+\begin{frame}{blocks}
+  \begin{block}{title}
+    This block will be displayed as normal paragraph in the secript version.
+  \end{block}
+  
+  \begin{Block}{important title}
+    This block will be displayed with title in the script version.
+  \end{Block}
+\end{frame}
+
+\section{lists and enumerations}
+
+\begin{frame}{lists}
+  This list
+  \begin{beameritemize}
+    \item will appear
+    \item as a normal sentence
+  \end{beameritemize}
+  in the script version.
+\end{frame}
+
+\begin{frame}{enumerations}
+  This enumeration
+  \begin{beamerenumerate}
+    \item will appear
+    \item as normal sentence
+    \item still containing the numbering 
+  \end{beamerenumerate}
+  in the script version.
+\end{frame}
+
+\section{colors}
+
+\subsection{blocks}
+
+\begin{frame}{colored blocks}
+  \begin{block}{normal block}
+    This is a normal block.
+  \end{block}
+  
+  \begin{alertblock}{alertblock}
+    This is an alertblock.
+  \end{alertblock}
+  
+  \begin{exampleblock}{exampleblock}
+    This is an exampleblock.
+  \end{exampleblock}
+\end{frame}
+
+\subsection{tables}
+
+\begin{frame}{colored tables}
+  \begin{tabular}{ll}
+    header & row \\
+    This & is a \\
+    normal & table
+  \end{tabular}
+  
+  \vskip2ex
+  
+  \begin{zebratabular}{ll}
+    \headerrow header & row \\
+    This & is a \\
+    normal & table
+  \end{zebratabular}
+\end{frame}

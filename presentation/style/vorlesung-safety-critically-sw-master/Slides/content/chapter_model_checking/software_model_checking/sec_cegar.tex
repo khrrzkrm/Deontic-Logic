@@ -1,0 +1,376 @@
+%!TEX root = ../../../main.tex
+
+\section{Abstract Model Checking and CEGAR}
+
+\begin{frame}{Abstract Model Checking}
+\begin{itemize}
+  \itemsep1em
+  
+  \item For finite-state programs, symbolic reachibility analysis may take
+  an large amount of time or memory to terminate
+  
+  \item Abstract model checking trades off precision of the analysis for
+  efficiency
+  
+  \item Reachability analysis is performed on an abstract domain which
+  captures some, but not necessarily all of the information about the system
+  
+  \item Abstract reachibility analysis is sound
+  
+  \item Model checking and static program analysis are both envolved in
+  improving abstraction techniques \\
+    \begin{itemize}
+      \itemsep 0.3cm
+      \item Model checking emphasizes precision
+      \item Static program analysis emphasizes efficiency
+    \end{itemize}   
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Abstract Model Checking}
+
+\includegraphics[width=\textwidth]{content/chapter_model_checking/software_model_checking/img/abstract.png}
+
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Abstract Model Checking}
+\begin{itemize}
+  \itemsep1em
+   
+  \item Assume an abstract model $S_a$ of the concrete model $S_c$ such that
+    $S_a \models \varphi \Rightarrow S_c \models \varphi$
+  
+  \item If a counterexample found in $S_a$, i.e. $S_a \models \neg \varphi$,
+  then the abstract model has to be refined
+  
+  \item Refinement is repeated until the property is found to be true or a
+  concrete a concrete counterexanple is found
+  
+  \item An abstract model $S_a$ is built using the \hl{Predicate abstraction}
+  technique
+  
+  \item \hl{Counterexample-Guided Abstraction Refinement} (CEGAR)  
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{CEGAR}
+\resizebox{1.05\textwidth}{!}{
+  \input{content/chapter_model_checking/software_model_checking/fig/cegar}  
+}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{CEGAR and Lazy Abstraction}
+\resizebox{1.05\textwidth}{!}{
+  \input{content/chapter_model_checking/software_model_checking/fig/cegar-2}  
+}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Control-Flow Automata (CFA)}
+\begin{itemize}
+  \itemsep1em 
+  \item We consider simple imperative programs where all operations are either
+  assignements or assume operations
+  \item We represent a program by a \hl{control-flow automaton} $A =
+  (L, G)$ where
+    \begin{itemize}
+      \itemsep 0.1cm 
+      \item $L$ - is a set of program locations
+      \item $G \subseteq L \times Ops \times L$ - is a set of control flow edges
+  \end{itemize}
+  \item A \hl{program} $P = (A, l_0, l_E)$ consist of a CFA $A = (L, G)$ and
+  propgram locations $l_0, l_E \in L$ s.t.
+    \begin{itemize}
+      \itemsep 0.1cm
+      \item $l_0$ - models an initial program location, and
+      \item $l_E$ - models the error location
+  \end{itemize}
+  \item MC Problem: does the location $l_E$ is reachable from the location $l_0$
+  in $P$
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}[fragile]{Control-Flow Automata (CFA)}
+\begin{columns}
+  \begin{column}{0.6\textwidth}    
+    \begin{overprint}
+      \onslide<1-2>
+        \input{content/chapter_model_checking/software_model_checking/fig/loop-cfa}
+    \end{overprint}
+  \end{column}
+  \begin{column}{0.4\textwidth}
+    \begin{overprint}
+    \onslide<1->
+      \begin{example}   
+        \begin{lstlisting}[escapechar=\%]
+  i := 0
+  while(i <= 5) {
+    i := i + 1
+  }
+  result := i
+        \end{lstlisting}
+      \end{example}
+    \onslide<2->{ 
+      \hl{Assertion}: \\ $i = 6$ after the loop
+    }
+    \end{overprint} 
+  \end{column}
+\end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Control-Flow Automata (CFA)}
+\begin{itemize}
+  \itemsep1em 
+  \item A \hl{concrete data state} of a program is a variable assignment $c:
+  X \rightarrow D$ where $D$ is some non-empty domain
+  
+  \item We represent sets of concrete data states symbolically using first-order
+  formulas \\
+  \begin{itemize}
+    \item an FO-formula $\varphi$ represents the set $S$ of all data states $c$
+    that imply $\varphi$, i.e. $S = \{ c \ | \ c \models \varphi \}$
+  \end{itemize}
+  \item A \hl{concrete state} of a program is a pair $(l, c) \in L \times S$
+  
+  \item The \hl{concrete semantics} of an operation $op \in Ops$ is defined by
+  the \hl{strongest postcondition} operator $SP_{op}$ as \\
+    \begin{itemize}
+      \itemsep 0.2cm 
+      \item $SP_{x := e}(\varphi) = \exists x': \varphi_{[x \mapsto x' ]} \wedge
+      (x = e_{[x \mapsto x']})$
+      \item $SP_{p}(\varphi) = \varphi \wedge p$ where $p$ is a conditional, e.g. $i \leq 5$
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Cartesian Predicate Abstraction}
+\begin{itemize}
+  \itemsep1em 
+  \item The \hl{predicate abstraction} domain is parameterized by a fixed
+  finite set of first-order formulas $\pi$ with free variables from the
+  program variables
+  
+  \item A \hl{cartesian predicate abstraction} $\varphi^\pi$ of a
+  formula $\varphi$ is the strongest conjunction of predicates from
+  $\pi$ that is entailed by $\varphi$:
+    \begin{align*}
+      \varphi^\pi := \bigwedge \{ p \in \pi \ | \ \varphi \Rightarrow p \}
+    \end{align*}
+  
+  \item The abstract strongest postoperator $SP^\pi$ for the predicate
+  abstraction $\pi$ is defined as:
+    \begin{align*}
+      SP_{op}^{\pi}(\varphi^\pi) =
+      (SP_{op}(\varphi^\pi))^{\pi}
+    \end{align*} 
+\end{itemize}
+
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Abstract Reachibility Tree (ART)}
+\begin{itemize}
+  \itemsep1em 
+  
+  \item An ART is a tree whose nodes are labeled with program locations and
+  abstract states, i.e. $(l, \varphi^\pi)$
+  
+  \item A node $n = (l, \varphi)$ is \hl{covered} if there exists another
+  node $n' = (l, \varphi')$ s.t. $\varphi' \models \varphi$
+  
+  \item An ART is \hl{complete} if every leaf node is covered
+  
+  \item Given a program $P = (A, l_0, l_E)$ and a set of predicates $\pi$,
+  starting from the abstract state $(l_0, \{ \top \})$ we construct an
+  \hl{abstract reachibility tree} (ART) using the abstract postoperator $SP^\pi$   
+  
+  \item If a complete ART is constructed and does not contain any error node
+  $(l_E, \varphi)$, the program is considered correct
+  
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Abstract Reachibility Tree (ART)}
+$\pi_0 = \{ i = 0\}$
+\begin{columns}
+  \begin{column}{0.5\textwidth}   
+    \input{content/chapter_model_checking/software_model_checking/fig/loop-cfa-1}
+  \end{column}  
+  \begin{column}{0.5\textwidth}
+    \input{content/chapter_model_checking/software_model_checking/fig/loop-art-1}
+  \end{column}
+  
+\end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Abstraction refinement}
+\resizebox{1.05\textwidth}{!}{
+  \input{content/chapter_model_checking/software_model_checking/fig/refinement}
+}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Abstraction refinement}
+\begin{itemize}
+  \itemsep 1em 
+  \item If during the construction of an ART we hit an error node, then we have
+  to check whether the discovered path from the initial node $l_0$ to the error
+  node $l_E$ exists in the concrete system
+  
+  \item The \hl{concrete semantics} for a program path 
+  $\sigma = \langle (op_1, l_1), \ldots, (op_n, l_n) \rangle$, is defined as:
+    \begin{align*}
+      SP_\sigma(\varphi) = SP_{op_n}(\ldots SP_{op_1}(\varphi))
+    \end{align*}
+  
+  \item A program path $\sigma$ is \hl{feasible} if $SP_\sigma(\top)$ is
+  satisfiable, otherwise it is \hl{infeasible}
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Abstraction refinement}
+\begin{itemize}
+  \itemsep 1em   
+  \item If a discovered path is infeasible we have to refine the current
+  abstraction, i.e. add new predicates to $\pi$
+  
+  \item In order to guarantee the termination of the algorithm the following 
+  has to hold for the \underline{refined} set of predicates $\pi'$:
+  \begin{align*}
+      SP_{op_n}^{\pi'}(\ldots SP_{op_1}^{\pi'}(\top)) \models \bot
+    \end{align*}
+    
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Abstraction refinement}
+\begin{itemize}
+  \itemsep 1em  
+  \item We try to extract new predicates from the counterexample s.t.
+    \begin{itemize}
+      \itemsep 0.1cm
+      \item the same counterxample will no be discovered in next interations
+      \item predicates should be as precise as possible
+      \item as few predicates as possible*
+    \end{itemize}  
+  \item There are two main techniques
+    \begin{itemize}
+      \itemsep 0.1cm
+      \item Interpolants
+      \item Weakest Preconditions / Strongest Postconditions
+    \end{itemize}  
+  \item Iterpolantion is the most widely used technique in all state of the art
+  software model-checking tools (BLAST, CPAchecker)
+    \begin{itemize}
+      \itemsep 0.1cm
+      \item mostly used for problems encoded over LRA theory
+      \item lose of precision for the BV theory
+      \item for the McCarthy's theory of arrays inapplicable princpially
+    \end{itemize}        
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Abstraction refinement}
+\begin{itemize}
+  \itemsep 0.3cm 
+  \item Given a spurious counterexample $\sigma = \langle (op_1, l_1), \ldots,
+  (op_n, l_n) \rangle$
+  
+  \item We define the refined set of predicates $\pi'$ as
+  \begin{align*}
+  \pi' = \pi \cup \bigcup_{i \in 1..n} \neg WP_{op_i}(\top) 
+  \end{align*}  
+  where
+  \begin{align*}
+  WP_{op_i}(\varphi) = WP(op_i, WP(op_{i + 1}, \ldots WP(op_n, \varphi))) 
+  \end{align*}
+  \item The weakest precondition operator is defined as:
+      \begin{itemize}
+      \itemsep 0.2cm 
+      \item $WP_{x := e}(\varphi) = \varphi_{[x \mapsto e ]}$
+      \item $WP_{p}(\varphi) = \varphi \wedge p$ where $p$ is a conditional, e.g. $i \leq 5$
+    \end{itemize}    
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Example 1}
+
+\input{content/chapter_model_checking/software_model_checking/fig/loop-art0}
+\begin{itemize}
+%   \item UNSAT-Core: \quad 
+%   $i_1 = 0 \ \wedge \ i_2 = i_1 \ \wedge \ i_2 > 5$
+  
+  \item Compute WP for the following program: 
+  \begin{gather*} 
+  \onslide<5->{{\color{red} \{0 > 5 \wedge 0 \neq 6\}} } \\
+  i := 0 \\
+  \onslide<4->{ {\color{blue} \{ i > 5 \wedge i \neq 6 \} } }
+  \\
+  i > 5 \\
+  \onslide<3->{ {\color{blue} \{ i \neq 6 \}} }
+  \\
+  i \neq 6 \\
+  \onslide<2->{ {\color{blue} \{ \top \}} }
+  \end{gather*}
+  
+  \item<5-> Extracted predicates: $\{ i = 6; \ i \leq 5 \vee i = 6 \}$
+\end{itemize}
+\end{frame}
+
+
+% ---------------------------------------------------------------------
+
+\begin{frame}{Example 2}
+\begin{figure}
+\resizebox{\textwidth}{!}{
+  \input{content/chapter_model_checking/software_model_checking/fig/loop-art1m}
+}
+\end{figure}
+
+\begin{itemize}  
+  \item Compute WP for the following program (short form):    
+  \begin{gather*}
+  \onslide<5->{{\color{red} \{ 0 + 1 > 5\}} } \\
+  i := 0 \\
+  \onslide<4->{{\color{blue} \{i + 1 > 5\}} } \\
+  i := i + 1 \\
+  \onslide<3->{ {\color{blue} \{ i > 5 \} } }
+  \\
+  i > 5 \\
+  \onslide<2->{ {\color{blue} \{ \top \}} }
+  \\
+  \end{gather*} 
+  \item<6-> Extracted predicates: $\{ i \leq 5; i \leq 4 \}$
+  
+\end{itemize}
+\end{frame}

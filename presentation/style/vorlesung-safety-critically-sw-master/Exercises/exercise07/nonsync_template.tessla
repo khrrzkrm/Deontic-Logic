@@ -1,0 +1,4 @@
+include "stdlib.tessla"
+in t: Events[Int]
+
+# your specification goes here

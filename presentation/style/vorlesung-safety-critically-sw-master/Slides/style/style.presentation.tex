@@ -1,0 +1,99 @@
+% Set options for presentation mode
+\mode
+<presentation>
+
+% use serif font in math mode
+\usefonttheme[onlymath]{serif}
+
+\makeatletter
+% Reverts "Heiko's fix for correct generation of section* and
+% subsection* bookmarks" in beamerbasecompatibility.sty which
+% disables bookmarks in \section* and \subsection*.
+% This is done by disabling \Hy@writebookmark in \beamer@section
+% and \beamer@subsection if their second argument is empty.
+% This is the case for \section* and \subsection* as these
+% commands are mapped to \beamer@section[{#1}]{} resp.
+% \beamer@subsection[{#1}]{}. By defining \beamer@section and
+% \beamer@subsection again to the original and not patched version
+% in the macro \beamer@lastminutepatches where the patch is applied
+% this behaviour gets disabled. This is mainly reverted because
+% bookmarks of parts are not added after \section*{Conclusion} due
+% to this patch.
+\g@addto@macro\beamer@lastminutepatches{
+  \ifx\org@beamer@section\undefined{}%
+  \else
+    \let\beamer@section\org@beamer@section{}%
+  \fi
+  \ifx\org@beamer@subsection\undefined{}%
+  \else
+    \let\beamer@subsection\org@beamer@subsection{}%
+  \fi
+}
+\makeatother
+
+% display framenumber as part number and frame number
+\renewcommand{\insertframenumber}{\thepart-\theframenumber}
+
+% structuring elements
+\newcommand{\targets}[1]{\section*{\targetscontentname}
+  \plaintitle{\targetsnamechapter\ \enquote{\insertpart}.}
+             {\vskip2em\par \begin{enumerate}#1\end{enumerate}}
+  \plaintitle{\outlinenamechapter\ \enquote{\insertpart}.}
+             {\tableofcontents\par\hskip1em}
+  }
+
+% display frame and reset frame number at the beginning of each chapter
+\AtBeginPart{
+  \setcounter{framenumber}{0}
+  \input{style/chapterframe.tex}
+}
+
+% display frame at the beginning of each section
+\AtBeginSection[]{
+  \input{style/sectionframe}
+}
+
+% create new environment Block behaving exactly like block
+\newenvironment{Block}{%
+  \begin{block}}{\end{block}}
+
+% create new environment Frame behaving exactly like frame in beamer mode
+\newenvironment{Frame}[1][]{%
+  \begin{frame}[environment=Frame,#1]}{\end{frame}}
+
+% create new environment beameritemize behaving exactly like itemize
+\newenvironment{beameritemize}{%
+  \begin{itemize}}{\end{itemize}}
+
+% create new environment beamerenumerate behaving exactly like enumerate
+\newenvironment{beamerenumerate}{%
+  \begin{enumerate}}{\end{enumerate}}
+
+% create commands to mark script only parts
+\newcommand{\scriptintro}{\mode<article>}
+\newcommand{\script}{\mode<article>}
+
+% map Def command to emph
+\newcommand\Def[2][]{\emph{#2}}
+
+% load todonotes
+\ifshowtodonotes
+  \usepackage{todonotes}
+\else
+  \usepackage[disable]{todonotes}
+\fi
+% Beamer doesn't support floats, which don't make sense in a presentation.
+% Marginpars are floats, so beamer only supports inline todonotes
+\newcommand{\todoForML}[2][]{\todo[inline, color=red!20, #1]{#2}}
+\newcommand{\todoForMS}[2][]{\todo[inline, color=blue!10, #1]{#2}}
+
+\makeatletter
+\newcommand{\textwidthplain}{%
+  \advance\textwidth\beamer@sidebarwidth%
+  \hsize\textwidth%
+  \columnwidth\textwidth%
+}
+\makeatother
+
+\mode
+<all>

@@ -1,0 +1,244 @@
+% Set options for article mode
+\mode
+<article>
+
+\KOMAoption{fontsize}{12pt}
+\KOMAoption{parskip}{half}
+\KOMAoption{open}{any}
+\KOMAoption{headings}{big}
+\KOMAoption{numbers}{noendperiod}
+\KOMAoption{chapterprefix}{true}
+
+\usepackage{geometry}
+\geometry{
+  paper=a4paper,
+  left=3cm,
+  right=4cm,
+  top=3cm,
+  bottom=4cm,
+  headsep=1cm}
+\ifshowtodonotes
+  % adjusts marginparwith and marginparsep to create more space for todonotes
+  \geometry{
+    marginparsep=0.2cm,
+    marginparwidth=3.8cm}
+\else
+  \geometry{
+    marginparsep=2em,
+    marginparwidth=3em}
+\fi
+
+\renewcommand{\partheadstartvskip}{\chapterheadstartvskip}
+% \renewcommand{\partheadmidvskip}{\break} -- \partheadmidvskip is ignored using tikzchap
+\renewcommand{\partheadendvskip}{\chapterheadendvskip}
+% \let\chapterheadstartvskip\relax
+% \let\chapterheadendvskip\relax
+
+% avoid newpage starting the mainmatter
+\makeatletter
+\renewcommand*\mainmatter{%
+  \@mainmattertrue\pagenumbering{arabic}%
+}
+\makeatother
+
+% Create own counter as replacement for framenumber. framenumber is
+% incremented in article mode as \refstepcounter{framenumber} by
+% beamer and hyperref complains about duplicated targets if framenumber
+% gets resetted after each chapter.
+\newcounter{slidenumber}
+
+
+% create targets block
+\usepackage{minitoc}
+\nomtcrule
+\ktightmtctrue
+\tightmtctrue
+\setlength{\mtcindent}{0pt}
+\mtcsetfont{minitoc}{*}{\normalsize\rmfamily\upshape\mdseries}
+\mtcsetfont{minitoc}{section}{\normalsize\rmfamily\upshape\mdseries}
+\mtcsetfont{minitoc}{subsection}{\normalsize\rmfamily\upshape\mdseries}
+\mtcsettitlefont{minitoc}{\normalsize\sffamily\upshape\bfseries}
+
+\makeatletter
+\newcommand{\targets}[1]{
+  \parbox[t]{0.46\textwidth}{\raggedright
+    \kern-0.8\baselineskip\nopagebreak[4]%
+    \par\noindent %%
+    \begin{tabular}{@{}p{\columnwidth}@{}}
+    \reset@font\mtifont\do@mtitc{\mtc@v\targetsname}\\
+    \end{tabular}%
+    \begin{mtc@verse}{\mtcoffset}
+    \begin{enumerate}#1\end{enumerate}
+    \end{mtc@verse}
+  }
+  \hskip0.04\textwidth
+  \parbox[t]{0.48\textwidth}{\raggedright
+    \minitoc
+  }
+  % emulate two frames
+  \addtocounter{slidenumber}{2}
+  \addtocounter{framenumber}{2}
+}
+\makeatother
+
+% Provide \AtBeginSection in article mode
+% see https://tex.stackexchange.com/questions/51105/frame-numbers-in-beamers-article-mode
+\makeatletter
+\expandafter\let\expandafter\originalsection\expandafter=\csname @orig\string\section\endcsname
+\def\sectionwithhook{\@ifstar\@sectionwithhook\@@sectionwithhook}
+\newcommand{\@sectionwithhook}[1]{\originalsection*{#1}}
+\newcommand{\@@sectionwithhook}[2][]{\beamer@ifempty{#1}{\originalsection{#2}}{\originalsection[#1]{#2}}\beamer@atbeginsection}
+\renewcommand<>{\section}{\alt#1{\sectionwithhook}{\beamer@secgobble}}
+\makeatother
+
+% Fix frame numbers
+\AtBeginSection{
+  % emulate section frame in article mode
+  \addtocounter{slidenumber}{1}
+  \addtocounter{framenumber}{1}
+}
+
+\usepackage{paralist}
+% use compactitem as default itemize environment
+\newenvironment{looseitemize}{}{}
+\let\looseitemize\itemize
+\let\endlooseitemize\enditemize
+\let\itemize\compactitem
+\let\enditemize\endcompactitem
+% use compactenum as default enumerate environment
+\newenvironment{looseenumerate}{}{}
+\let\looseenumerate\enumerate
+\let\endlooseenumerate\endenumerate
+\let\enumerate\compactenum
+\let\endenumerate\endcompactenum
+
+% create head and foot line
+\usepackage{scrpage2}
+\pagestyle{scrheadings}
+
+% stretch headline above margin (scrguide -- page 244)
+\setheadwidth[0pt]{textwithmarginpar}
+
+\clearscrheadfoot % clear all default settings
+\automark[section]{chapter} % \automark[\rightmark]{\leftmark}
+\ihead{\colorbox{maincolor}{\parbox[t][2em][c]{\textwidth}{\leftmark \\ \rightmark}}}
+\ohead{\colorbox{maincolor}{\parbox[t][2em][c]{3em}{\centering\pagemark}}}
+\setkomafont{pagehead}{\scriptsize\sffamily\color{white}}
+\setkomafont{pagenumber}{\small}
+
+
+\renewcommand*{\chaptermarkformat}{\hskip3em\llap{\thechapter\autodot\enskip}}
+\renewcommand*{\sectionmarkformat}{\null\hskip3em\llap{\thesection\autodot\enskip}}
+
+\renewcommand{\titlepagestyle}{empty}
+\renewcommand{\partpagestyle}{scrheadings}
+\renewcommand{\chapterpagestyle}{scrheadings}
+\renewcommand{\indexpagestyle}{scrheadings}
+
+\let\raggedpart\raggedright
+
+\newcommand{\plain}[1]{#1}
+
+\usepackage{style/tikzchap}
+
+\ifshowslidenumbers
+  % slidenumbers starts over with every new chapter with 1 on chapterframe
+  \AtBeginChapter{\setcounter{slidenumber}{1}}
+\fi
+
+% hide block title in article mode
+%\setbeamertemplate{block begin}{}
+%\setbeamertemplate{block end}{}
+
+% display block title in Block environment
+\newenvironment{Block}{%
+  \setbeamertemplate{block begin}[default]
+  \setbeamertemplate{block end}[default]
+  \begin{block}}{\end{block}}
+
+% hide frame title and subtitle in article mode for default frame environment
+\setbeamertemplate{frametitle}{}
+
+% display frame title of Frame environment
+\newenvironment{Frame}{%
+  \setbeamertemplate{frametitle}{%
+    \paragraph*{\insertframetitle\newline%
+      \mdseries\insertframesubtitle}\ \par}
+  \begin{frame}}{\end{frame}}
+
+% hide effect of beameritemize
+\newenvironment{beameritemize}{%
+  \let\item\relax\ignorespaces}{%
+  \ignorespacesafterend}
+  
+% map beamerenumerate to inparaenum
+\newenvironment{beamerenumerate}{%
+  \begin{inparaenum}\ignorespaces}{%
+  \end{inparaenum}\ignorespacesafterend}
+
+
+\newcommand{\addtomargin}[1]{\marginpar[\vskip5ex%
+      \scriptsize\sffamily%
+      \centering\strut#1]{%
+      \vskip5ex%
+      \scriptsize\sffamily%
+      \centering\strut#1}}
+
+\ifshowslidenumbers
+  % display framenumber as chapter number and slide number
+  \renewcommand{\insertframenumber}{\thechapter-\theslidenumber}
+
+  % incremend slide number
+  \setbeamertemplate{frame begin}{\stepcounter{slidenumber}}
+  % display slide number
+  \setbeamertemplate{frame end}{%
+    \marginpar%
+  %    [\scriptsize\sffamily%
+  %      \color{maincolor}\insertframenumber$\,\leftarrow$\hfill]%
+  %    {\hfill\scriptsize\sffamily%
+  %      \color{maincolor}$\rightarrow\,$\insertframenumber}}
+      [\scriptsize\hbox to 1cm{\sffamily%
+        \strut\insertframenumber\hfill}\hrule height .2pt]%
+      {\scriptsize\hbox to 1cm{\sffamily%
+        \hfill\strut\insertframenumber}\hrule height .2pt}}
+        
+  \newcommand{\script}{\addtomargin{Script}\mode<article>}
+\else
+  \newcommand{\script}{\mode<article>}
+\fi
+
+\newcommand{\scriptintro}{\addtomargin{What \\ is it \\ about?}\mode<article>}
+
+
+% Add definitions to the index
+\newcommand\Def[2][]{% 
+  \def\temp{#1}%
+  \ifx\temp\empty%
+    \def\temp{#2}%
+  \fi%
+{\emph{#2\index{\temp}}}}
+
+\newcommand{\exercises}{\section{Exercises for this Chapter}}
+
+\let\oldframebreak\framebreak
+\renewcommand{\framebreak}{\addtocounter{slidenumber}{1}\oldframebreak}
+
+% load todonotes
+\ifshowtodonotes
+  \usepackage[textwidth=3.6cm,textsize=footnotesize]{todonotes}
+\else
+  \usepackage[disable]{todonotes}
+\fi
+\newcommand{\todoForML}[2][]{\todo[color=red!20, #1]{#2}}
+\newcommand{\todoForMS}[2][]{\todo[color=blue!10, #1]{#2}}
+
+% if desired varioref must be loaded _before_ hyperref
+\usepackage{hyperref}
+\hypersetup{breaklinks=true,
+            pdfborder={0 0 0},
+            pdfhighlight={/N},
+            pdftitle={\mytitle},
+            pdfauthor={\myauthor}}
+            
+\mode
+<all>

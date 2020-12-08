@@ -1,0 +1,183 @@
+\documentclass[language=en,sheet=1,prefix]{exercise}
+
+\exerciseCourse{Development of Safety Critical Systems (Sichere Software)}
+\exerciseAuthors{Martin Leucker, Karam Kharraz, Felix Lange}
+\exerciseTerm{Winter term 18}
+\exerciseDeadline{8th/12th of November 2018}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes.geometric}
+
+\begin{document}
+
+\task[Writing Mock Objects]
+
+Mock objects are used to write unit tests for classes that communicate with other classes. Mock objects allow us to test one specific class and not the whole system. Consider the following interface of a provider that can pass on a notification to all its registered listeners.
+\begin{lstlisting}[language=Java,gobble=2]
+  public interface Listener {
+    void notify(Object argument);
+  }
+  public class Provider {
+    public void addListener(Listener listener);
+    public void removeListener(Listener listener);
+    public void clearListeners();
+    public void notifyListeners(Object argument);
+  }
+\end{lstlisting}
+The implementation of \lstinline-Provider- can be downloaded on the website. We want to implement the following test cases for this (correct) implementation: The setup contains a provider \lstinline-provider-, and a listener \lstinline-a- added once and a listener \lstinline-b- added twice to the provider. After running
+\begin{lstlisting}[language=Java,gobble=2]
+  provider.notifyListeners("Two");
+  provider.notifyListeners("One");
+  provider.notifyListeners("Two");
+\end{lstlisting}
+we assert that
+\begin{compactitem}[--]
+  \item \lstinline-notify("One")- was invoked once on \lstinline-a-,
+  \item \lstinline-notify("Two")- was invoked twice on \lstinline-a-,
+  \item \lstinline-notify("One")- was invoked twice on \lstinline-b- and
+  \item \lstinline-notify("Two")- was invoked four times on \lstinline-b-.
+\end{compactitem}
+
+To implement these test cases we need a mock object implementing the \lstinline-Listener- interface and counting the invocations of \lstinline-notify- grouped by their arguments.
+
+\begin{compactenum}
+  \item Implement the test cases using a mock object written manually.
+  \item Inform yourself about Mockito\footnote{\url{http://mockito.org}}, which is already included as dependency in the maven project. Write the same test suite again using Mockito.
+  \item Install EMMA in your favorite IDE\footnote{E.g. install EclEmma (\url{http://www.eclemma.org}) in Eclipse as described in the lecture.} and check the coverage of the test cases. Adopt them to get full coverage of the \lstinline-Provider- class.
+\end{compactenum}
+
+Use the maven project provided in the Moodle course.
+
+\begin{solution}
+  \begin{enumerate}
+    \item Manually written mock object:
+
+      \begin{lstlisting}[language=Java,gobble=8]
+        public class ListenerMockup implements Listener {
+          private Map<Object, Integer> counter =
+            new HashMap<Object, Integer>();
+          
+          @Override
+          public void notify(Object argument) {
+            if (counter.containsKey(argument)) {
+              int value = counter.get(argument);
+              value += 1;
+              counter.put(argument, value);
+            } else {
+              counter.put(argument, 1);
+            }
+          }
+          
+          public int getCount(Object argument) {
+            if (counter.containsKey(argument)) {
+              return counter.get(argument);
+            } else {
+              return 0;
+            }
+          }
+        }
+      \end{lstlisting}
+
+      Test suite without Mockito:
+
+      \begin{lstlisting}[language=Java,gobble=8]
+        public class TestWithManualMockup {
+          private ListenerMockup a, b;
+          private Provider provider;
+          
+          @Before
+          public void setUp() {
+            a = new ListenerMockup();
+            b = new ListenerMockup();
+            
+            provider = new Provider();
+            provider.addListener(a);
+            provider.addListener(b);
+            provider.addListener(b);
+            
+            provider.notifyListeners("Two");
+            provider.notifyListeners("One");
+            provider.notifyListeners("Two");
+          }
+          
+          @Test
+          public void addOnce() {
+            assertEquals("call(\"One\") should be" +
+              " called once.", 1, a.getCount("One"));
+            assertEquals("call(\"Two\") should be" +
+              " called twice.", 2, a.getCount("Two"));
+          }
+          
+          @Test
+          public void addTwice() {
+            assertEquals("call(\"One\") should be" +
+              " called twice.", 2, b.getCount("One"));
+            assertEquals("call(\"Two\") should be" +
+              " called four times.", 4, b.getCount("Two"));
+          }
+        }
+      \end{lstlisting}
+
+    \item Test suite with Mockito:
+
+      \begin{lstlisting}[language=Java,gobble=8]
+        public class TestWithMockito {
+          private Listener a, b;
+          private Provider provider;
+          
+          @Before
+          public void setUp() {
+            a = mock(Listener.class);
+            b = mock(Listener.class);
+            
+            provider = new Provider();
+            provider.addListener(a);
+            provider.addListener(b);
+            provider.addListener(b);
+            
+            provider.notifyListeners("Two");
+            provider.notifyListeners("One");
+            provider.notifyListeners("Two");
+          }
+          
+          @Test
+          public void addOnce() {
+            verify(a).notify("One");
+            verify(a, times(2)).notify("Two");
+          }
+          
+          @Test
+          public void addTwice() {
+            verify(b, times(2)).notify("One");
+            verify(b, times(4)).notify("Two");
+          }
+        }
+      \end{lstlisting}
+
+    \item Add some more test cases using \lstinline-removeListener- and \lstinline-clearListeners- to get the full coverage.
+  \end{enumerate}
+\end{solution}
+
+\task[Test Driven Development (TDD)]
+
+TDD has been introduced in the lecture. In this exercise we want to learn how TDD works based on a real example. In the following, we want to write a method that takes an Integer resembling a number and return the corresponding Roman numerals\footnote{\url{https://en.wikipedia.org/wiki/Roman_numerals}} as a String.
+The method \lstinline[language = java]{toRoman} is given in the class \lstinline[language = java]{Roman} of the code which you can find in the Moodle course. Furthermore, a test class \lstinline[language = java]{RomanTest} is given to write tests for the method \lstinline[language = java]{toRoman}.
+
+Now, do the following in order:
+\begin{compactenum}
+	\item Add a new test case which tests an easy case. Choose this method
+	\begin{lstlisting}[language = java, gobble = 8]
+	@Test
+	public void testI() {
+	  Roman r = new Roman();
+	  assertEquals(r.toRoman(1), "I");
+	}
+	\end{lstlisting}
+	If you run this test case, it will fail.
+	\item Extend the method \lstinline[language = java]{toRoman} in the easiest way, such that it fulfills the test case you wrote before. You should now refactor the code to make it look nicer, but there should not be much to refactor, so leave it as is.
+	\item Repeat this for 2 and 3 which should result in "II" and "III" by first writing a test method \lstinline[language = java]{testII} and \lstinline[language = java]{testIII}, respectively, and then implementing the additional behaviour in the easiest way again (using if-clauses). Now you have to refactor the code. You see that it looks ugly with all the if-clauses and these are just producing a number of I depending on the input value. Replace the code with a for-loop which produces I's corresponding to the input number. Use for example an empty string and extend it (\lstinline[language = java]{+} on a String) with "I". Afterwards, your tests should still be fulfilled.
+	\item Go on with 4 which should result in "IV". Again, write a test and implement the behaviour in your code. Do the same thing for 5 which should result in "V". Refactor your code when you see a possibility to make it look nicer or if you just think it is hard to read, but keep the cases covered, do not go too crazy.
+	\item Go on by writing more tests for increasing numbers. Only write tests for cases which you think should not work by now with your code. You can see how your method becomes more complex while still being refactored to be readable. Also you have tests for all cases you had a look at by now and if you change your method, you can directly see if you broke some test case that already worked. It is a really structured way of writing code. If you like, you can now still go on and implement more and more numbers. Over time, you should get a good feeling of which cases are still missing and how you add code for new cases.
+\end{compactenum}
+
+\end{document}

@@ -1,0 +1,124 @@
+%!TEX root = ../presentation.tex
+
+\tikzset{
+  event/.style={
+    draw,
+    inner sep=0pt,
+    circle,
+    minimum width=4mm
+  },
+  events/.style={
+    xscale=.8,
+    yscale=.6,
+    shorten >=0pt
+  },
+  unit/.style={
+    event,
+    path picture={ 
+      \draw[black]
+        (path picture bounding box.south east) -- (path picture bounding box.north west)
+        (path picture bounding box.south west) -- (path picture bounding box.north east);
+    }
+  },
+  small unit/.style={
+    unit,
+    minimum width=2.5mm
+  }
+}
+
+\providecommand{\signaldx}{.15}
+\providecommand{\signaldy}{.35}
+%\firstbar{color}{(x,y)}{length}{caption}
+\providecommand{\firstbar}[4]{
+  \pgfmathsetmacro{\signallength}{#3-\signaldx}
+  \filldraw[draw=black,fill=#1]
+    #2 ++(0,\signaldy) -- ++(\signallength,0) -- ++(\signaldx,-\signaldy)
+    --++(-\signaldx,-\signaldy) -- ++(-\signallength,0) -- cycle;
+  \pgfmathsetmacro{\halflength}{.5*#3}
+  \path #2 ++(\halflength,0) node {#4};
+}
+%\midbar{color}{(x,y)}{length}{caption}
+\providecommand{\midbar}[4]{
+  \pgfmathsetmacro{\signallength}{#3-2*\signaldx}
+  \filldraw[draw=black,fill=#1]
+    #2 -- ++(\signaldx,\signaldy) --++(\signallength,0) --++(\signaldx,-\signaldy)
+    --++(-\signaldx,-\signaldy) --++(-\signallength,0) -- cycle;
+  \pgfmathsetmacro{\halflength}{.5*#3}
+  \path #2 ++(\halflength,0) node {#4};
+}
+%\lastbar{color}{(x,y)}{length}{caption}
+\providecommand{\lastbar}[4]{
+  \pgfmathsetmacro{\signallength}{#3-\signaldx}
+  \fill[#1]
+    #2 -- ++(\signaldx,\signaldy) -- ++(\signallength,0) --++(0,-\signaldy)
+    --++(0,-\signaldy) --++(-\signallength,0) -- cycle;
+  \draw[black]
+    #2 -- ++(\signaldx,\signaldy) -- ++(\signallength,0)
+    #2 -- ++(\signaldx,-\signaldy) -- ++(\signallength,0);
+  \pgfmathsetmacro{\halflength}{.5*#3}
+  \path #2 ++(\halflength,0) node {#4};
+}
+%\onlybar{color}{(x,y)}{length}{caption}
+\providecommand{\onlybar}[4]{
+  \pgfmathsetmacro{\signallength}{#3}
+  \fill[#1]
+    #2 ++(0,\signaldy) -- ++(\signallength,0) -- ++(0,-\signaldy) 
+    --++(0,-\signaldy) -- ++(-\signallength,0);
+  \draw
+    #2 -- ++(0,\signaldy) -- ++(\signallength,0) ++(0,-\signaldy) 
+    ++(0,-\signaldy) -- ++(-\signallength,0) -- #2;
+  \pgfmathsetmacro{\halflength}{.5*#3}
+  \path #2 ++(\halflength,0) node {#4};
+}
+
+\chapter{Hardware SRV with Embedded Tracing Units}
+\label{chap_rv}
+\targets{
+  \item See the state of the art and current research in the field of verification using embedded tracing units.
+  \item See how program flow trace reconstruction and lightweight instrumentation work.
+  \item See how to write TeSSLa specifications for an embedded system.
+}
+
+\section{Hardware Monitoring}
+
+\subsection[Interactive Workflow]{Interactive Hardware Monitoring Workflow}
+\input{content/chapter_hardware_srv/workflow}
+
+\subsection[Program Flow]{Monitoring Program Flow Trace}
+\input{content/chapter_hardware_srv/program-flow}
+
+\section[Example Scenario]{Example Scenario: Punktförmige Zugbeeinflussung}
+\input{content/chapter_hardware_srv/szenario}
+
+\section{Writing Specifications}
+
+\subsection[Timing]{Measuring Timing Constraints}
+\input{content/chapter_hardware_srv/timing}
+
+\subsection[Event Ordering]{Checking Event Ordering Constraints}
+\input{content/chapter_hardware_srv/event-ordering}
+
+\subsection[Data Values]{Monitoring Data Values}
+\input{content/chapter_hardware_srv/data}
+
+\section*{Conclusion}
+
+\begin{frame}{Conclusion}
+  \begin{enumerate}
+    \item \alert{COEMS} provides \alert{interactive} debugging and \alert{continuous monitoring} for \alert{embedded and cyber-physical systems}.
+    \item \alert{Continuous monitoring} of processor traces provided by \alert{embedded tracing units (ETU)} requires
+      \begin{itemize}
+        \item \alert{online trace reconstruction} in hardware and
+        \item \alert{monitoring in hardware}.
+      \end{itemize}
+    \item Using \alert{TeSSLa} we can check
+      \begin{itemize}
+        \item \alert{event ordering} constraints,
+        \item \alert{timing} constraints and
+        \item \alert{complex event patterns} like the burst pattern.
+      \end{itemize}
+    \item TeSSLa can be used to \alert{aggregate data} and\\ compute \alert{statistical data}.
+    \item Monitoring \alert{data values} is possible with \alert{lightweight instrumentation}.
+      Specifications with data can be naturally written in TeSSLa.
+  \end{enumerate}
+\end{frame}

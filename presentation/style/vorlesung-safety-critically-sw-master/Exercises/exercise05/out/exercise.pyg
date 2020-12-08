@@ -1,0 +1,1 @@
+     scripts/cpa.sh -config exercise-non-precise.properties program.c

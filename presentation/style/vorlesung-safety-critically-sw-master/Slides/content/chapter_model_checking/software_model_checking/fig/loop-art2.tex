@@ -1,0 +1,35 @@
+
+\begin{figure}[htbp]
+	\begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=1.7cm]
+	 	
+	 	\node (0) {ART$_2$: };
+	 	
+	 	\node[artloc={$\{ \}$}, node distance = 1cm] (1) 	
+	 		[right of = 0]	{$1$};		
+  		
+  		\node[artloc={$\{i=0; i \neq 6\}$}] (2) 	
+  			[right of = 1] 	{$2$};
+  		
+  		\node[artloc={$\{i=0; i \neq 6\}$}] (3) 	
+  			[right of = 2] 	{$3$};
+  		
+  		\node[artloc={$\{\}$}] (22) 
+  			[right of = 3] 	{$2$};
+ 		
+ 		\node[artloc={$\{i>5\}$}] (4) 
+ 			[right of = 22]	{$4$};
+ 		
+ 		\node[artloc={$\{\}$}] (6) 
+ 			[right of = 4]	{$\mathcal{E}$};
+ 				 
+		\path[trans]  
+ 			
+ 			(1) edge node [below] {$i := 0$} 	(2)
+ 			(2) edge node [below] {$i \leq 5$}	(3)
+			(3) edge node [below] {$i := i + 1$} (22)	
+			(22) edge node [below] {$i > 5$}	(4)
+			(4) edge node [below] {$i \neq 6$}	(6)	
+ 			;
+ 					
+	\end{tikzpicture}
+\end{figure}

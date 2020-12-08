@@ -1,0 +1,46 @@
+
+\begin{figure}[htbp]
+  \begin{center}
+	\begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=1.2cm]
+	 	
+	 	 \onslide<1->{   	 	    
+  			\node[loc] (1) []  	{$0$};		
+  			\node[loc] (2) [below of = 1] 	{$1$};
+ 			  \node[loc] (3) [right of = 2, node distance=2cm]	{$2$};		
+ 			
+ 			  \node[loc] (4) [below of = 2]	{$3$};
+ 			  \node[loc] (5) [below of = 4]	{$4$};
+
+        \path[trans]
+          (1) edge [left] node {$i := 0$} (2)       
+          (2) edge [left] node {$i > 5$} (4)
+
+          (2) edge [above, bend left = 20] node {$i \leq 5$} (3)
+          (3) edge [below, bend left = 20] node {$i := i + 1$} (2)          
+          ;    		
+ 		} 		
+ 		
+    \onslide<1>{
+        \path[trans]
+          (4) edge [left] node {$result := i$} (5)
+        ;
+    }
+
+ 		\onslide<2->{ 		
+ 			\node[loc] (6) [below of = 5]	{$5$};
+ 			\node[loc, fill=red!50] (7) [right of = 5]	{$\mathcal{E}$}; 		
+ 		}
+ 		 		
+ 		\onslide<2->{
+ 			\path[trans] 				
+ 				(5) edge [left] node {$result := i$} (6)
+ 			
+ 				(4) edge [left] node {$i = 6$} (5)
+ 				(4) edge [right] node {$i \neq 6$} (7)	
+ 			;		
+ 		}
+ 		
+ 		
+	\end{tikzpicture}
+  \end{center}
+\end{figure}

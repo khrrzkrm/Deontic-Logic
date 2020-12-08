@@ -1,0 +1,65 @@
+
+\subsection{Fuzzing}
+
+
+\begin{frame}{Problems}
+	\begin{beameritemize}
+		\item Programs that take structured inputs (Interfaces, Protocols) are often hard to test.
+		
+		\item To show robustness or security properties an unfeasible amount of manual testing would be necessary.
+		
+	\end{beameritemize}
+
+\end{frame}
+
+
+\begin{frame}{Fuzzing}
+	Idea: Find errors by providing randomly generated data as input to a program.
+	
+	\begin{figure}
+		\begin{tikzpicture}[scale=0.40]
+		\node[state, initial, field] (fuzzer) {Fuzzer};
+		\node[state, field, right=of fuzzer] (input) {Random Input};
+		\node[state, field, right=of input] (SuT) {System Under Test};   
+		\node[state, field, error , below =1cm of SuT] (error) {Error Found!};
+		\node[state, field, success, below left=1cm and 0.5cm of SuT] (success) {No Error};
+		\node[state, field, below=of error] (bug) {Bug Report}; 
+		
+		\draw[->] (success.west) -| (fuzzer.south);	
+		
+		\path[->]
+		(fuzzer) edge node {} (input)
+		(input) edge node {} (SuT)
+		(SuT.south) edge node {} (error.north)
+		(SuT.south) edge node {} (success.north)
+		(error) edge node {} (bug)	
+		;
+		\end{tikzpicture}
+	\end{figure}
+	
+\end{frame}
+
+
+
+\begin{frame}{Fuzzing}
+	Inputs can be generated:
+	\begin{beameritemize}
+		\item Completely random
+		\item With awareness of the input structure
+		\item With awareness of the program structure
+	\end{beameritemize}
+
+\end{frame}
+
+
+\begin{frame}{Fuzzing}
+	Issues that can be typically found during fuzzing:
+	\begin{beameritemize}
+		\item Invalid input formats
+		\item Parsing issues
+	\end{beameritemize}	
+
+	\begin{block}{Effectiveness}
+	The effectiveness of a fuzzer can be considered as the coverage it achieves.
+\end{block}
+\end{frame}

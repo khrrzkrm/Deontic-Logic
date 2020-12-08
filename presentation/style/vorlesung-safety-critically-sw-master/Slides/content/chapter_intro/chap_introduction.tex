@@ -1,0 +1,194 @@
+\chapter{Introduction}
+
+\targets{
+  \item Understand how to pass this course
+  \item Understand the motivation for this course and its content.
+  \item Understanding consequences of bad software quality. 
+  \item Know the different quality criteria.
+}
+
+\section{Organizational Matters}
+
+\begin{frame}{Organizational Matters}
+	Lectures: Tuesday, 4 pm and Friday 2 pm\\
+	\xxx
+	Exercise: 2 Groups (please choose in the Moodle)
+	\begin{beameritemize}
+		\item Monday 8 am / Thursday 10 am
+		\item Attending the exercises is not mandatory, but is highly recommended.
+		\item The tasks will focus on the usage of tools based on the lecture.
+		\item First exercise will be on 5th/8th of November.
+	\end{beameritemize}	
+\end{frame}
+
+
+
+\section{Motivation}
+
+\subsection{Safety and Reliability}
+
+\begin{frame}{Safety-Critical and Reliable Software Systems}
+		\begin{beameritemize}
+		\item We trusts our lives on software-based systems on a daily basis. 
+		\item For example in planes, cars, medical devices, nuclear engineering...
+		\item There are a lot of methods and techniques that aim to bring the risk of using such system to a minimal level and thereby increasing the software quality.
+	\end{beameritemize}	
+
+\end{frame}
+
+
+
+\begin{frame}{Safety-Critical and Reliable Software Systems}
+	Methods and techniques:
+	\begin{beameritemize}
+		\item Legal and regulatory requirements
+		\item Standards for the software development process (coding, inspecting, documenting, analyzing)		
+		\item Wide range of verification techniques (including formal methods)
+	\end{beameritemize}	
+\end{frame}
+
+
+
+\begin{frame}{Safety-Critical and Reliable Software Systems}
+	
+	\begin{beameritemize}
+		\item Safety-critical systems are increasingly complex and interconnected.
+		\item Assistance systems take over increasingly more responsibilities (parking-assistance, autonomous driving, smart home, ...).
+		\item Faults in these systems are dangerous and can potentially harm and kill people.
+	\end{beameritemize}	
+	
+\end{frame}
+
+
+\begin{frame}{What is ...?}
+Safety:
+	\begin{beameritemize}
+		\item Sicherheit(german) = Safety + Security
+		\item We consider safety in context of functional safety, not in context of security against attacks.	
+	\end{beameritemize}	
+Risk:
+	\begin{beameritemize}
+		\item Quantification of danger.
+		\item Consequence of a hazard, combined with the likelihood of it occurring.
+	\end{beameritemize}	
+Reliability:
+	\begin{beameritemize}
+		\item Ability of a system or component to function under stated conditions for a specified period of time.
+		\item Reliability $=1-$ Probability of Failure
+	\end{beameritemize}	
+\end{frame}
+
+
+\begin{frame}{Risk}
+
+	\centering
+	\includegraphics[width=0.8\linewidth]{content/images/software-quality/ISS_impact_risk}
+
+
+
+\end{frame}
+
+\begin{frame}{Development of Safety-Critical Software}
+	
+	\begin{beameritemize}
+		\item Goal: Reduce risk and increase reliability to a reasonable amount.
+		\item Therefore different tasks of validation and verification have to be performed.
+		\item International norms are defined to assure that these tasks are actually performed.
+		\begin{beameritemize}
+			\item IEC 61508: Functional Safety of Electrical/Electronic/Programmable Electronic Safety-related Systems 
+			\item ISO 26262: Functional Safety of Road Vehicles
+			\item IEC 62061: Functional Safety of Machines
+			\item DO 178C: Software Considerations in Airborne Systems and Equipment Certification
+		\end{beameritemize}
+	\end{beameritemize}	
+	
+\end{frame}
+
+\begin{frame}{Validation and Verification}
+	\begin{Block}{Validation}
+		\enquote{Are we building the right product?} \newline
+		(Does the system meet the client’s expectations?)
+	\end{Block}
+	
+	\begin{Block}{Verification}
+		\enquote{Are we building the product right?} \newline
+		(Does the system meet its specification?)
+	\end{Block}
+\end{frame}
+
+\begin{frame}{Development of Safety-Critical Software}
+	This course focuses the following content:
+	\begin{beameritemize}
+		\item Defining software quality and ways to increase it (Later this Chapter)
+		\item Verification techniques/Formal methods:
+		\begin{beameritemize}
+			\item Testing (Chapter \ref{chap_testing})
+			\item Static Program Analysis (Chapter \ref{chap_static})
+			\item Model Checking (Chapter \ref{chap_mc})
+			\item Theorem Proving (Chapter \ref{chap_theorem})
+			\item Runtime Verification (Chapter \ref{chap_rv})
+		\end{beameritemize}
+		\item Interesting trends in programming languages (i.e. RUST and Spark, Chapter \ref{chap_languages}) 
+		\item Usage of specification languages for formal methods (Chapter \ref{chap_spec})
+		\item Domain-specific legal and regulatory requirements (Chapter \ref{chap_certification})
+	\end{beameritemize}	
+	
+\end{frame}
+
+
+\subsection{Taxonomy}
+
+\begin{frame}{Classification of Software Systems}
+	
+\centering
+\resizebox{!}{.8\textheight}{%
+	\input{content/images/software-quality/system_classification.tikz}
+}%
+	
+\end{frame}
+
+\begin{frame}{Embedded Systems and Cyber-Physical Systems}
+	
+	\begin{block}{Embedded Systems}
+		Embedded Systems are computers that are integrated in a larger technical context and performing tasks such as control, regulation, monitoring, signal processing, etc..
+	\end{block}
+
+	$\Rightarrow$ 90\% of all computers are embedded systems.
+
+\end{frame}
+
+
+\begin{frame}{Embedded Systems}
+		\centering
+		\includegraphics[width=\textwidth]{content/images/software-quality/Examples_of_Embedded_Systems}
+		
+\end{frame}
+
+\begin{frame}{Embedded Systems and Cyber-Physical Systems}	
+
+	\begin{block}{Cyber-physical Systems}
+		In cyber-physical systems, physical and software components are deeply intertwined, each operating on different spatial and temporal scales, exhibiting multiple and distinct behavioral modalities, and interacting with each other in a lot of ways that change with context.
+	\end{block}
+	
+\end{frame}
+
+
+
+\begin{frame}{Cyber-Physical Systems}
+	Example: Self-driving cars
+	\centering
+	\includegraphics[width=\textwidth]{content/images/software-quality/CPS_automotive}
+	
+\end{frame}
+
+
+
+
+\input{content/chapter_intro/section_quality}
+
+
+\mode<article>
+\exercises
+
+\mode
+<all>

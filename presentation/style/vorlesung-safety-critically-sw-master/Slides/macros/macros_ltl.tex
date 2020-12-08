@@ -1,0 +1,53 @@
+% LTL Operators as TeX commands
+
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+
+% This command is for enlarging the next symbol a bit.
+% If this causes problem one might use the following line instead:
+% \newcommand{\adjustnxtsymbol}[1]{#1}
+\newcommand{\adjustnxtsymbol}[1]{\text{\Large$#1$}}
+
+% The following commands are for typesetting LTL operators.
+% The optional parameter can be used for timing constraints or incl/excl for stop.
+% The binary temporal operators \until \since \untilweak \sinceweak \releases \triggered 
+% insert some space before and after the operator. They have alternative
+% commands with the suffix op that do not insert space and look better when used
+% outside formulae.
+% The next operator is called \nxt because there is some problem with the keyword \next
+% in pdflatex.
+\newcommand{\nxt}[1][]{\adjustnxtsymbol{\circ{}}\timed{#1}}
+\newcommand{\nxtweak}[1][]{{\adjustnxtsymbol{\circ{}}_W}\timed{#1}}
+\newcommand{\globally}[1][]{\square{}\timed{#1}}
+\newcommand{\eventually}[1][]{\lozenge{}\timed{#1}}
+\newcommand{\rejecton}{\text{ \ttt{rejecton} }}
+\newcommand{\accepton}{\text{ \ttt{accepton} }}
+\newcommand{\stopon}[1][]{\text{ stop}_{\text{#1}}\text{ }}
+\newcommand{\until}[1][]{\text{ U}\timed{#1}\text{ }}
+\newcommand{\untilweak}[1][]{{\text{ W}}\timed{#1}\text{ }}
+\newcommand{\releases}[1][]{\text{ R}\timed{#1}\text{ }}
+\newcommand{\prev}[1][]{\adjustnxtsymbol{\bullet{}}\timed{#1}}
+\newcommand{\prevweak}[1][]{{\adjustnxtsymbol{\bullet{}}_W}\timed{#1}}
+\newcommand{\globallyinpast}[1][]{\blacksquare\timed{#1}}
+\newcommand{\once}[1][]{\blacklozenge\timed{#1}}
+\newcommand{\since}[1][]{\text{ }\text{S}\timed{#1}\text{ }}
+\newcommand{\sinceweak}[1][]{\text{ }{\text{B}}\timed{#1}\text{ }}
+\newcommand{\triggered}[1][]{\text{ }\text{T}\timed{#1}\text{ }}
+\newcommand{\untilop}[1][]{\text{U}\timed{#1}}
+\newcommand{\untilweakop}[1][]{{\text{W}}\timed{#1}}
+\newcommand{\releasesop}[1][]{\text{R}\timed{#1}}
+\newcommand{\sinceop}[1][]{\text{S}\timed{#1}}
+\newcommand{\sinceweakop}[1][]{\text{B}\timed{#1}}
+\newcommand{\triggeredop}[1][]{\text{T}\timed{#1}}
+\newcommand{\predict}[1][]{\rhd{}\timed{#1}}
+\newcommand{\record}[1][]{\lhd{}\timed{#1}}
+\newcommand{\timed}[1]{_{#1}}
+\newcommand{\stopop}[1][]{\text{stop}_{\text{#1}}}
+
+\newcommand{\impl}{\rightarrow}
+\newcommand{\equ}{\leftrightarrow}
+\newcommand{\logand}{\wedge}
+\newcommand{\logor}{\vee}
+% \newcommand{\false}{\bot}
+% \newcommand{\true}{\top}
+

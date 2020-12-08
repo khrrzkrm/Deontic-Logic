@@ -1,0 +1,120 @@
+%!TEX root = ../../main.tex
+
+\chapter{Model Checking}
+\label{chap_mc}
+
+\targets{
+  \item Understand the basic principles of Model Checking
+  \item Know how to apply Model Checking for Software Verification
+  \item Get to know a state-of-the art Software Model Checking tool CPAchecker
+}
+
+\newcommand\hl[1]{
+  \relax
+  \ifmmode
+  \bm{#1}
+  \else
+  {\bfseries #1}
+  \fi
+}
+
+\newcommand\m[1]{{$#1$}}
+\def\sema#1{\lbrack\!\lbrack{#1}\rbrack\!\rbrack}
+
+\newcommand{\tc}[2]{\textcolor{#1}{#2}}
+
+\def\mag#1{\tc{magenta}{#1}}
+\def\blue#1{\tc{blue}{#1}}
+\def\red#1{\tc{red}{#1}}
+
+\newcommand{\gray}[1]{{\color{lightgray}#1}}
+
+\def\tuple#1{\langle#1\rangle}
+
+\def\F{\mathop{\bf F}\nolimits}
+\def\G{\mathop{\bf G}\nolimits}
+\def\W{\mathbin{\bf W}}
+\def\R{\mathbin{\bf R}}
+
+
+\definecolor{oceangreen}{RGB}{0,75,90}
+
+\tikzstyle{highlight}=[fill=oceangreen!30]
+\tikzstyle{alert}=[fill=red!50]
+\tikzstyle{bad}=[fill=red!50]
+
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, ultra thin, 
+    text centered, rounded corners, minimum width=4cm, minimum
+    height=0.8cm] 
+
+\tikzstyle{ellblock} = [ellipse, draw, fill=green!20, ultra thin, text
+centered]
+    
+\tikzstyle{line} = [draw, -latex']
+
+\tikzset{onslide/.code args={<#1>#2}{%
+  \only<#1>{\pgfkeysalso{#2}} % \pgfkeysalso doesn't change the path
+}}
+
+\tikzset{hide on/.code={
+  \only<#1>{\color{white}}
+}}
+
+
+\tikzset{loc/.style={%
+      state,
+      minimum width=0.65cm,
+      minimum height=0.65cm,
+      label distance=-1mm      
+    }
+}
+
+\tikzset{artloc2/.style 2 args={state, minimum width=0.65cm, minimum
+height=0.65cm, label distance=-1mm, align=center,
+label=0:{\color{blue}\scriptsize{#1#2}} } }
+
+\tikzset{artloc/.style 2 args={state, minimum width=0.65cm, minimum
+height=0.65cm, align=center, label=70:{\color{blue}\scriptsize{#1#2}}
+    } }
+
+\tikzset{trans/.style={%
+    ->,
+    draw,
+      font=\scriptsize,           
+    }
+}
+
+
+\tikzset{tlbl/.style={%   
+      align=left           
+    }
+}
+
+% Predicates set on slide
+\tikzset{pons/.code args={<#1>#2}{%
+  \only<#1>{\pgfkeysalso{artloc={$\{ #2 \}$}}} % \pgfkeysalso doesn't change the
+  % path
+}}
+
+% Model Checking
+\input{content/chapter_model_checking/model_checking/sec_intro}
+\input{content/chapter_model_checking/model_checking/sec_kripke}
+\input{content/chapter_model_checking/model_checking/sec_ltl}
+
+% Software Model Checking
+\input{content/chapter_model_checking/software_model_checking/macro}
+\input{content/chapter_model_checking/software_model_checking/sec_symbolic}
+\input{content/chapter_model_checking/software_model_checking/sec_bmc}
+\input{content/chapter_model_checking/software_model_checking/sec_cegar}
+
+% CPAchecker
+\input{content/chapter_model_checking/cpachecker/sec_cpachecker}
+
+% Conclusion
+\input{content/chapter_model_checking/sec_conclusion}
+
+\mode<article>
+\exercises
+
+\mode
+<all>

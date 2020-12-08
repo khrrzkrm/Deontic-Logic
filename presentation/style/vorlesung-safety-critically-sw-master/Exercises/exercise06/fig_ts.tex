@@ -1,0 +1,20 @@
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick, initial text=]
+  \tikzstyle{every state}=[draw=black,text=black, inner sep = 0]
+
+  \node[initial,state] (A)                    {$\{q\}$};
+  \node[state]         (B) [right of=A] {$\{p\}$};
+  \node[state]         (D) [below right of=A] {$\{p\}$};
+  \node[state]         (C) [below right of=B] {$\{r\}$};
+  \node[state]         (E) [right of =C]       {$\{p,d\}$};
+
+  \path (A) edge (B);
+  \path (A) edge (D); 
+  \path (B) edge (C);
+  \path (D) edge (B);
+  \path (C) edge (E);
+  \path (C) edge [bend left] (D);
+  \path (D) edge (B);
+  \path (D) edge [bend left] (C);
+  \path (E) edge [loop above]  (E);
+\end{tikzpicture}

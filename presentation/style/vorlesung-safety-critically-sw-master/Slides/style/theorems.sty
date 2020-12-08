@@ -1,0 +1,85 @@
+% Defines theorem styles used in presentation and script.
+
+%\renewcommand{\thmhead}[2]{...#1...#2...}
+% common theorems
+\def\th@remarkstyle{%
+  \normalfont
+  \def\inserttheoremblockenv{block}
+}
+\theoremstyle{remarkstyle}
+\newtheorem{remark}[theorem]{\translate{Remark}}
+
+% theorems for SALT
+\mode
+<beamer>
+
+\def\th@requirementstyle{%
+  \rmfamily\itshape
+  \def\inserttheoremblockenv{block}  
+}
+
+\def\th@inLTLstyle{%
+  \normalfont
+  \def\inserttheoremblockenv{exampleblock}  
+}
+
+\def\th@inSALTstyle{%
+  \normalfont
+  \def\inserttheoremblockenv{exampleblock}  
+}
+
+\mode
+<article>
+
+\newtheoremstyle{requirementstyle}
+  {\topsep}% measure of space to leave above the theorem. E.g.: 3pt
+  {\topsep}% measure of space to leave below the theorem. E.g.: 3pt
+  {\rmfamily\itshape}% name of font to use in the body of the theorem
+  {0pt}% measure of space to indent
+  {\bfseries}% name of head font
+  { }% punctuation between head and body
+  { }% space after theorem head; " " = normal interword space
+  {\thmname{#1}\thmnumber{}\thmnote{ #3}}% Manually specify head
+  
+\newtheoremstyle{inLTLstyle}
+  {\topsep}%
+  {\topsep}%
+  {\normalfont}%
+  {0pt}% 
+  {\bfseries}% 
+  { }%
+  { }%
+  {\thmname{#1}\thmnumber{}\thmnote{ #3}}% 
+
+\newtheoremstyle{inSALTstyle}
+  {\topsep}%
+  {\topsep}%
+  {\normalfont}%
+  {0pt}% 
+  {\bfseries}% 
+  { }%
+  { }%
+  {\thmname{#1}\thmnumber{}\thmnote{ #3}}% 
+
+\mode
+<all>
+
+\theoremstyle{requirementstyle}
+\newtheorem{requirement}[theorem]{\translate{Requirement}}
+
+\theoremstyle{inLTLstyle}
+\newtheorem{inLTL}[theorem]{\translate{In LTL}}
+
+\theoremstyle{inSALTstyle}
+\newtheorem{inSALT}[theorem]{\translate{In SALT}}
+
+\lstdefinestyle{inSALT}{
+  frame=none,
+  mathescape=false,
+  breaklines=true,
+  breakatwhitespace=true,
+  backgroundcolor={},
+  language=SALT,
+  aboveskip=0pt,
+  belowskip=0pt
+}

@@ -1,0 +1,167 @@
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{tikzchap}[2012/03/25 v0.1 TikZ Headlines]
+
+\RequirePackage{tikz}
+\usetikzlibrary{positioning,backgrounds}
+
+\def\AtBeginChapter{\g@addto@macro\@beginchapterhook}
+
+\@onlypreamble\AtBeginChapter
+
+\let\oldchapter\chapter
+\long\def\chapter{\@beginchapterhook
+  \oldchapter}
+  
+\ifx\@beginchapterhook\@undefined
+  \let\@beginchapterhook\@empty
+\fi
+
+% update \@@makechapterhead and \@@makeschapterhead of scrbook.cls
+\renewcommand*{\@@makechapterhead}[1]{\chapterheadstartvskip
+  % INSERT START (diff to scrbook.cls)
+  {{\tikzchap@chapter{#1}}\par}%
+  % INSERT END -- DELETE START
+  % {%
+  %   \setlength{\parindent}{\z@}\setlength{\parfillskip}{\fill}%
+  %   \normalfont\sectfont\nobreak\size@chapter{}%
+  %   \if@chapterprefix
+  %     \let\@tempa\raggedsection
+  %   \else
+  %     \let\@tempa\@hangfrom
+  %   \fi
+  %   \@tempa{\ifnum \c@secnumdepth >\m@ne%
+  %       \if@mainmatter
+  %         \if@chapterprefix
+  %           \expandafter\size@chapterprefix
+  %         \else
+  %           \expandafter\size@chapter
+  %         \fi
+  %         {\chapterformat}%
+  %         \if@chapterprefix
+  %           \size@chapterprefix{}\endgraf\nobreak\vskip.5\baselineskip
+  %         \fi
+  %       \fi
+  %     \fi
+  %   }%
+  %   {\raggedsection \interlinepenalty \@M \size@chapter{#1}\par}}%
+  % DELETE END
+  \nobreak\chapterheadendvskip
+}
+\renewcommand*{\@@makeschapterhead}[1]{\chapterheadstartvskip
+  % INSERT START (diff to scrbook.cls)
+  {{\tikzchap@schapter{#1}}\par}%
+  % INSERT END -- DELETE START
+  % {\normalfont\sectfont\nobreak\size@chapter{}%
+  %   \setlength{\parindent}{\z@}\setlength{\parfillskip}{\fill}%
+  %   \raggedsection \interlinepenalty \@M \size@chapter{#1}\par}%
+  % DELETE END
+  \nobreak\chapterheadendvskip
+}
+
+% \if@chapterprefix - is chapter prefix selected in the koma options?
+% \if@mainmatter - are we in the mainmatter? (Only typeset \chapterformat
+%                  in the mainmatter.)
+% \chapapp - always typeset the chapter prefix
+% \chapappifchapterprefix{additional text} - only type chapter prefix if
+%                                            requested by the koma options
+% \thechapter\autodot - typeset the number of the chapter and an additional
+%                       dot if requested by the koma options.
+% \chapterformat - typeset the chapterprefix (if requested) and the number
+%                  of the chapter 
+% #1 = chapter title
+\newcommand*{\tikzchap@chapter}[1]{%
+  \begin{tikzpicture}
+    \node[font=\LARGE\sffamily\bfseries,inner sep=0pt,color=maincolor, text width=\linewidth, anchor=north] (title) {#1};
+    \if@mainmatter
+      \node[font=\LARGE\sffamily\bfseries,inner sep=0pt,color=black!70,node distance=18pt, above left= .25 and 0 of title,anchor=south west] (chapapp) {\chapappifchapterprefix{}};
+      \begin{scope}[on background layer]
+        \node[circle,fill=maincolor!10,font=\fontsize{72pt}{72pt}\selectfont\sffamily\bfseries,inner sep=10pt,node distance=-20pt,right=of chapapp.base east,anchor=base west] (number) {\thechapter\autodot};
+      \end{scope}
+      %\node[circle,fill=red,inner sep=1pt] at (chapapp.base east) {};
+      %\node[circle,fill=red,inner sep=1pt] at (number.base west) {};
+    \fi
+  \end{tikzpicture}
+}
+
+% TODO: improve code duplication
+\newcommand*{\tikzchap@schapter}[1]{%
+  \begin{tikzpicture}
+    \node[font=\LARGE\sffamily\bfseries,inner sep=0pt,color=maincolor] (title) {#1};
+  \end{tikzpicture}
+}
+
+
+% update \@part and \@spart of scrbook.cls
+
+% provide command \addparttocentry for old KOMA-Script versions
+\providecommand{\addparttocentry}[2]{%
+  \ifstr{#1}{}{%
+    \addcontentsline{toc}{part}{#2}%
+  }{%
+    \addcontentsline{toc}{part}{\protect\numberline{#1}#2}%
+  }%
+}
+
+\def\@part[#1]#2{%
+  \ifnum \c@secnumdepth >-2\relax
+    \refstepcounter{part}%
+    \@maybeautodot\thepart%
+    \addparttocentry{\thepart}{#1}%
+  \else
+    \addparttocentry{}{#1}%
+  \fi
+  \begingroup
+    % INSERT START (diff to scrbook.cls)
+    \tikzchap@part{#2}
+    \markboth{\partformat}{#1}\par
+    % INSERT END -- DELETE START
+    % \setparsizes{\z@}{\z@}{\z@\@plus 1fil}\par@updaterelative
+    % \raggedpart
+    % \interlinepenalty \@M
+    % \normalfont\sectfont\nobreak
+    % \ifnum \c@secnumdepth >-2\relax
+    %   \size@partnumber{\partformat}%
+    %   \partheadmidvskip
+    % \fi
+    % \size@part{#2}\strut%
+    % \partmark{#1}\par
+    % DELETE END
+  \endgroup
+  \@endpart
+}
+\renewcommand*{\@spart}[1]{%
+  \begingroup
+    % INSERT START (diff to scrbook.cls)
+    \tikzchap@spart{#1}
+    \markboth{}{#1}\par
+    % INSERT END -- DELETE START
+    % \setparsizes{\z@}{\z@}{\z@\@plus 1fil}\par@updaterelative
+    % \raggedpart
+    % \interlinepenalty \@M
+    % \normalfont
+    % \sectfont\nobreak\size@part{#1}\strut\@mkboth{}{}\par
+    % DELETE END
+  \endgroup
+  \@endpart
+}
+
+% \partname
+% \thepart\autodot
+% #1 = parttitle
+\newcommand{\tikzchap@part}[1]{%
+  \begin{tikzpicture}
+    \node[font=\LARGE\sffamily\bfseries,inner sep=0pt,color=maincolor, text width=\linewidth, anchor=north] (title) {#1};
+    \if@mainmatter
+      \node[font=\LARGE\sffamily\bfseries,inner sep=0pt,color=black!70,node distance=18pt,above left=.25 and 0 of title,anchor=south west] (partname) {\partname};
+      \begin{scope}[on background layer]
+        \node[circle,fill=maincolor!10,font=\fontsize{72pt}{72pt}\selectfont\sffamily\bfseries,inner sep=10pt,node distance=-20pt,right=of partname.base east,anchor=base west] (number) {\thepart\autodot};
+      \end{scope}
+    \fi
+  \end{tikzpicture}
+}
+
+\newcommand*{\tikzchap@spart}[1]{%
+  \begin{tikzpicture}
+    \node[font=\LARGE\sffamily\bfseries,inner sep=0pt,color=maincolor] (title) {#1};
+  \end{tikzpicture}
+}

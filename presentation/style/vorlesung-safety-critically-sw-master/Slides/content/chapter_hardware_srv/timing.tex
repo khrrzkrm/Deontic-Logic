@@ -1,0 +1,81 @@
+%!TEX root = ../../presentation.tex
+
+\begin{frame}[t,fragile]{Timing Constraints}{Measuring Runtime}
+  \small
+
+  \begin{block}{Property}
+    Measure the runtime of one execution of the speed supervisor.
+  \end{block}
+
+  \scriptsize
+
+  \begin{lstlisting}[gobble=4,language=tessla]
+    # specify events of interest
+    def call := function_call("supervisor")
+    def return := function_return("supervisor")
+
+    # specify property over the events
+    def supervisorRuntime := runtime(call, return)
+  \end{lstlisting}
+
+  \pause\vskip3ex
+
+  \inhead{TeSSLa standard library}
+  \begin{lstlisting}[gobble=4,language=tessla]
+    def runtime(call: Events[Unit], return: Events[Unit]) :=
+      at(return, time(return) - time(call))
+
+    def at[A,B](trigger: Events[A], values: Events[B]) :=
+      filter(values, time(trigger) == time(values))
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[t,fragile]{Timing Constraints}{Aggregate Statistics}
+  \small
+
+  \begin{block}{Property}
+    Measure the \emph{maximal} runtime of the speed supervisor.
+  \end{block}
+
+  \scriptsize
+
+  \begin{lstlisting}[gobble=4,language=tessla]
+    def maxSupervisorRuntime := max(supervisorRuntime)
+  \end{lstlisting}
+
+  \pause\xxx
+
+  \inhead{TeSSLa standard library}
+
+  \begin{lstlisting}[gobble=4,language=tessla]
+    # Return the event-wise maximum of two integer streams
+    def maximum(a: Events[Int], b: Events[Int]) :=
+      if a > b then a else b
+  
+    # Aggregate the maximal event value of a given stream
+    def max(x: Events[Int]) := {
+      def result := merge(maximum(last(result, x), x), 0)
+      result
+    }
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Alternative Definition of Max Using Fold}
+  \scriptsize
+  \begin{lstlisting}[gobble=4,language=tessla]
+    # Aggregate all events' values of a given stream
+    def fold[T,R](f: (Events[R], Events[T]) => Events[R],
+        stream: Events[T], init: R) := {
+      def result: Events[R] :=
+        merge(f(last(result, stream), stream), init)
+      result
+    }
+
+    # Return the event-wise maximum of two integer streams
+    def maximum(a: Events[Int], b: Events[Int]) :=
+      if a > b then a else b
+  
+    # Aggregate the maximal event value of a given stream
+    def max(x: Events[Int]) := fold(maximum, x, 0)
+  \end{lstlisting}
+\end{frame}

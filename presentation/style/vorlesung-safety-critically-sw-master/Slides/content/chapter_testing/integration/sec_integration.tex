@@ -1,0 +1,77 @@
+\section{Integration Testing}
+
+\begin{frame}{Integration Testing}
+  \begin{itemize}
+    \item Should one test each module independently and then combine them all,
+or should one combine the next module to be tested with the set of previously tested modules before it is tested?
+    \item This is called \alert{incremental} vs. \alert{non-incremental} testing.
+  \end{itemize}
+\end{frame}
+
+\begin{Frame}{Non-incremental Testing}
+  \begin{itemize}
+    \item Testing a module $A$ requires\newline
+      \ \ -- a \alert{driver module} for feeding inputs to $A$ and \newline
+      \ \ -- \alert{Stub modules} replacing the modules called by $A$.
+    \item Stubs are \alert{models} of the modules they represent.
+  \end{itemize}
+\end{Frame}
+
+\begin{Frame}{Incremental Testing}
+  \begin{itemize}
+    \item Modules can call other modules.
+    \item If mutually recursive modules are grouped as units, the interaction
+    of modules can be represented as a \alert{directed acyclic graph}.
+  \end{itemize}
+
+  \xxx
+
+  \inhead{Bottom-up Testing}
+  \begin{itemize}
+    \item Start testing the modules that do not call any others.
+    \item Test a module only after all the modules it calls have been tested.
+  \end{itemize}
+
+  \xxx
+
+  \inhead{Top-down Testing}
+  \begin{itemize}
+    \item Start testing the top module.
+    \item Test a module after replacing the modules it calls by stubs (no drivers needed).
+  \end{itemize}
+\end{Frame}
+
+\begin{Frame}{Non-incremental Compared to\\ Incremental Testing}
+  \inhead{Advantages}
+  \begin{itemize}
+    \item[\goodmark] More opportunities for parallel activities.
+    \item[\goodmark] Less CPU-time (only small parts of the system are tested).
+  \end{itemize}
+
+  \xxx
+
+  \inhead{Disadvantages}
+  \begin{itemize}
+    \item[\badmark] Requires to program stubs and drivers.
+    \item[\badmark] Errors related to interface problems are caught very late.
+  \end{itemize}
+\end{Frame}
+
+\begin{Frame}{Top-down Compared To\\ Bottom-up Incremental Testing}
+  \inhead{Advantages}
+  \begin{itemize}
+    \item[\goodmark] No need for drivers.
+    \item[\goodmark] Good for errors \enquote{near the top} of the program.
+    \item[\goodmark] Test cases are easier to represent.
+    \item[\goodmark] Allows for prototype demonstrations (early skeletal program).
+  \end{itemize}
+
+  \xxx
+
+  \inhead{Disadvantages}
+  \begin{itemize}
+    \item[\badmark] Requires stubs.
+    \item[\badmark] Stubs may make testing some paths impossible, or may introduce \enquote{spurious} bugs.
+    \item[\badmark] Bad for errors \enquote{near the bottom} of the program.
+  \end{itemize}
+\end{Frame}

@@ -1,0 +1,33 @@
+	\begin{tikzpicture}[>=stealth',shorten >=1pt,auto, node distance=3cm]
+	 	\tikzstyle{rect} = [draw, rectangle, align=left,
+	 	minimum width=2cm, minimum height=1cm]    
+  			
+  		\node[rect] (1) [] {Predicate \\ Abstraction};
+  		\node[rect] (2) [right = of 1.east] {Model- \\ Checking};	
+ 		\node[rect] (3) [below of = 1] {Predicate \\ Refinement};
+ 		\node[rect] (4) [below of = 2] {Spurious ?};
+ 		
+ 		\node[node distance=1.8cm] (01) [left = of 1.west] {};
+ 		\node[node distance=1.8cm] (02) [right = of 2.east] {};
+ 		\node[node distance=1.8cm] (04) [right = of 4.east] {};
+ 		
+ 		\node[rectangle, draw, 
+ 		minimum width=7.6cm, minimum height=4.5cm, fit= (1) (2) (3) (4)] {};
+ 		
+ 		\path[->] 	(1)	edge node {Boolean program} (2)
+ 					(1)	edge[below] node {$\varphi$} (2)
+ 					
+ 					(2)	edge[left] node {Counter-example (CE)} (4)
+ 					(4)	edge[below] node {Spurious !} (3)
+ 					
+ 					(3)	edge[below] node {} (1)
+ 					
+ 					(01) edge node {Prog $P$} (1)
+ 					(01) edge[below] node {Spec $\varphi$} (1)
+ 					
+ 					(2) edge node {$\varphi$} (02)
+ 					
+ 					(4) edge node {$\neg \varphi$} (04)
+ 					(4) edge[below] node {CE} (04)					
+ 		; 					 				
+	\end{tikzpicture}

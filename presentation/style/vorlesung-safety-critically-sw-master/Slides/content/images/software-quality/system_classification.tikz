@@ -1,0 +1,29 @@
+\begin{tikzpicture}
+  \tikzstyle{level 1 concept}+=[font=\large,scale=0.9, level distance=8cm, sibling angle=60, minimum size=3.5cm]
+  \tikzstyle{level 2 concept}+=[font=\normalsize, level distance=4.3cm, text width=3cm, minimum width=1.5cm, scale=0.6] 
+    \tikzstyle{concept}+=[align=center]    
+
+  \path[mindmap,concept color=maincolor!50!black,text=white, every node/.style={concept,circular drop shadow, inner sep=2mm}]
+    node[concept,scale=1] {Software Systems}
+    [clockwise from=0]   
+    child[concept color=magenta!50!black] {
+      node {System of\\ Systems}
+    }
+   child[concept color=blue!50!black] {
+	node {Embedded Systems}
+}  
+   child[concept color=green!50!black] {
+	node {Realtime Systems}
+}  
+   child[concept color=red!50!black] {
+	node {Hybrid Systems}
+}  
+   child[concept color=orange!50!black] {
+	node {Cyber-Physical\\ Systems}
+}  
+   child[concept color=cyan!50!black] {
+	node {Distributed Systems}
+}
+;
+    
+\end{tikzpicture}

@@ -1,0 +1,47 @@
+include "stdlib.tessla"
+in t: Events[Int]
+
+# a) Compute the delta
+def delta := t - prev(t)
+out delta
+
+# b) Compute the weighted delta
+def wdelta := delta * 100 / (time(t) - prev(time(t)))
+out wdelta
+
+# c) Compute the average value of t over the last four events
+def p2 := prev(t)
+def p3 := prev(p2)
+def p4 := prev(p3)
+def avg := (t + p2 + p3 + p4) / 4
+out avg
+
+# d) Compute the weighted average over the previous three events
+def tt := time(t)
+def tt2 := prev(tt)
+def tt3 := prev(tt2)
+def tt4 := prev(tt3)
+
+def d2 := tt - tt2
+def d3 := tt2 - tt3
+def d4 := tt3 - tt4
+def wavg := (p2 * d2 + p3 * d3 + p4 * d4) / (d2 + d3 + d4)
+out wavg
+
+# e) Count the number of events where t > 20 holds
+def count[A](a: Events[A]) := {
+  def c: Events[Int] := merge(last(c, a) + 1, 0)
+  return c
+}
+def numHigh := count(filter(t > 20, t))
+out numHigh
+
+# f) Count the number of events where t < 10 holds
+def numLow := count(filter(t < 10, t))
+out numLow
+
+# g) Raise an error if the number of events where t > 20 holds
+# exceeds the number of events where t < 10 holds by more than 2
+def error := numHigh - numLow > 2
+out error
+

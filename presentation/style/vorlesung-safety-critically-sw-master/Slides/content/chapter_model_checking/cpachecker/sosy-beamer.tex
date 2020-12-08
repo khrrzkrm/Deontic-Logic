@@ -1,0 +1,26 @@
+\newcommand\definergbcolor[2]{\definecolor{#1}{rgb}{#2}}
+\newcommand\definecmykcolor[2]{\definecolor{#1}{cmyk}{#2}}
+
+% Blue of the 'C' in the CPAchecker logo and the background of the SoSy-Lab logo
+\definergbcolor{sosyblue}{0.3058823529411765 0.615686274509804 0.8392156862745098}
+% Green of the checkmark in the CPAchecker logo
+\definergbcolor{green}{0 0.63529414 0}
+% Uni Passau colors, still needed for the 'P' and the 'A' in the CPAchecker logo
+\definecmykcolor{uniorange}{0 0.5 1 0}
+\definecmykcolor{unigrey}{0.08 0 0.06 0.47}
+
+\newcommand\toolnamesize\smaller
+\newcommand\tool[1]{{{\toolnamesize\scshape #1}\xspace}}
+\newcommand\definetool[2]{\newcommand{#1}{\tool{#2}\xspace}}
+
+%%%%%%%%%% TOOLS %%%%%%%%%%%%%%%%%%%
+\definetool{\blast}       {Blast}
+\definetool{\cpachecker}  {CPAchecker}
+\definetool{\impact}      {Impact}
+
+%%%%%%%%%% NOTATIONS %%%%%%%%%%
+\newcommand{\kinduction}{\texorpdfstring{\textit{k}\protect\nobreakdash-induction}{k-induction}\xspace}
+
+\newcommand{\cpacheckerurl}{https://cpachecker.sosy-lab.org}
+%\newcommand{\cpacheckertitle}{\resizebox{!}{7mm}{\input{logos/cpa}}\enspace \cpachecker}
+\newcommand{\cpacheckertitle}{\cpachecker}

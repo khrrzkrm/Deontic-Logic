@@ -1,0 +1,33 @@
+include "synclib.tessla"
+
+in t: Events[Int]
+
+# a) Compute the delta
+def delta := t - prev(t, 0)
+out delta
+
+# b) Compute the average value of t over the last four events
+def p := prev(t,0)
+def p2 := prev(p, 0)
+def p3 := prev(p2, 0)
+def avg := (t + p + p2 + p3) / 4
+out avg
+
+# c) Count the number of events where t > 20 holds
+def high := t > 20
+def count(a: Events[Bool]) := {
+  def c: Events[Int] := if a then prev(c,0) + 1 else prev(c,0)
+  return c
+}
+def numHigh := count(high)
+out numHigh
+
+# d) Count the number of events where t < 10 holds
+def low := t < 10
+def numLow := count(low)
+out numLow
+
+# e) Raise an error if the number of events where t > 20 holds
+# exceeds the number of events where t < 10 holds by more than 2
+def error := numHigh - numLow > 2
+out error
