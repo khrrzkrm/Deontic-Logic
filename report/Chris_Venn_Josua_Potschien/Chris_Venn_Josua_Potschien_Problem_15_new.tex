@@ -1,7 +1,6 @@
 \documentclass[conference]{hehe}
 \usepackage[utf8]{inputenc}
 \IEEEoverridecommandlockouts
-
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
@@ -41,8 +40,6 @@ This review will give you a short overview about the development of norms, norma
 norms, normative systems, autonomous systems, violation games
 \end{IEEEkeywords}
 
-
-
 \section{What is a norm?}
 
 First, we talk about the meaning of a norm. We just keep the standardized definition of a social norm we all know. It can be thought of as: "rules that prescribe what people should and should not do given their social surroundings"\cite{b1}. For example it is wrong to cheat on your significant other, it is good to finish something in time and it's bad to hijack a plane.
@@ -58,7 +55,7 @@ It is a popular way to look at normative reasoning, but often it is insufficient
 A: You can shoot down the plane and you prevent higher casualties.\\
 B: When you don't shoot down the plane innocent people will die.
 
-Therefore many definitions for a normative system have been proposed and each one has its own loopholes.
+Therefore many definitions for a normative system have been proposed and each one has its own loopholes. \\
 
 
 \begin{definition}
@@ -89,7 +86,6 @@ At best there are some monitor systems that can sanction violators of the system
 
 \section{Problems with the traditional approach}
 You have to consider different areas for the usage of deontic logic. The traditional approach refers to the concepts of deontic logic which have been worked out over the past decades.  Van der Torre explains the problems that will arise in some of those areas.\\
-%\textbf{Philosophers} criticize that norms direct behavior rather than describing it and they are neither true or false. \\
 \textbf{Lawyers} have similar problems with the traditional approach of deontic logic. The argumentation in law is based on conflicts but deontic logic does not include a theory of conflict resolution. Another reason is that most legal reasoning problems are classification problems concerned with legal ontology, whether a particular case counts as a case for a norm. Lawyers mostly argue how norms must be interpreted. \cite{b2}
 
 \textbf{Computer Scientists}
@@ -102,10 +98,11 @@ Deontic logic couldn't interpret norms as they were used in some programming lan
 Furthermore van der Torre considers on how deontic logic can be based on norm and detachment. Detachment first introduced by David Makinson might be a new deontic logic approach where the traditional model approach fails. At first van der Torre defined the term detachment according to normative systems as follows.\\
 \begin{definition}[\textbf{Detachment}]
 A normative system is a set of rules together with
-a way to detach obligations, permissions and institutional facts in specific situations. \cite{b2}
+a way to detach obligations, permissions and institutional facts in specific situations. \cite{b2}\\
+Detachment is a way to solve a problem in a normative system with two conflicting rules or obligations. It is not possible to use the detachment approach in every situation.
 \end{definition}
 
-Now we can look at an example. So imagine you have a normative system which a rule that said it is forbidden to kill. Or in a logical term: $O(\lnot kill)$.\\
+Now we can look at an example in which we have two conflicting obligations. So imagine you have a normative system which a rule that said it is forbidden to kill. Or in a logical term: $O(\lnot kill)$.\\
 But even if one ever kills he must kill gently\\
 ($kill \to O(killgently)$).\\
 That implies if one person kills another that $killgently \to kill$ holds so killing gently implies to kill.\\
@@ -195,7 +192,7 @@ A system is autonomous if and only if it can play violation games.\cite{b2}\\
 We explained how norms can be used as a description of violation games. So violation games are the basis of normative reasoning and deontic logic. But more complex games must be considered too for example norm creation games, van der Torre will later define this term.\\
 Van der Torre considers the following example: A child is in the water and there is one bystander. There are good chances that the bystander will jump into the water and save the child. But if you imagine 100 bystanders the child will probably drown because no one would feel obligated to jump into the water.\\
 So now you can consider norm creation games as an extension of violation games. You could create a norm where everyone has the norm for himself to jump into the water so the child will not drown.\\
-So this is what people refer as a mental modality, it defines the assumptions different agents have about each other in a social context. For this case the mental modality of every bystander is to jump into the water or else the child will drown.\\
+So this is what people refer as a mental modality, it defines the assumptions different agents have about each other in a normative context. The assumptions of the different agents can differ or overlap. For this case the mental modality of every bystander is to jump into the water or else the child will drown.\\
 So a more general definition of a normative system is the following.\\
 
 \begin{definition}
@@ -214,8 +211,9 @@ So in our opinion it is kind of impossible to model every moral dilemma and come
 But one question remains: How can deontic logic be based on both norm and detachment, as well as decision and game theory?\\
 Even the approach of decision and game theory is very complex and cannot easily be applied on specific situations like we pointed out in the section above.\\
 If we try to combine the detachment approach with our hijacked plane example we could argue that it is possible to detach the obligation to save as many lives as possible in this specific situation.\\
-But we cannot to this without any consequences because if we detach a norm we would probably change the whole violation game or even create a paradox due to some norms that were created in a norm creation game before. Also violation games depend on several aspects like mental modalities as said before. So if a mental modality forbids the actors the detach a norm we just simply cannot combine the detachment approach with our hijacked plane example.
-Surely we can find situations where we can start to combine these two approaches but the more agents are involved in the normative systems the harder it gets to adhere to the norms we created.
+But we cannot do this without any consequences because if we detach a norm we would probably change the whole violation game or even create a paradox due to some norms that were created in a norm creation game before. Also violation games depend on several aspects like mental modalities as said before. So if a mental modality forbids the actors to detach a norm we just simply cannot combine the detachment approach with our hijacked plane example.
+Surely we can find situations where we can start to combine these two approaches but the more agents are involved in the normative systems the harder it gets to adhere to the norms we created.\\
+According to this example we can say that it is not clear what the solution for the hijacked plane example is or even if it possible to construct a solution. We think that it is not possible to combine norm, detachment and decision and game theory simply because both approaches are very complex itself and way to complex in combination.
 \begin{thebibliography}{00}
 
 \bibitem{b1} https://en.wikipedia.org/wiki/Social\_norm
