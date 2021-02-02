@@ -3,14 +3,14 @@
 \usepackage[nottoc]{tocbibind}
 \usepackage{ amssymb }
 \usepackage{enumerate}
-
-\title{Contrary-to-Duty Paradoxes}
+\usepackage{graphicx}
+\title{Contrary-to-Duty Paradoxes\\{\normalsize  \underline{BACHELOR-SEMINAR INFORMATIK  (WS 20/21)}}}
 \author{Yingqin Fu 702065 Markus Davydov 690672 }
 \date{December 2020}
 
 \begin{document}
-
 \maketitle
+
 \tableofcontents
 \section*{Abstract}
 We will discuss the first problem of Denotic Logic,the so-called Contrary-to-duty (CTD) in this paper.A contrary-to-duty obligation tells us,what we ougt to do if something is forbidden.Which is very important in our moral and legal thinking.So we want to discuss the problem with different deontic logic systems,and try to find a way to explain it.\\
@@ -42,8 +42,7 @@ for robbery.
 
 Contrary-to-duty obligations turn up in discussions concerning guilt, blame, restoration, reparation, confession, punishment, repentance, retributive justice, compensation, apologies, damage control, etc. Therefore, they are important in our moral and legal thinking. The rationale of a contrary-to-duty obligation is the fact that most of us do neglect our primary duties from time to time and yet it is reasonable to believe that we should make the best of a bad situation, or at least that it matters what we do when this is the case. Everyone needs to find a way,that tells us what to do, when we don't finish the things we ought to do.In this paper,we will try to find a adequate formal representation of such obligations.
 \section{Monadic deontic logic}
-Traditional or ‘standard’ deontic logic, often referred to as SDL, was introduced by
-Von Wright\cite{4} 
+Traditional or ‘standard’ deontic logic, often referred to as SDL, was introduced by Von Wright\cite{4}.SDL regards as the most basic system of deontic logic,but also maybe have the most drawback.In this section,we try to analyze the Chisholm’s paradox with the basic SDL system.
 \subsection{language}
 Given two arbitrary formulas $\phi$  and $\varphi$, then\\
 $\perp$:the empty symbol\\
@@ -104,7 +103,9 @@ So how can we overcome the limitation of SDL?Can we extend the semantics of SDL?
 From 1-4 we can derive only $\bigcirc 1 \neg t \wedge \bigcirc 2 t$,which is consistent.\\
 Seems like we find a good way to solve the limitation of SDL.However,it may not always be easy to distinguish primary from secondary obligations, because it may depend on the context whether an obligation is primary or secondary. It's not easy for us to describe the ideal world with this solution. 
 \section{Dyadic deontic logic}
-Dyadic deontic logic(or Dyadic Standard Deontic Logic ) is the logic for reasoning with dyadic obligations (“it ought to be the case that ... if it is the case that ...").In this section, we will try to describe CTD with DDL ,and try to find out a .
+Dyadic deontic logic(or Dyadic Standard Deontic Logic ) is the logic for reasoning with dyadic obligations (“it ought to be the case that ... if it is the case that ...").The language is extended with dyadic operators 
+ $\bigcirc(p|q)$, which is true iff the preferred q worlds satisfy p. The class of logics is called Dyadic ‘Standard’ Deontic Logic or DSDL. The notation is inspired by the representation of conditional probability.
+In this section, we will reasoning CTD with DDL.
 \subsection{Language}
 Given two arbitrary formulas $\phi$  and $\varphi$, then\\
 $\perp$:the empty symbol\\
@@ -152,24 +153,92 @@ the dyadic representation A - D highlights the dilemma between factual detachmen
 FD:$\bigcirc(m\mid f),f \Rightarrow \bigcirc m$\\
 DD:$\bigcirc(\neg m \mid \neg f), \bigcirc\neg f \Rightarrow \bigcirc\neg m$\\
 We cannot have both FD and DD, as we derive a dilemma:$\bigcirc\neg m\wedge\bigcirc m$\\
-Hence,there is also something wrong with the DSDL,when we try to describe CTD paradox.
+Hence,there is also something wrong with the DSDL,when we try to describe CTD paradox.\\
 The main drawback of DSDL is that in a monotonic setting, we cannot detach
 the obligation $\bigcirc m$ from the four sentences.
 \section{Defeasible Deontic Logic: detachment and constraints}
 We all know that,Deontic logic is the logic of obligations, i.e. reasoning about what should be the case. Defeasible logic is the logic of default assumptions, i.e. reasoning about what normally is the case.In defeasible deontic logic(DDLs) these two are combined.Defeasible deontic logics (DDLs) use techniques developed in non-monotonic logic.A drawback of the use of non-monotonic techniques is that we often have that
 violated obligations are no longer derived.\\
 The more details about the defeasible deontic logic will be in Section 8 of the "Multiagent deontic logic and its challengesfrom a normative systems perspective".
+\section{Input/Output logic}
+Input/output logic\cite{5} ,which  is a non classical logic,takes its origin in the study of conditional norms. These may express desired features of a situation, obligations under some legal, moral or practical code, goals, contingency plans, advice, etc. Typically they may be expressed in terms like: In such-and-such a situation, so-and-so should be the case, or …should be brought about, or …should be worked towards, or …should be followed – these locutions corresponding roughly to the kinds of norm mentioned.
+ Input/output logic may be seen as an attempt to extract the essential mathematical structure behind the reconstruction of deontic logic.\\
+ \subsection{Definition}
+   Technically, a normative code is seen as a set G of conditional norms, i.e. a set of such ordered pairs (a,x). For each such pair, the body a is thought of as an input, representing some condition or situation, and the head x is thought of as an output, representing what the norm tells us to be desirable, obligatory or whatever in that situation.
+\begin{figure*}[hb]
+\centering
+\includegraphics[scale=0.45]{input_output.png}
+\label{fig_framework}
+\end{figure*}\\
+Cn(A) denotes the set of logical consequences of A in classical propositional
+logic.It returns the set of all provable propositional formulae provable assuming the fact in A( the set of answers of a set of inputs).For example,\\
+A= \{ x, y\} then Cn(A) = \{x, y, x $\vee $y, x $\wedge$ y $\vee$ . . . \}\\
+The simplest kind of input/output operation is depicted in Figure 1. A
+set A of propositions serves as explicit input, which is prepared by being expanded to its classical closure Cn(A). This is then passed into the ‘black box’ or ‘transformer’ G, which delivers the corresponding immediate output G(Cn(A)) = \{x: for some a $\in$ Cn(A), (a,x) $\in$ G\} Finally, this is expanded by classical closure again into the full output $out_{1}$(G,A) = Cn(G(Cn(A))). We call this simple-minded output.\\
+
+\begin{figure*}[hb]
+\centering
+\includegraphics[scale=0.4]{simple_minded.png}
+
+\label{fig_framework}
+\end{figure*}
+What's more,there are 5  rules in I/O logic:
+\begin{description}
+\item[$\bullet$] Strengthening Input (SI): From (a,x) to (b,x) whenever a $\in$ Cn(b)
+\item[$\bullet$] Conjoining Output (AND): From (a,x), (a,y) to (a,x$\wedge$y)
+\item[$\bullet$] Weakening Output (WO): From (a,x) to (a,y) whenever y $\in$ Cn(x).
+\item[$\bullet$] Disjoining input (OR): From (a,x), (b,x) to (a$\vee$b,x)
+\item[$\bullet$] Cumulative transitivity (CT): From (a,x), (a$\wedge$x,y) to (a,y).
+\end{description}
+There are also four very natural systems of input/output, which are labelled as follows: 
+\begin{description}
+\item[$\bullet$]simple-minded alias $out_{1}$ (as above)
+\item[$\bullet$]basic (simple-minded plus input disjunction: $out_{2}$)
+\item[$\bullet$]reusable (simple-minded plus reusability: $out_{3}$)
+\item[$\bullet$]reusable basic alias $out_{4}$
+\end{description}
+For example,$out_{4}$ can be given by Figure 2.\\
+
+\begin{figure*}[hb]
+\centering
+\includegraphics[scale=0.5]{out4.png}
+
+\label{fig_framework}
+\end{figure*}
+After the simple introduction of Input/Output logic,we reconsider our topic,the Contrary to duty obligations.
+\subsection{Contrary to duty reasoning}
+Like every other approach to deontic logic, input/output logic must face the problem of accounting adequately for the behaviour of  ‘contrary-to-duty’ norms. The problem may be stated thus: given a set of norms to be applied, how
+should we determine which obligations are operative in a situation that already
+violates some among them. It appears that input/output logic provides a convenient platform for dealing with this problem by imposing consistency constraints on the generation of output.
+\subsubsection{Definition(Maxfamilies)}
+Let G be a set of conditional norms and A and C two sets of propositional formulas.\\
+Then maxfamily(G, A, C) is the set of maximal
+subsets H $\subseteq$ G such that out(H, A) $\cup$ C is consistent.(which means,out(H,A)) is consistent with C.)\\
+For a possible solution to Chisholm’s paradox, consider the following output operation $out^{\cap}$:\\
+$out^{\cap}(G, A) = \cap
+\{out(H, A) | H \in maxfamily(G, A, A)\}
+$
+\subsubsection{Contrary to duty reasoning}
+Let G a "Chisholm norm set";\\
+x means the norm that a man goes to the assistence of his neighbors;\\
+z means the norm that he tells them he is coming\\
+\begin{description}
+\item[$\bullet$]G=$\{(\top ,x),(x,z),(\neg x,\neg z)  \}$\\
+ $(\top ,x)$ means the norm that the man must go to the assistance of his neighbors;$(x,z)$means the norm that it ought to be that if he goes he ought to tell them he is coming;$(\neg x,\neg z)$ means that the norm that if he does not go he ought not to tell them he is coming.
+ \item[$\bullet$] $A=\{ \neg x \}$
+ \item[$\bullet$] We have H $\in out_{1}(G,A)=\{x,\neg z\}$ ,which is inconsistent with A because of $\top$
+ \item[$\bullet$] We have  H = maxfamily(G,A,A)=$ \{ G\setminus \{(\top,x) \}\}=\{\{(x,z),(\neg x,\neg z)   \}\} $
+ \item[$\bullet$] out(H,A)=$\neg z$,which is consistent with A
+ \item[$\bullet$]$out^{\cap}(G,A)=Cn(\neg z)$ ,which means the form that the man must not tell his neighbors he is coming
+\end{description}
 \section{Alternative approaches}
-Carmo and Jones \cite{5} suggest that the representation of the facts is challenging,
+Carmo and Jones \cite{6} suggest that the representation of the facts is challenging,
 instead of the representation of the norms. In their approach, depending on the
 formalisation of the facts various obligations can be detached.\\
 Another approach to Chisholm’s paradox is to detach both obligations of the
-dilemma  $\neg$m $\wedge$ m, and represent them consistently using some kind of minimal
-deontic logic, for example using techniques from paraconsistent logic. From a practical reasoning point of view, a drawback of this approach is that a dilemma is not
-very useful as a moral cue for action. Moreover, intuitively it is not clear that the
-example presents a true dilemma.More about the dilemmas will be in Section 9.\\
+dilemma  $\neg$m $\wedge$ m, and represent them consistently using some kind of minimal deontic logic, for example using techniques from paraconsistent logic. From a practical reasoning point of view, a drawback of this approach is that a dilemma is not very useful as a moral cue for action. Moreover, intuitively it is not clear that the example presents a true dilemma.More about the dilemmas will be in Section 9.\\
 
-Daniel Rönnedal\cite{6} suggests,we can use the Counterfactual Deontic Logic to solve the Contrary-to-Duty Paradoxes.\\
+Daniel Rönnedal\cite{7} suggests,we can use the Counterfactual Deontic Logic to solve the Contrary-to-Duty Paradoxes.\\
 A recent representation of Chisholm'paradox is to replace deonitc detachment by so-called aggregative deontic detachment(ADD),and to derive from A-D the obligation  $(\neg f \wedge \neg m)$and m, but not $\neg $m.\\
 $\bigcirc (m|f),f \Rightarrow \bigcirc m $ FD\\
 $\bigcirc(\neg m |\neg f),\bigcirc\neg f \Rightarrow \bigcirc(\neg m \wedge \neg f)$ ADD\\
