@@ -79,7 +79,7 @@ To deal not only with obligations but also agents, we introduce a new operator: 
 In order to reapply the known deontic logic semantics in the world of agent systems, one may intuitively think that the obligation to do something is the same as the obligation that something will be done or that a certain history will be reached. This, however, becomes challenging if an action may lead to multiple histories in an unpredictable manner. 
 
 \subsection{The gambling problem}
-The first problem concerning agents the authors talk about is the \emph{gambling problem} \cite{mdl}. In this scenario an agent is presented with two options -- he gambles and either doubles or loses his bet or he does not gamble and thus preserves his money. An example tree for which the agents starts with 5€ is given in Figure~\ref{fig:gambling-tree}. Here the utility value describes how much money he has in the end and the proposition $G$ means \enquote{he gambles}. The question is whether he should gamble hoping for the sweet win but also risking to lose everything or rather refrain from doing so.
+The first problem concerning agents the authors talk about is the \emph{gambling problem} \cite{mdl}. In this scenario an agent is presented with two options -- he gambles and either doubles or loses his bet or he does not gamble and thus preserves his money. An example tree for which the agent starts with 5€ is given in Figure~\ref{fig:gambling-tree}. Here the utility value describes how much money he has in the end and the proposition $G$ means \enquote{he gambles}. The question is whether he should gamble hoping for the sweet win but also risking to lose everything or rather refrain from doing so.
 
 \begin{figure}[ht]
     \centering
@@ -103,7 +103,7 @@ The first problem concerning agents the authors talk about is the \emph{gambling
 \end{figure}
 
 \subsection{Optimality of non-deterministic actions}
-The optimal path would end in $h_1$, so in order to get to this best outcome the agent should \enquote{ought to see to it that A}. Intuitively, one would try to formalize this with $\bigcirc[\alpha \cstit \colon G]$, however, the action $K^m_1$ is not necessarily the better option because, in the end, the outcome of the gamble comes down to luck. 
+The optimal path would end in $h_1$, so in order to get to this best outcome the agent should \enquote{ought to see to it that G}. Intuitively, one would try to formalize this with $\bigcirc[\alpha \cstit \colon G]$, however, the action $K^m_1$ is not necessarily the better option because, in the end, the outcome of the gamble comes down to luck. 
 
 This problem arises from the fact that we define the optimality of a history only by its utility value disregarding that the actions that lead to this history are non-deterministic. Or in other words, while an optimal history concerns ought-to-be and optimal actions concern ought-to-do, we cannot infer the optimal action from the optimal history because an action may lead non-deterministically to multiple (and potentially worse) histories. Rather, we should correspond actions to sets of histories and compare the optimality of all possible histories to determine the optimal action.
 
@@ -177,7 +177,7 @@ For the example of Professor Procrastinate we can safely take into consideration
 Let us take a look at what this means for the semantics of the formula $\odot [\pi \cstit \colon A]$, where $\pi$ is the professor and $A$ is the decision to accept the request. If our field contains all possible choices -- a view which is also called \emph{possibilism} -- then $\odot [\pi \cstit \colon A]$ should be true, since this is the only choice leading to the optimal outcome. But using the field containing only the first choice we have that $\odot [\pi \cstit \colon A]$ is false, since with the background assumption that Professor Procrastinate will not write the review, the actual optimal outcome can only be reached if the professor declines.
 
 \section{Summary}
-Despite seeming like a straightforward conclusion to talk about actions by talking about histories inferred by them, it is not as simple as to reduce \emph{ought-to-do} to \emph{ought-to-be-done}. Rather, one has to accommodate for the specifics that come with the usage of agency, including, among other things, different histories caused by a non-deterministic actions, multiple agents influencing each other and the difference between what \emph{could} happen and what \emph{actually} happens.
+Despite seeming like a straightforward conclusion to talk about actions by talking about histories inferred by them, it is not as simple as to reduce \emph{ought-to-do} to \emph{ought-to-be-done}. Rather, one has to accommodate for the specifics that come with the usage of agency, including, among other things, different histories caused by non-deterministic actions, multiple agents influencing each other and the difference between what \emph{could} happen and what \emph{actually} happens.
 
 
 \bibliographystyle{IEEEbib}
