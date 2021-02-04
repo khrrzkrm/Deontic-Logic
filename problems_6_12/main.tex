@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[nottoc]{tocbibind}
+\usepackage{ amssymb }
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{verbatim}
+
+\newcommand{\detailtexcount}[1]{%
+  \immediate\write18{texcount -merge -sum -q #1.tex output.bbl > #1.wcdetail }%
+  \verbatiminput{#1.wcdetail}%
+}
+
+\newcommand{\quickwordcount}[1]{%
+  \immediate\write18{texcount -1 -sum -merge -q #1.tex output.bbl > #1-words.sum }%
+  \input{#1-words.sum} words%
+}
+\newtheorem{definition}{Definition}
+\newtheorem{exmp}{Example}[section]
+\title{Multiagent deatchment and consitutive norms}
+\author{Max Manten 700630}
+\date{January 2021}
+
+\begin{document}
+\quickwordcount{main}
+\maketitle
+\tableofcontents
+\section*{Abstract}
+Paper \cite{pigozzi:hal-01679130}
+\section{Multiagent detachment}
+\subsection{What are multiagent systems?}
+Multiagent systems contain a normative system and multiple agents. The normative system is consistent and known to all agents. Additionally every norm of the system applies to an explicit agent. The whole multiagent system is minimal action theory, which contains uncontrollable and controllable propositions. These are called parameters and decision variables. It is convention to call parameters $p_1,p_2,...$ and decision variables $a_1,a_2,...$ for the first agent, $b_1,b_2,...$ for the second agent and so forth. Each norm is made of two prepositions. The first preposition implies the second one and if the second preposition is decision variable, the agent has to fulfill the obligation. 
+
+\begin{definition}
+"A normative multiagent system is a tuple NMAS = \textlangle{}A,P,c,N\textrangle{} where A is a set of agents, P is a set of atomic propositions, $c : P \rightarrow$ A is a partial function which maps the propositions to the agents controlling them, and N is a set of pairs of conjunctions of literals builf o P, such that if $(\phi,\psi) \in N $, then all propositional atoms in $\psi$ are controlled by a single agent."
+\cite{pigozzi:hal-01679130}\\
+\end{definition}
+
+\begin{exmp}
+We create an easy multi agent system. We have the agents $A = \{\text{Mike, John}\}$. The prepositions $P = \{p_1,a_1,a_2,b_1,b_2\}$. \\
+\[
+    c(x)= 
+\begin{cases}
+    \text{Mike},& \text{if } x \in \{a_1,a_2\}\\
+    \text{John},& \text{if } x \in \{b_1,b_2\}\\
+    null,              & \text{otherwise}
+\end{cases}
+\]
+And $N = \{(p_1,a_1), (a_1,b_1), (a_1 \land b_1, b_2)\}$.
+\end{exmp}
+
+As we can see from this definition by Pigozzi and van der Torre, an norm can only contain propositions from one agent in the right side. Parameters don't have an agent. On the left side, there could be prositions from mutliple agents, which brings us to our problems.
+\subsection{Problems with multiagent detachment}
+There are two problems with the multiagent detachment. The first problem is the temporal order of norms. Especially when there are multiple agents. It is not possible to say that one obligation has to happen at the same time or a while after another. We are limited to simple chain of obligation which require each other, but this is only possible with only one agent. As soon as we have more than one agent, they can't be sure that the other agents will comply to their obligations. This brings us directly to the second problem. Our goal is to detach obligation, but we are not sure if the other agents will comply, this limits us again to norms on only one agent. That is the reason, why we can not watch the multi agent system as a whole during detachment. We ignore all cross references, which in return gives us the same multiple normative system with only one agent and the same parameters in all systems. 
+\subsection{Iterative detachments for agents}
+\subsection{Conclusion}
+The paper ignores the whole temporal problem. They assume that there is no time relationship or it is complete transitive since the whole detachment process wouldn't be possible in a temporal context.
+The important part of the multiagent system detachment is the detachment. This is solved by the iterative detachments for agents. But Pigozzi and van der Torre left out the whole logical analysis and even so they made formal definition for they procedures, they skipped any proof that their proposals are right but they mention this them self and put it up for future research. Their proposed iterative detachments for agents, seems, as shown, to work very good for easy examples.
+\section{Constitutive norms}
+
+\subsection{What are count-as-conditionals?}
+For the input/output logic we have get a formal definition of conditionals CA. For each institution s, we can get a set CA, which has the pairs of count-as. $(x,y) \in CA_s$ means, that x counts as y in the institution s. We also have a definition for conjunction: $(x_1,y_1),(x_1,y_2) \Rightarrow (x, y_1 \land y_2)$, for disjunction: $(x_1,y_1), (x_2,y_1) \Rightarrow (x_1 \lor x_2, y_1)$ and transitivity: $(x_1,y_1),(y_1,y_2) \Rightarrow (x_1,y_2)$. \\
+This rules are used derive from a given CA, institution and given values all count-as values.
+$outCA(CA,s,p)$ where p is a set of given variables or as a short form, just a variable. outCA gives now the count-as variables which are able to be derived from the given variables and the count-as-conditionals.
+\begin{exmp}
+Lets assume we have a $CA_s$ with $(x_1,y_2), (y_2, x_2),(x_2,z_2),(x_2,z_4).$ We now have a $outCA(CA,s,x_1) = \{x_1,y_2,x_2,z_z,z_4\}$
+\end{exmp}
+\subsection{Problems with count-as-conditionals}
+Count-as-conditionals have multiple problems from a logical and a formal perspective. The biggest formal problem ist, that everyone writes count-as-conditionals in different ways. There are the options to use arrow function $\Rightarrow_s$, the set definition $(\land X',y) \in outCa(Ca,s)$ or just the literal way (x count as y in case s).\\
+\subsection{Conclusion}
+The first pretty obvious point about the proposed solution for this problem, is that they completely disregard constitutive norms and only explained count-as-conditionals. This is more an example of constitutive norms and not a general definition.\\
+They also acknowledge that they didn't give any proof again and explain how many experts regard the problem of transitivity as not solved but they remark that these people didn't review their explanation. At least they say openly, that there are a lot of open problems with constitutive norms and it is not a popular topic for logical analysis but at the start of the text they call it a "the key mechanism to normative reasoning in dynamic and uncertain environments". Maybe the importance of this topic is a little bit exaggerated by them. 
+\bibliographystyle{unsrt}
+\bibliography{books}
+\end{document}
+ 
