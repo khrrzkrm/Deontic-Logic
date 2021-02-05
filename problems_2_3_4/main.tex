@@ -10,6 +10,7 @@
 \usepackage{csquotes}
 \usepackage{hyperref}
 \usepackage{tikz}
+\usepackage{eurosym}
 
 \usetikzlibrary{shapes, positioning, calc}
 
@@ -30,11 +31,13 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-	With SDL (standard deontic logic) and DSDL (dyadic standard deontic logic) we have frameworks with which we can formally describe how things \emph{ought to be}. In the context of (multi-)agent systems, however, we want to be able to describe the actions that agents may or may not take, i.e. we want to describe what agents \emph{ought to do}. If we simply redefine \enquote{ought to do} as \enquote{ought to be done} we will run into various problems. This report will discuss some of these problems and how to deal with them.
+	With SDL (standard deontic logic) and DSDL (dyadic standard deontic logic) we have frameworks with which we can formally describe how things \emph{ought to be}. In the context of (multi-)agent systems, however, we want to be able to describe the actions that agents may or may not take, i.e. we want to describe what actions agents \emph{ought to do}. If we simply redefine \enquote{ought to do} as \enquote{ought to be done} -- meaning that the obligation to do an action would be represented by the state of that action being done -- we will run into various problems. This report will discuss some of these problems and how to deal with them.
 \end{abstract}
 
 \section{Introduction}
-When using deontic logic to reason about multi-agent systems the need for a clear definition on how actions of those agents should be modeled arises. The easy solution is to redefine actions as states, where doing an action $\sigma$ becomes the state \enquote{$\sigma$ has been done}. As shown in sections 2, 3 and 4 in \cite{mdl}, this simple redefinition may lead to situations where agents may take counter-intuitive actions, or where sub-optimal situations are encountered. Before we discuss some of those problems we want to introduce a logic for modelling (multi-)agent systems in deontic logic.
+When using deontic logic to reason about multi-agent systems the need for a clear definition on how actions of those agents should be modeled arises. The easy solution is to redefine actions as states, where doing an action $\sigma$ becomes the state \enquote{$\sigma$ has been done}. As shown in sections 2, 3 and 4 in \cite{mdl}, this simple redefinition may lead to situations where agents may take counter-intuitive actions, or where sub-optimal situations are encountered. In this context \emph{sub-optimal} means that we reach an outcome that has a low value according to some predefined utility-function.
+
+Before we discuss some of those problems it is necessary to define a logic for modelling (multi-)agent systems in deontic logic.
 
 \subsection{STIT-trees}
 Since we are dealing with choices an agent can make (for example to do or not do an action) and possibly multiple consequences those choices can have, the model for this logic will be trees. An example tree to Horty's STIT (See-To-It-That) logic is given in Figure~\ref{fig:stit-tree}. 
@@ -42,7 +45,7 @@ Since we are dealing with choices an agent can make (for example to do or not do
     \centering
      \begin{tikzpicture}[node distance=2cm]
         \node (start) {};
-        \node[draw,rectangle] (choice11) [above of=start] {$K_1^m$};
+        \node[draw,rectangle] (choice11) [above of=start, yshift=-1cm] {$K_1^m$};
         \node[draw,rectangle] (choice12) [right of=choice11,xshift=-1.18cm] {$K_2^m$};
         \node (choicem) [right of=choice12,yshift=-0.3cm,xshift=-0.8cm] {$\textsc{Choice}_\alpha^m$};
         \node (h1) [above left of=choice11] {${h_1}^9$};
@@ -65,27 +68,27 @@ Since we are dealing with choices an agent can make (for example to do or not do
     \label{fig:stit-tree}
 \end{figure}
 
-In these trees the interior nodes -- in our case $\textsc{Choice}^m_{\alpha}$ and $\textsc{Choice}^n_{\alpha}$ -- are moments in time where a decision can be made by the agent in question. In this context a decision at moment $m$ is a set of actions, of which the agent must take exactly one. For $\textsc{Choice}^m_{\alpha}$ the agent $\alpha$ can decide between $K_1^m$ and $K_2^m$, so $\textsc{Choice}^m_{\alpha} = \{K_1^m, K_2^m\}$. Actions can be non-deterministic, i.e. the same action may lead to multiple different outcomes -- this is the case for $K_2^m$.
+In these trees the interior nodes -- in our case $\textsc{Choice}^m_{\alpha}$ and $\textsc{Choice}^n_{\alpha}$ -- are moments in time where a decision can be made by the agent in question. In this context a decision at moment $m$ is a set of actions, of which the agent must take exactly one. For $\textsc{Choice}^m_{\alpha}$ the agent $\alpha$ can decide between $K_1^m$ and $K_2^m$, so $\textsc{Choice}^m_{\alpha} = \{K_1^m, K_2^m\}$. Actions can be non-deterministic, i.e. the same action may lead to multiple different outcomes -- this is the case for $K_2^m$. One could also associate probabilities to each edge, but since the authors of \cite{mdl} did not do so, we will not as well.
 
 Depending on which action the agent takes, he either will be presented with another decision or reach an outcome. The leafs in those trees are the histories or traces of made decisions, and with each of them is associated a utility value that is based on the state reached, e.g. $h_1$ has a utility of $9$. Finally, each edge is assigned a set of propositions that are true at this point in time.
 
 \subsection{Semantic on STIT-trees}
 For the semantics we always look at a moment-history pair $m, h$ and check whether $m,h\models \varphi$ holds. If our formula is simply an atomic proposition $A$, we get $m,h\models A$ iff $A$ is true at the outgoing edge of $m$ on the path to $h$. For example, this is the case for $m,h_3$ but not for $m, h_1$ and $n,h_3$. A formula $\mathcal{F} A$ is fulfilled iff $A$ holds at some point on the path from $m$ to $h$ (e.g. $m,h_3\models \mathcal{F} A$ but also $m,h_3\models \mathcal{F} \neg A$). The relation $m,h\models \bigcirc A$ holds iff $A$ holds on all edges of $m$ that reach histories having the highest utility value for those histories reachable from $m$. Note how $h$ is irrelevant. For example, this is the case for $m,h_2\models \bigcirc A$ since $A$ holds in the best history reachable from $m$, namely, $h_4$. 
 
-To deal not only with obligations but also agents, we introduce a new operator: $[\alpha \cstit \colon A]$ meaning that $\alpha$ sees to it that $A$ (\emph{stit} for \emph{sees to it that} and the \emph{c} from the name of the logician \emph{Chellas}). The relation $m,h\models [\alpha \cstit \colon A]$ is fulfilled iff $A$ is true for every pair $m, h'$ that belongs to the same action as $m,h$. This is the case for $m,h_3$ since $A$ holds at every outgoing edge of $K^m_2$.
+To deal not only with obligations but also agents, a new operator is introduced: $[\alpha \cstit \colon A]$ meaning that $\alpha$ sees to it that $A$ (\emph{stit} for \emph{sees to it that} and the \emph{c} from the name of the logician \emph{Chellas}). The relation $m,h\models [\alpha \cstit \colon A]$ is fulfilled iff $A$ is true for every pair $m, h'$ that belongs to the same action as $m,h$. This is the case for $m,h_3$ since $A$ holds at every outgoing edge of $K^m_2$.
 
 
 \section{Non-deterministic actions and the gambling problem}
 In order to reapply the known deontic logic semantics in the world of agent systems, one may intuitively think that the obligation to do something is the same as the obligation that something will be done or that a certain history will be reached. This, however, becomes challenging if an action may lead to multiple histories in an unpredictable manner. 
 
 \subsection{The gambling problem}
-The first problem concerning agents the authors talk about is the \emph{gambling problem} \cite{mdl}. In this scenario an agent is presented with two options -- he gambles and either doubles or loses his bet or he does not gamble and thus preserves his money. An example tree for which the agent starts with 5€ is given in Figure~\ref{fig:gambling-tree}. Here the utility value describes how much money he has in the end and the proposition $G$ means \enquote{he gambles}. The question is whether he should gamble hoping for the sweet win but also risking to lose everything or rather refrain from doing so.
+The first problem concerning agents the authors talk about is the \emph{gambling problem} \cite{mdl}. In this scenario an agent is presented with two options -- he gambles and either doubles or loses his bet or he does not gamble and thus preserves his money. An example tree for which the agent starts with 5\euro\ is given in Figure~\ref{fig:gambling-tree}. Here the utility value describes how much money he has in the end and the proposition $G$ means \enquote{he gambles}. The question is whether he should gamble hoping for the sweet win but also risking to lose everything or rather refrain from doing so.
 
 \begin{figure}[ht]
     \centering
      \begin{tikzpicture}[node distance=2cm]
         \node (start) {};
-        \node[draw,rectangle] (choice11) [above of=start] {$K_1^m$};
+        \node[draw,rectangle] (choice11) [above of=start, yshift=-1cm] {$K_1^m$};
         \node[draw,rectangle] (choice12) [right of=choice11,xshift=-1.18cm] {$K_2^m$};
         \node (choicem) [right of=choice12,yshift=-0.3cm,xshift=-0.8cm] {$\textsc{Choice}_\alpha^m$};
         \node (h1) [above left of=choice11] {${h_1}^{10}$};
@@ -105,9 +108,13 @@ The first problem concerning agents the authors talk about is the \emph{gambling
 \subsection{Optimality of non-deterministic actions}
 The optimal path would end in $h_1$, so in order to get to this best outcome the agent should \enquote{ought to see to it that G}. Intuitively, one would try to formalize this with $\bigcirc[\alpha \cstit \colon G]$, however, the action $K^m_1$ is not necessarily the better option because, in the end, the outcome of the gamble comes down to luck. 
 
-This problem arises from the fact that we define the optimality of a history only by its utility value disregarding that the actions that lead to this history are non-deterministic. Or in other words, while an optimal history concerns ought-to-be and optimal actions concern ought-to-do, we cannot infer the optimal action from the optimal history because an action may lead non-deterministically to multiple (and potentially worse) histories. Rather, we should correspond actions to sets of histories and compare the optimality of all possible histories to determine the optimal action.
+This problem arises from the fact that optimality of a history is defined only by its utility value disregarding that the actions that lead to this history are non-deterministic. Or in other words, while an optimal history concerns ought-to-be and optimal actions concern ought-to-do, we cannot infer the optimal action from the optimal history because an action may lead non-deterministically to multiple (and potentially worse) histories. Rather, one should correspond actions to sets of histories and compare the optimality of all possible histories to determine the optimal action.
 
-Horty suggested that an action $K_1$ should be considered more optimal than $K_2$ if each of its histories have at least the same utility value than any of the histories reachable from $K_2$, while the other way is not the case. This leads to a new operator $\odot [\alpha \cstit \colon G]$ meaning \enquote{$\alpha$ ought to see to it that $G$}. This formula is fulfilled iff for each action not leading to $G$ there is a better action that does lead to $G$. Since $K_1^m$ and $K_2^m$ correspond to equally good sets of histories, neither $\odot [\alpha \cstit \colon G]$ nor $\odot [\alpha \cstit \colon \neg G]$ hold for $m$.
+Horty suggested that an action $K_1$ should be considered more optimal than $K_2$ if each of its histories have at least the same utility value than any of the histories reachable from $K_2$, while the other way is not the case. This leads to a new operator $\odot [\alpha \cstit \colon G]$ meaning \enquote{$\alpha$ ought to see to it that $G$}. In contrast to $\bigcirc[\alpha \cstit \colon G]$ this formula is fulfilled iff for each action not leading to $G$ there is a better action that does lead to $G$. Intuitively the difference lies in how to optimize the result:
+
+The $\bigcirc$-operator will go for the best history disregarding the fact that an action taken along the way may non-deterministically lead to a worse history, while the $\odot$-operator allows to take \enquote{sub-optimal} actions (not gambling in the example) if there is an outcome that is still better than the worst outcome of the other decision.
+
+Since $K_1^m$ and $K_2^m$ correspond to equally good sets of histories, neither $\odot [\alpha \cstit \colon G]$ nor $\odot [\alpha \cstit \colon \neg G]$ hold for $m$.
 
 
 \section{Moral Luck}
@@ -116,7 +123,7 @@ In some cases the utility of an agents decision might be dependent on another ag
 \subsection{The driving problem}
 In \cite{mdl} the authors discuss this problem with the example of the \emph{driving problem}:
 
-Suppose an agent $\alpha$ is driving on a small road and another driver, agent $\beta$, is travelling towards $\alpha$. Both agents have the option of swerving to the side or continuing to drive straight. However, should they decide on the same action they will collide. It's obvious that there are two good and two bad outcomes: the good ones are, where only one of the persons moves to the side, the bad ones are where both move to the side or both don't move. 
+Suppose an agent $\alpha$ is driving on a small road and another driver, agent $\beta$, is travelling towards $\alpha$. Both agents have the option of swerving to the side or continuing to drive straight. However, should they decide on the same action they will collide. It's obvious that there are two good and two bad outcomes: the good ones are, where only one of the persons moves to the side, the bad ones are where both move to the side or both do not. 
 Figure~\ref{fig:driving-problem} illustrates how $\alpha$ has to decide between $K_1^m$(swerve) and $K_2^m$(do not swerve) and $\beta$ between $K_3^m$(swerve) and $K_4^m$(do not swerve). Depending on the combination of their decisions $m$ either leads to an optimal solution $h_1$ or $h_3$ or they crash in $h_2$ or $h_4$. The proposition $S$ stands for \enquote{$\alpha$ swerves}.
 
 \begin{figure}[ht]
@@ -157,7 +164,7 @@ We now face the problem whether $\odot [\alpha \cstit \colon S]$ should be true 
 
 The first is dominance act utilitarianism, where an action is only optimal, if each of its outcomes is optimal. More formally the formula $\odot [\alpha \cstit \colon S]$ is true only if all actions that lead to optimal outcomes also guarantee $S$. Since this is not the case in the driving problem, we have that $\odot [\alpha \cstit \colon S]$ does not hold at moment $m$. Note that this is also the case for $\odot [\alpha \cstit \colon \lnot S]$ since both actions (swerving and staying in lane) may lead to optimal outcomes, which agent $\alpha$ ought to strive for.
 
-In the second view, the orthodox perspective, we also take into consideration the actual circumstances the agent will find themselves in after making the decision. Intuitively $\alpha$ should ask themselves what \emph{would} the best decision have been. This means that instead of looking at $\odot [\alpha \cstit \colon S]$, we can answer the question of whether $\bigcirc [\alpha \cstit \colon S]$ should be true at moment $m$ for the history $h$ that occurred. In this case $\bigcirc [\alpha \cstit \colon S]$ is true for $h_1$ and $h_4$, and likewise $\bigcirc [\alpha \cstit \colon \lnot S]$ is true for $h_2$ and $h_3$.
+In the second view, the orthodox perspective, the actual circumstances the agent will find themselves in after making the decision are also taken into consideration. Intuitively $\alpha$ should ask themselves what \emph{would} the best decision have been. This means that instead of looking at $\odot [\alpha \cstit \colon S]$, the question of whether $\bigcirc [\alpha \cstit \colon S]$ should be true at moment $m$ for the history $h$ that occurred can be answered. In this case $\bigcirc [\alpha \cstit \colon S]$ is true for $h_1$ and $h_4$, and likewise $\bigcirc [\alpha \cstit \colon \lnot S]$ is true for $h_2$ and $h_3$.
 
 \section{Procrastination}
 Another problem that arises is the problem of procrastination. If an agent agrees to take on an obligation, the agent may indefinitely put off following through with that obligation until a deadline is reached. This is especially a problem if the highest utility is achieved by that specific agent taking on that obligation and then following through.
@@ -168,9 +175,9 @@ The example given in \cite{mdl} describes a professor -- aptly named Professor P
 This leads us to the contradiction that the professor ought to accept the request and write the review since this is the optimal course of action, but at the same time he ought to decline the request since doing otherwise will lead to the worst possible outcome.
 
 \subsection{Fields and actualism}
-The problem that leads to the contradiction is the existence of a possible choice that is in a way already settled. A possible solution to this problem is to narrow down the choices we will take into consideration to those that are actual choices. This view on the problem is fittingly named actualism.
+The problem that leads to the contradiction is the existence of a possible choice that is in a way already settled. A possible solution to this problem is to narrow down the choices that are taken into consideration to those that are actual choices. This view on the problem is fittingly named actualism.
 
-For a STIT-tree this means we will only consider a subset of the possible choices, which gives us a sub-tree of the problem that may be a more appropriate model of reality. We call this sub-tree, on which we will evaluate a formula, a \emph{field}.
+For a STIT-tree this means only a subset of the possible choices will be considered, which gives us a sub-tree of the problem that may be a more appropriate model of reality. This sub-tree, on which the formula is evaluated, is called \emph{a field}.
 
 For the example of Professor Procrastinate we can safely take into consideration only the first choice as him accepting or declining the request will not change the fact that he will not write the review. So our field will contain only the first decision. Since we are now no longer allowed to reason about the possibility of the professor writing the review, it is easy to see that he ought to decline.
 
@@ -178,6 +185,14 @@ Let us take a look at what this means for the semantics of the formula $\odot [\
 
 \section{Summary}
 Despite seeming like a straightforward conclusion to talk about actions by talking about histories inferred by them, it is not as simple as to reduce \emph{ought-to-do} to \emph{ought-to-be-done}. Rather, one has to accommodate for the specifics that come with the usage of agency, including, among other things, different histories caused by non-deterministic actions, multiple agents influencing each other and the difference between what \emph{could} happen and what \emph{actually} happens.
+
+For the gambling problem we can circumvent the problem by modifying the semantics to consider every possible outcome instead of only the best one.
+
+In the case of the driving example two ways of looking at the problem were given, both of which do not actually solve the problem but rather work around it.
+
+The problem of procrastination was solved by using additional information -- in the example that is the information that the professor is not going to write the review -- and restricting ourselves to those histories that are still feasible given that information.
+
+As we can see, some of these solutions can give rise to real procedures for automating decision-making while others only allow us to view the problem from different perspectives.
 
 
 \bibliographystyle{IEEEbib}
