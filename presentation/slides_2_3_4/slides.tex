@@ -119,14 +119,14 @@
                 (choice12) edge node[left] {$A$} (h2)
                 (choice12) edge[color=OliveGreen] node[right] {$A$} (choice21)
                 (choice21) edge node[left] {$\lnot A$} (h3)
-                (choice22) edge[color=OliveGreen] node[right] {$A$} (h4)
+                (choice22) edge node[right] {$A$} (h4)
                 (choice11) edge node[left] {$\lnot A$} (h1);
                 \draw<6>
                 ([xshift=.4cm]start.center) edge ([xshift=.4cm]choice11.center)
                 (choice12) edge node[left] {$A$} (h2)
                 (choice12) edge[color=red] node[right] {$A$} (choice21)
                 (choice21) edge node[left] {$\lnot A$} (h3)
-                (choice22) edge[color=red] node[right] {$A$} (h4)
+                (choice22) edge node[right] {$A$} (h4)
                 (choice11) edge node[left] {$\lnot A$} (h1);
                 \draw<8>
                 ([xshift=.4cm]start.center) edge ([xshift=.4cm]choice11.center)
@@ -228,7 +228,7 @@
 		More appropriate approach:
 		\begin{itemize}
 		    \item Compare all possible histories
-		    \item $K_1$ is more optimal than $K_2$ if each of its histories is at least as good as every history of $K_2$
+		    \item $K_1$ is more optimal than $K_2$ if it has one history that is better than every history of $K_2$ and no worse history
 		\end{itemize}
 		\pause
 		New operator: $\odot [\alpha \cstit \colon G]$
