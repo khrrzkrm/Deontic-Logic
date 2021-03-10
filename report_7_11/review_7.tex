@@ -1,0 +1,33 @@
+\title{Review of section 7: Coherence}
+\author{Katarzyna Frackowski, Falko Hemstra}
+\date{\today}
+  
+\documentclass[12pt]{article}
+
+\usepackage{csquotes}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+\begin{document}
+\maketitle
+
+In the seventh section \enquote{Coherence} of the paper by Pigozzi and van der Torre \cite{pigozzi2017multiagent} the authors examine the question of when to call a set of norms coherent. Since norms, in contrast to propositional formulas, cannot  simply be evaluated to truth values, one explicitly does not speak of \enquote{consistency} in this context, but rather several factors have to be weighed when defining the concept of coherence. The authors discuss some important questions that arise in the process, but without making a final judgement or offering a perfect solution. To formulate their approaches they use I/O-Logic.
+
+To test a normative $G$ for coherence the authors propose to examine the output $\mathit{out}(G,A)$ of the system when entering the situation $A$. Depending on whether the output is satisfiable the system $G$ should be referred to as coherent or incoherent. Different variants of such definitions are being considered and examined for their strengths and weaknesses. The first set of suggestions, which are numbered $(1)$ to $(1d)$, deal with which inputs should be considered or likewise be omitted in the definition of coherence. The norm $(a, \neg a)$ plays a special role in this context, since it seemingly asks for the impossible: When $a$ holds, it requires for $\neg a$ to be achieved. Since the definitions $(1)$ to $(1d)$ do not deal with this norm adequately, the authors propose an extension to their definitions.
+
+Rather than only considering consistency of the output, definition $(2)$ includes the input. A system that demands $(a, \neg a)$ will therefore be termed incoherent, but an additional difficulty becomes evident: Whenever a norm is violated, it follows that the normative system is incoherent by the means of definition $(2)$. The authors rate this solution as not optimal but it also ends their discussion.
+
+In order to put both suggestions, $(1)$ to $(1d)$ and $(2)$, into a common framework the authors make the following definition: A system $G$ is to be termed \enquote{coherent} when entering a situation $A$ with constraints $C$, if the set $\mathit{out}(G,A) \cup C$, the so-called \enquote{output under constraints}, is consistent. Finally, the authors point out that the question of coherence in this context can further be addressed by determining a suitable output operation $\mathit{out}$, the relevant sets $A$ and the appropriate constraints $C$ and leave this issue to future work.
+
+With their formalization of the problem of coherence in regard to normative systems the authors create a basis for further work in this area. By highlighting selected issues and using I/O-Logic they motivate the further examination of the topic and provide an established and easy to understand tool for formalizing related findings. 
+
+A problem that was unfortunately only mentioned in a footnote is that of the time component. The approach presented deals solely with the description and normative restriction of individual still images, which becomes clear when looking at the critical norm $(a, \neg a)$. In principle it obviously is possible to translate a situation in which $a$ holds into another situation which then satisfies $\neg a$ (closing a window for example, with $a$ meaning that the window is open). However, this requires a certain amount of time in which the transition from $a$ to $\neg a$ can occur. Such behaviour, in which time is a factor, can not be mapped directly with the presented approach. More generally, any norm that instructs an agent to act a certain way cannot be implemented, while norms that describe static properties of the situation remain. Since time is an important component in the efficient modeling of real systems, this aspect seems somewhat underrepresented.
+
+Another aspect which was only mentioned very briefly is the choice of the operation $\mathit{out}$. While the authors go into much detail on the influence of different interpretations of the relevant inputs $A$,  the role of the output operation is not discussed, although its choice has a significant impact on the resulting concept of coherence.
+
+Nevertheless, the paper by Pigozzi and van der Torre succeeds in providing an overview and a possible formalization of the problem. In the brevity of the article, the tools and some details of working with deontic logic in normative systems are clearly and comprehensively presented.
+
+\bibliographystyle{abbrv}
+\bibliography{paper}
+
+\end{document}
