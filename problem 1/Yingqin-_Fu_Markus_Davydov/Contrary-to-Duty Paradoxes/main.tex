@@ -13,7 +13,7 @@
 
 \tableofcontents
 \section*{Abstract}
-We will summerize the first problem of Denotic Logic ,the so-called Contrary-to-duty (CTD) in this paper.A contrary-to-duty obligation tells us,what we ougt to do if something is forbidden.Which is very important in our moral and legal thinking.So we want to discuss the problem with different deontic logic systems,and try to find a way to explain it.\\
+We will summerize the first problem of Deontic Logic ,the so-called Contrary-to-duty (CTD) in this paper.A contrary-to-duty obligation tells us,what we ougt to do if something is forbidden.Which is very important in our moral and legal thinking.So we want to discuss the problem with different deontic logic systems,and try to find a way to explain it.\\
 Keywords:contrary-to-duty Paradoxes(CTD),Chisholm’s paradox,Standard deontic logic(SDL)
 \section*{Introduction}
 What is contrary-to-duty obligation?And why is it a Paradoxes? A contrary-to-duty obligation is an obligation telling us what ought to be the case if something forbidden is true. Here are some examples of sentences that often express such obligations: ‘If she is guilty, she should confess’, ‘If he has hurt his friend, he should apologise to her’, ‘If you are not going to keep your promise to him, you ought to call him’, ‘If the books are not returned by the due date, you must pay a fine’. In this paper we will summarize the first part of the paper"Multiagent Deontic Logic and its Challenges from a Normative Systems Perspective "\cite{1} 
@@ -42,13 +42,13 @@ for robbery.
 
 Contrary-to-duty obligations turn up in discussions concerning guilt, blame, restoration, reparation, confession, punishment, repentance, retributive justice, compensation, apologies, damage control, etc. Therefore, they are important in our moral and legal thinking. The rationale of a contrary-to-duty obligation is the fact that most of us do neglect our primary duties from time to time and yet it is reasonable to believe that we should make the best of a bad situation, or at least that it matters what we do when this is the case. Everyone needs to find a way,that tells us what to do, when we don't finish the things we ought to do.In this paper,we will try to find a adequate formal representation of such obligations.
 \section{Monadic deontic logic}
-Traditional or ‘standard’ deontic logic, often referred to as SDL, was introduced by Von Wright\cite{4}.SDL regards as the most basic system of deontic logic,but also maybe have the most drawback.In this section,we try to analyze the Chisholm’s paradox with the basic SDL system.
+Traditional or ‘standard’ deontic logic, often referred to as SDL, was introduced by Von Wright\cite{4}.SDL regards as the most basic system of deontic logic,but also may have the most drawback.In this section,we try to analyze the Chisholm’s paradox with the basic SDL system.
 \subsection{language}
 $\varphi :=\perp | p |\neg \varphi |(\varphi \wedge \varphi)|\bigcirc\varphi|\square\varphi $\\
-Given two arbitrary formulas $\phi$  and $\varphi$, then\\
+Given two arbitrary formulas $\psi$  and $\varphi$, then\\
 $\perp$:the empty symbol\\
 $\neg$ $\varphi$: classical negation\\
-$\varphi \vee  \phi $: classical disjunction\\
+$\varphi \vee  \psi $: classical disjunction\\
 $\bigcirc \varphi $: $\varphi$ is obligatory\\
 $ \neg \bigcirc\neg\varphi$: $ \varphi$ is forbidden\\
 $ \square\varphi$: $\varphi$ is necessary
@@ -60,7 +60,7 @@ $ \square\varphi$: $\varphi$ is necessary
 \begin{description}
 \item[$\bullet$ ]M, s $ \vDash $ p iff s $\in$ $\nu$  (p)
 \item[$\bullet$ ]M, s $ \vDash $ $\neg \varphi$ iff not M, s $ \vDash $ $\varphi$
-\item[$\bullet$ ]M, s $ \vDash $ $(\varphi\land\phi )$ iff M,s $ \vDash \varphi$ and  M,s $ \vDash \phi$
+\item[$\bullet$ ]M, s $ \vDash $ $(\varphi\land\psi )$ iff M,s $ \vDash \varphi$ and  M,s $ \vDash \psi$
 \item[$\bullet$ ]M, s $ \vDash  \bigcirc\varphi$ iff for all t,if Rst then M, t$\vDash \varphi$
 \item[$\bullet$ ]M, s $ \vDash  \square\varphi$ iff for all t $\in$ W, M, t $\vDash \varphi$
 \end{description}
@@ -108,15 +108,15 @@ Dyadic deontic logic(or Dyadic Standard Deontic Logic ) is the logic for reasoni
 In this section, we will reasoning CTD with DDL.
 \subsection{Language}
 $\varphi := \perp | p | \neg \varphi |(\varphi \wedge \varphi)|\square \varphi |\bigcirc(\varphi|\varphi)$\\
-Given two arbitrary formulas $\phi$  and $\varphi$, then\\
+Given two arbitrary formulas $\psi$  and $\varphi$, then\\
 $\perp$:the empty symbol\\
 $\neg$ $\varphi$: classical negation\\
-$\varphi \vee  \phi $: classical disjunction\\
+$\varphi \vee  \psi $: classical disjunction\\
 $\bigcirc \varphi $: $\varphi$ is obligatory\\
 $ \neg \bigcirc\neg\varphi$: $ \varphi$ is forbidden\\
 $ \square\varphi$: $\varphi$ is necessary\\
-$\bigcirc(\varphi\mid\phi$): It ought to be $\varphi$,given $\phi$\\
-$P(\varphi\mid\phi) $:$\varphi$ is permitted,given $\phi$,as an abbreviation of $\neg\bigcirc(\neg\varphi\mid\phi)$\\
+$\bigcirc(\varphi\mid\psi$): It ought to be $\varphi$,given $\psi$\\
+$P(\varphi\mid\psi) $:$\varphi$ is permitted,given $\psi$,as an abbreviation of $\neg\bigcirc(\neg\varphi\mid\psi)$\\
 $\lozenge(\varphi)$:possibly $\varphi$,as an abbreviation of $\neg\square\neg\varphi$\\
 \subsection{Semantics}
 A preference model M = (W, $\geq$, V ) is a structure where:
@@ -127,8 +127,8 @@ A preference model M = (W, $\geq$, V ) is a structure where:
 \begin{description}
 \item[$\bullet$ ]M, s $ \vDash $ p iff s $\in$ $\nu$  (p)
 \item[$\bullet$ ]M, s $ \vDash $ $\neg \varphi$ iff not M, s $ \vDash $ $\varphi$
-\item[$\bullet$ ]M, s $ \vDash $ $(\varphi\land\phi )$ iff M,s $ \vDash \varphi$ and  M,s $ \vDash \phi$
-\item[$\bullet$ ]M, s $ \vDash  \bigcirc(\phi\mid\varphi) iff \forall t(((M, t \vDash \varphi)\with\forall u(M, u \vDash \varphi) \Rightarrow t \geq u) \Rightarrow M, t \vDash \phi)$
+\item[$\bullet$ ]M, s $ \vDash $ $(\varphi\land\psi )$ iff M,s $ \vDash \varphi$ and  M,s $ \vDash \psi$
+\item[$\bullet$ ]M, s $ \vDash  \bigcirc(\psi\mid\varphi) iff \forall t(((M, t \vDash \varphi)\with\forall u(M, u \vDash \varphi) \Rightarrow t \geq u) \Rightarrow M, t \vDash \psi)$
 \item[$\bullet$ ]M, s $ \vDash  \square\varphi$ iff for all t $\in$ W, M, t $\vDash \varphi$
 \end{description}
 \end{description}
@@ -268,7 +268,7 @@ Contrary-to-Duty Paradoxes
 \end{description}
 
 \section{Alternative approaches}
-In yhis section,we summerize easily the other Analyse of other reaserchers.\\
+In this section,we summerize easily the other Analyse of other reaserchers.\\
 
   Carmo and Jones \cite{7} suggest that the representation of the facts is challenging,
 instead of the representation of the norms. In their approach, depending on the
