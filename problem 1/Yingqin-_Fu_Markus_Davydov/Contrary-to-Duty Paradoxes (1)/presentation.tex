@@ -273,49 +273,50 @@ Given two arbitrary formulas $\psi$  and $\varphi$
 \begin{frame}{Limitations of DSDL}
 \begin{block}{A variant of the Chilsom's paradox}
 \begin{enumerate}
-\item[A]It ought to be that Jones does not eat fast food for dinner.
-\item[B]It ought to be that if Jones does not eat fast food for dinner, then he does not go to McDonald’s.
-\item[C] If Jones eats fast food for dinner, then he ought to go to McDonald’s.
-\item[D]Jones eats fast food for dinner.
+\item[A]It ought to be that a certain man go to the assistance of his neighbours.
+
+\item[B] It ought to be that if he does go, he tell them he is coming.
+
+\item[C]  If he does not go then he ought not to tell them he is coming.
+
+\item[D] He does not go.
 \end{enumerate}
 \end{block}
 \begin{block}{A variant of the Chilsom's paradox in DSDL}
-f:Jones eats fastfood for dinner; m:he goes to McDonald’s 
+h:he goes to help; t:he tells them
 \begin{enumerate}
-\item[A]$\bigcirc \neg f$
-\item[B]$\bigcirc(\neg m \mid \neg f)$
-\item[C]$\bigcirc(m\mid f)$
-\item[D]f
+\item[A]$\bigcirc \neg h$
+\item[B]$\bigcirc( t \mid  h)$
+\item[C]$\bigcirc(\neg t\mid \neg h)$
+\item[D]h
 \end{enumerate}
 \end{block}
 \end{frame}
 %---------------------------------------------------------
 \begin{frame}{Limitations of DSDL}
 \begin{block}{A variant of the Chilsom's paradox in DSDL}
-f:Jones eats fastfood for dinner; m:he goes to McDonald’s 
+h:he goes to help; t:he tells them
 \begin{enumerate}
-\item[A]$\bigcirc \neg f$
-\item[B]$\bigcirc(\neg m \mid \neg f)$
-\item[C]$\bigcirc(m\mid f)$
-\item[D]f
+\item[A]$\bigcirc \neg h$
+\item[B]$\bigcirc( t \mid  h)$
+\item[C]$\bigcirc(\neg t\mid \neg h)$
+\item[D]h
 \end{enumerate}
 \end{block}
 \\
 The dyadic representation A - D highlights the dilemma between factual detach-ment (FD) and deontic detachment (DD)
 \begin{description}
-\item[Axiom FD]$\bigcirc(m\mid f),f \Rightarrow \bigcirc m$\\
-\item[Axiom DD]$\bigcirc(\neg m \mid \neg f), \bigcirc\neg f \Rightarrow \bigcirc\neg m$\\
+\item[Axiom FD]$\bigcirc t\mid h),h \Rightarrow \bigcirc t$\\
+\item[Axiom DD]$\bigcirc(\neg t\mid \neg h), \bigcirc\neg h \Rightarrow \bigcirc\neg t$\\
 \end{description}
 \end{frame}
 %---------------------------------------------------------
 \begin{frame}{Limitations of DSDL}
 \begin{enumerate}
-    \item From A and B with axiom DD ,we have $\bigcirc\neg  m$
-    \item From C and D with axiom FD,we have $\bigcirc m$ , as we simply derive a dilemma:$\bigcirc\neg m\wedge\bigcirc m$\\
+    \item From A and B with axiom DD ,we have $\bigcirc\neg  t$
+    \item From C and D with axiom FD,we have $\bigcirc t$ , as we simply derive a dilemma:$\bigcirc\neg t\wedge\bigcirc t$\\
 \end{enumerate}
-Hence,there is also something wrong with the DSDL,when we try to reasoning CTD paradox.\\
-The main drawback of DSDL is that in a monotonic setting, we cannot detach
-the obligation $\bigcirc m$ from the four sentences.
+Hence,there is also something wrong with the DSDL,when we try to reasoning Chisholm's paradox.\\
 
 \end{frame}
 %---------------------------------------------------------
@@ -424,23 +425,23 @@ Counterfactual Deontic Logic,which is introduced by Rönnedal in 2016.The Counte
 \end{frame}
 %---------------------------------------------------------------
  \begin{frame}{Contrary to duty reasoning}
- Consider the following sentences about Contrary to duty paradox
+ Consider the following sentences about the Chisholm's paradox
 \begin{enumerate}
-\item[1] (On Monday it is true that) You ought to keep your promise (and see your friend on Friday).
-\item[2] (On Monday it is true that) It ought to be that if you keep your promise, you do not apologise (when you meet your friend on Saturday).
-\item[3](On Monday it is true that) If you do not keep your promise (i.e. if you do not see your friend on Friday and help her out), you ought to apologise (when you meet her on Saturday).
-\item[4](On Monday it is true that) You do not keep your promise (on Friday).
+\item[1] (On Monday it is true that) It ought to that a certain man go to the assistence of  his neighbors(on Friday).
+\item[2] (On Monday it is true that) It ought to be that if he does go(on Friday), he tell them he is coming (on Saturday).
+\item[3](On Monday it is true that) If he does not go (on Friday), he ought to not to tell them he is coming (on Saturday).
+\item[4](On Monday it is true that) He does not go (on Friday).
 \end{enumerate}
      
  \end{frame}
  %----------------------------------------------------------------------------
  \begin{frame}{Contrary to duty reasoning}
- With the help of Counterfactual Deontic Logic,the four sentences can now be symbolised in the following way:(R is a temporal operator;t1,t2,t3 are the different time;k is keep promise;and a is apologise )
+ With the help of Counterfactual Deontic Logic,the four sentences can now be symbolised in the following way:(R is a temporal operator;t1,t2,t3 are the different time;g is he does go ;and t is he does tell )
 \begin{enumerate}
-\item[CF1]$Rt_{1}ORt_{2}k$
-\item[CF2]$Rt_{1}O(Rt_{2}k \square \rightarrow Rt_{3}\neg a)$
-\item[CF3]$Rt_{1}(Rt_{2}\neg k \square \rightarrow Rt_{2}ORt_{3}a)$
-\item[CF4]$Rt_{1}Rt_{2}\neg k$
+\item[CF1]$Rt_{1}O(Rt_{2}g)$
+\item[CF2]$Rt_{1}O(Rt_{2}g \square \rightarrow Rt_{3}t)$
+\item[CF3]$Rt_{1}(Rt_{2}\neg g \square \rightarrow Rt_{2}ORt_{3}\neg t)$
+\item[CF4]$Rt_{1}Rt_{2}\neg g$
 \end{enumerate}
  \end{frame}
  %-------------------------------------------------------------------------
@@ -475,6 +476,23 @@ $\bigcirc(\neg m |\neg f),\bigcirc\neg f \Rightarrow \bigcirc(\neg m \wedge \neg
 The limitation of this approaches is that we can no longer accept the principle of weakening(also known as inheritance). 
 $\bigcirc(\neg m \wedge\neg f|\top) \Rightarrow \bigcirc(\neg m |\top)$
 \end{block} 
+\end{frame}
+%---------------------------------------------------------------------------
+\section{Summary}
+\begin{frame}{Summary}
+We have analysed the Chisholm's Paradoxs with four different DL Systems so far.Now we make a simple summary.
+\begin{figure*}
+\centering
+\includegraphics[scale=0.5]{summary.png}
+
+\label{fig_framework}
+\end{figure*}
+
+    
+\end{frame}
+%---------------------------------------------------------------------------------
+\begin{frame}{Summary}
+   We will see,the SDL and DSDL have obvious not adaptive form for Chisholm's Paradox.Although I/O logic and Counterfactual Deontic Logic can handle the example of Chisholm's Paradox,they may also have drawbacks for the other CTD reasoning ways. 
 \end{frame}
 %---------------------------------------------------------------------------
 \section{Conclusion}

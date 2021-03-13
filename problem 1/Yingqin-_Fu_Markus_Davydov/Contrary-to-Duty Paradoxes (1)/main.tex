@@ -75,18 +75,18 @@ Axioms for Standard Deontic Logic:
 \end{enumerate}
 \subsection{Limitations}
 Now we focus on the Chisholm'paradox with the Monadic deontic logic.
-We can describe the four sentences of Chisholm'paradox with the Monadic Deontic logic(h:= he goes to help his neighbours; t:=he tell them),we have four different ways to describe them:
+We can describe the four sentences of Chisholm'paradox with the Monadic Deontic logic(g:= he goes to help his neighbours; t:=he tell them),we have four different ways to describe them:
 \begin{enumerate}
-\item $(1)O(h);(2)O(h\to t);(3)O(\neg h\to \neg t);(4) \neg h$
-\item $(1)O(h);(2)O(h \to t);(3) \neg h \to O (\neg t); (4) \neg h$
-\item $(1)O(h);(2)h\to O(t);(3)\neg h \to O(\neg t) ;(4)\neg h $
-\item $ (1)O(h);(2)h\to O(t)(3)O(\neg h\to \neg t)(4)\neg h$
+\item $(1)O(g);(2)O(g\to t);(3)O(\neg g\to \neg t);(4) \neg g$
+\item $(1)O(g);(2)O(g \to t);(3) \neg g \to O (\neg t); (4) \neg g$
+\item $(1)O(g);(2)g\to O(t);(3)\neg g \to O(\neg t) ;(4)\neg g $
+\item $ (1)O(g);(2)g\to O(t)(3)O(\neg g\to \neg t)(4)\neg g$
 \end{enumerate}
 Now we foucs on the above-mentioned four SDL descriptions:
 \begin{enumerate}
-\item From (4) and Axiom 5 ,we have $O(\neg h) $ ;From (1) and (2),we have O(t);From $O(\neg h)$ and (3),we have $ O(\neg t)$. Obviously,O(t) $\wedge$ $O(\neg t)$ is paradox.
-\item From (3) and (4) with Axiom MP,we have $O(\neg t)$;From (2) and Axiom K,we have $O(h)\to O(t) $;which with (1) and Axiom MP,we have O(t)
-\item We know that,$ \neg h \to (h \to O(t))$ is Taut,which with (4) can we have $ h \to O(t)$.it is identical to (2).Hence,it's redundant.
+\item From (4) and Axiom 5 ,we have $O(\neg g) $ ;From (1) and (2),we have O(t);From $O(\neg g)$ and (3),we have $ O(\neg t)$. Obviously,O(t) $\wedge$ $O(\neg t)$ is paradox.
+\item From (3) and (4) with Axiom MP,we have $O(\neg t)$;From (2) and Axiom K,we have $O(g)\to O(t) $;which with (1) and Axiom MP,we have O(t)
+\item We know that,$ \neg g \to (h \to O(t))$ is Taut,which with (4) can we have $ g \to O(t)$.it is identical to (2).Hence,it's redundant.
 \item It's redundant with the same reason of 3.
 \end{enumerate}
 Hence,we can conclude,that under the Monadic Deontic Logic(SDL) the CTD is
@@ -96,9 +96,9 @@ Hence,we can conclude,that under the Monadic Deontic Logic(SDL) the CTD is
 So how can we overcome the limitation of SDL?Can we extend the semantics of SDL?For example,one can add distinct modal operators for primary and secondary obligations, where a secondary obligation is a kind of reparational obligation.So with the Chisholm’s paradox,we regard 1 and 2 as primary obligation(he ought to go),3 as secondary obligation(he ought to tell his neighbours).So the sentences are now:
 \begin{description}
 \item[(1)] $\bigcirc_{1} h$
-\item[(2)]$\bigcirc_{1}$ ($h \to t $)
-\item[(3)]$\neg h \to \bigcirc_ {2} (\neg t)$
-\item[(4)]$\neg h$
+\item[(2)]$\bigcirc_{1}$ ($g \to t $)
+\item[(3)]$\neg g \to \bigcirc_ {2} (\neg t)$
+\item[(4)]$\neg g$
 \end{description}
 From 1-4 we can derive only $\bigcirc_{1} \neg t \wedge \bigcirc_{2} t$,which is consistent.\\
 Seems like we find a good way to solve the limitation of SDL.However,it may not always be easy to distinguish primary from secondary obligations, because it may depend on the context whether an obligation is primary or secondary. It's not easy for us to describe the ideal world with this solution. 
@@ -133,27 +133,28 @@ A preference model M = (W, $\geq$, V ) is a structure where:
 \end{description}
 \end{description}
 \subsection{Limitations}
-The following example is a variant of the scenario originally phrased by Chisholm in 1963. There is widespread agreement in the literature that, from the intuitive point of view, this set of sentences is consistent, and its members are logically independent of each other.
+Now we focus on the Chisholm's Paradox again:
 \begin{description}
-\item[A]It ought to be that Jones does not eat fast food for dinner.
-\item[B]It ought to be that if Jones does not eat fast food for dinner, then he does not go to McDonald’s.
-\item[C] If Jones eats fast food for dinner, then he ought to go to McDonald’s.
-\item[D]Jones eats fast food for dinner.
+\item[A]It ought to be that a certain man go to the assistance of his neighbours.
+\item[B]It ought to be that if he does go, he tell them he is coming.
+\item[C]If he does not go then he ought not to tell them he is coming.
+\item[D]He does not go.
+
 \end{description}
-We try to reasoning the above-mentioned sentences with DSDL(f:Jones eats fast food for dinner;m:he goes to McDonald’s ):
+We try to reasoning the above-mentioned sentences with DSDL(g:he does go; t:he does tell):
 \begin{description}
-\item[A]$\bigcirc \neg f$
-\item[B]$\bigcirc(\neg m \mid \neg f)$
-\item[C]$\bigcirc(m\mid f)$
-\item[D]f
+\item[A]$\bigcirc \neg g$
+\item[B]$\bigcirc(t \mid  g)$
+\item[C]$\bigcirc(\neg t\mid \neg g)$
+\item[D]g
 \end{description}
 the dyadic representation A - D highlights the dilemma between factual detachment (FD) and deontic detachment (DD)
 \begin{description}
-\item[Axiom FD]$\bigcirc(m\mid f),f \Rightarrow \bigcirc m$\\
-\item[Axiom DD]$\bigcirc(\neg m \mid \neg f), \bigcirc\neg f \Rightarrow \bigcirc\neg m$\\
+\item[Axiom FD]$\bigcirc(t\mid g),g \Rightarrow \bigcirc t$\\
+\item[Axiom DD]$\bigcirc(\neg t \mid \neg g), \bigcirc\neg g \Rightarrow \bigcirc\neg t$\\
 \end{description}
 
-From A and B with(axiom DD) ,we have $\bigcirc\neg  m$;From C and D(axiom FD),we have $\bigcirc m$ , as we simply derive a dilemma:$\bigcirc\neg m\wedge\bigcirc m$\\
+From A and B with(axiom DD) ,we have $\bigcirc\neg  t$;From C and D(axiom FD),we have $\bigcirc t$ , as we simply derive a dilemma:$\bigcirc\neg t\wedge\bigcirc t$\\
 Hence,there is also something wrong with the DSDL,when we try to reasoning CTD paradox.\\
 The main drawback of DSDL is that in a monotonic setting, we cannot detach
 the obligation $\bigcirc m$ from the four sentences.
@@ -173,7 +174,7 @@ logic.It returns the set of all provable propositional formulae provable assumin
 A= \{ x, y\} then Cn(A) = \{x, y, x $\vee $y, x $\wedge$ y $\vee$ . . . \}\\
 The simplest kind of input/output operation is depicted in Figure 1. A
 set A of propositions serves as explicit input, which is prepared by being expanded to its classical closure Cn(A). This is then passed into the ‘black box’ or ‘transformer’ G, which delivers the corresponding immediate output G(Cn(A)) = \{x: for some a $\in$ Cn(A), (a,x) $\in$ G\} Finally, this is expanded by classical closure again into the full output $out_{1}$(G,A) = Cn(G(Cn(A))). We call this simple-minded output.\\
-
+\newpage
 \begin{figure*}[hb]
 \centering
 \includegraphics[scale=0.4]{simple_minded.png}
@@ -199,7 +200,7 @@ For example,$out_{4}$ can be given by Figure 2.\\
 \newpage
 \begin{figure*}[hb]
 \centering
-\includegraphics[scale=0.5]{out4.png}
+\includegraphics[scale=0.4]{out4.png}
 
 \label{fig_framework}
 \end{figure*}
@@ -238,25 +239,24 @@ Hence,the Input/output logic is able to handle the CTD paradox,which is a propos
 \item[$\bullet$]R is a temporal operator; ‘$Rt_{1}$A’ says that it is realised at time t1 (it is true at t1) that A
 \end{description}
 \subsection{ Contrary to duty reasoning}
-Consider the following sentences about Contrary to duty paradox
+Consider the following sentences about Chisholm's paradox
 \begin{description}
-\item[1] (On Monday it is true that) You ought to keep your promise (and see your friend on Friday).
-\item[2] (On Monday it is true that) It ought to be that if you keep your promise, you do not apologise (when you meet your friend on Saturday).
-\item[3](On Monday it is true that) If you do not keep your promise (i.e. if you do not see your friend on Friday and help her out), you ought to apologise (when you meet her on Saturday).
-\item[4](On Monday it is true that) You do not keep your promise (on Friday).
+\item[1] (On Monday it is true that) It ought to that a certain man go to the assistence of  his neighbors(on Friday).
+\item[2] (On Monday it is true that) It ought to be that if he does go(on Friday), he tell them he is coming (on Saturday).
+\item[3](On Monday it is true that) If he does not go (on Friday), he ought to not to tell them he is coming (on Saturday).
+\item[4](On Monday it is true that) He does not go (on Friday).
 \end{description}
-With the help of Counterfactual Deontic Logic,the four sentences can now be symbolised in the following way:(R is a temporal operator;t1,t2,t3 are the different time;k is keep promise;and a is apologise )
+With the help of Counterfactual Deontic Logic,the four sentences can now be symbolised in the following way:(R is a temporal operator;t1,t2,t3 are the different time;g is he does go ;and t is he does tell)
 \begin{description}
-\item[CF1]$Rt_{1}ORt_{2}k$
-\item[CF2]$Rt_{1}O(Rt_{2}k \square \rightarrow Rt_{3}\neg a)$
-\item[CF3]$Rt_{1}(Rt_{2}\neg k \square \rightarrow Rt_{2}ORt_{3}a)$
-\item[CF4]$Rt_{1}Rt_{2}\neg k$
+\item[CF1]$Rt_{1}O(Rt_{2}g)$
+\item[CF2]$Rt_{1}O(Rt_{2}g \square \rightarrow Rt_{3}t)$
+\item[CF3]$Rt_{1}(Rt_{2}\neg g \square \rightarrow Rt_{2}ORt_{3}\neg t)$
+\item[CF4]$Rt_{1}Rt_{2}\neg g$
 \end{description}
 We can see:
 \begin{description}
 \item[$\bullet$] CF-CTD is consistent,It does not seem to be possible to deduce any contradiction from the four sentences. Hence, we want our symbolisation of this set to be consistent. In this respect, CF-CTD is an intuitively plausible formalisation of the four sentences.
 \item[$\bullet$] CF-CTD is non-redundant.There ist no sentence in this set follows from the rest.
-
 \end{description}
 \subsection{Limitations}
 The Counterfactual Deontic Logic seems to be a proposed solution of CTD-paradox(at least in our example).However,it also has limitations.\\
@@ -266,7 +266,16 @@ Contrary-to-Duty Paradoxes;
 \item[$\bullet$]the Counterfactual Solution cannot Solve Beforehand
 Contrary-to-Duty Paradoxes
 \end{description}
+\newpage
+\section{Summary}
+We have analysed the Chisholm's Paradoxs with four different DL Systems so far.Now we make a simple summary.
+\begin{figure*}[hb]
+\centering
+\includegraphics[scale=0.5]{summary.png}
 
+\label{fig_framework}
+\end{figure*}
+We will see,the SDL and DSDL have obvious not adaptive form for Chisholm's Paradox.Although I/O logic and Counterfactual Deontic Logic can handle the example of Chisholm's Paradox,they may also have drawbacks for the other CTD reasoning ways.
 \section{Alternative approaches}
 In this section,we summerize easily the other Analyse of other reaserchers.\\
 
@@ -287,21 +296,21 @@ Nowadays more and more logic researchers focus on the CTD Paradoxes,and build di
 \section{Conclusion}
 Accordingly, CTDs are the source for many paradoxes and the driver for the
 development of many formalisms and deontic logics.In our opinion,the key point of CTD Paradoxs  is that how can we find a adequate formel to deal with the relationship between \textbf{obligation} and \textbf{condition}.
-Consider the sentence from section 3:
+Consider the sentence from Chishol's Paradox:
 \begin{description}
-\item[B] It ought to be that if Jones does not eat fast food for dinner, then he does not go to McDonald’s.
+\item[C]  If he does not go then he ought not to tell them he is coming.
 \end{description}
 which can be formed as:
 \begin{description}
-\item[$\bullet $]$\bigcirc (\neg f \rightarrow\neg m)$
+\item[$\bullet $]$\bigcirc (\neg g \rightarrow\neg t)$
 \end{description}
 
 However, in our opinion,"if Jones does not eat fast food for dinner "is a \textbf{condition} (instead of obligation) of "he ought to not go to McDonald's".We cannot lump these two concepts together.
 So the better form should be:
 \begin{description}
-\item[$\bullet$]$ \neg f \rightarrow \bigcirc \neg m$
+\item[$\bullet$]$ \neg g \rightarrow \bigcirc \neg t$
 \end{description}
-However,this is also redundant due to $f \vDash\neg f \rightarrow \bigcirc \neg m $\\We always find a limitation,when we try to form CTD with deontic logic,especially SDL.More and more approaches are proposed.Many researchers also build the binary deontic logic to solve them......When a new deontic logic is proposed, the traditional contrary-to-duty examples are always the first benchmark examples to be checked,which is always the biggest challenge of DL System.What's more,it is also a challenge for our own moral life and law system.
+However,this is also redundant due to $g \vDash\neg g \rightarrow \bigcirc \neg t $\\We always find a limitation,when we try to form CTD with deontic logic,especially SDL.More and more approaches are proposed.Many researchers also build the binary deontic logic to solve them......When a new deontic logic is proposed, the traditional contrary-to-duty examples are always the first benchmark examples to be checked,which is always the biggest challenge of DL System.What's more,it is also a challenge for our own moral life and law system.
 Perhaps there is not an eternal solution to solve the paradoxes entirely.But with the research on all the challenges for multiagent deontic logic,the law system will be more and more perfect,our obligation and violation will be more and more clearly... 
 
 \bibliographystyle{unsrt}
